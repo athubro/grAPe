@@ -3,52 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AP Selection</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    label {
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: block;
-    }
-    button {
-      margin-top: 20px;
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      background: purple;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: darkviolet;
-    }
-  </style>
+  <title>AP Selection | Grape Classroom</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h2>Select Your AP Courses</h2>
-  <form id="apForm">
-    <div class="grid" id="ap-list"></div>
-    <button type="submit">Save</button>
+<body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
+
+  <!-- Logo -->
+  <div class="flex items-center space-x-3 mb-6">
+    <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
+    <h1 class="text-3xl font-bold text-purple-700">Select Your AP Courses</h1>
+  </div>
+
+  <!-- Course Grid -->
+  <form id="apForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-md rounded-xl p-6 w-full max-w-3xl">
   </form>
+
+  <button id="saveBtn" class="mt-6 bg-purple-600 text-white px-6 py-3 rounded-xl shadow hover:bg-purple-700">
+    Save & Continue
+  </button>
+
   <script type="module" src="ap-selection.js"></script>
 </body>
 </html>
