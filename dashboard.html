@@ -9,16 +9,19 @@
 <body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
 
   <!-- Navbar -->
-<div class="w-full flex items-center justify-between bg-purple-200/50 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6">
-  <nav class="flex justify-between items-center w-full max-w-5xl mb-6">
+<!-- Navbar -->
+<div class="w-full flex items-center justify-between bg-purple-200/70 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6 border border-purple-300">
+  <nav class="flex justify-between items-center w-full max-w-5xl">
     <div class="flex items-center space-x-3">
       <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-      <h1 id="welcome" class="text-3xl font-bold text-purple-700">Welcome</h1>
+      <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded bg-purple-100/50">Welcome</h1>
     </div>
     <div>
-      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer hover:opacity-80">
+      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded bg-purple-100/50 hover:opacity-80">
     </div>
   </nav>
+</div>
+
 
   <!-- AP Courses -->
   <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center"></div>
