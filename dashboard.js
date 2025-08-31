@@ -535,8 +535,6 @@ async function showQuizModal(course, unit, questions, checkSpan, isFinal) {
   checkSpan.textContent = "✅"; // mark passed
 }
 
-// ---------------- Auth ----------------
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
