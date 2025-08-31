@@ -112,9 +112,8 @@ onAuthStateChanged(auth, async (user) => {
       currentUserDoc = userSnap.data();
 
       // Set welcome name
-      let username = localStorage.getItem("username");
-      if (!username) username = user.email.split("@")[0];
-      welcome.textContent = `Welcome to your dashboard, ${username}`;
+      
+      welcome.textContent = `Welcome`;
 
       // Display AP courses
       if (currentUserDoc.apCourses && currentUserDoc.apCourses.length > 0) {
