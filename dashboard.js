@@ -469,12 +469,24 @@ function populateReselect() {
 
 // Save reselect
 async function saveReselectCourses() {
-  const selected = [...document.querySelectorAll('input[name="apCourses"]:checked')].map(el => el.value);
-  const userRef = doc(db, "users", currentUser.uid);
-  await setDoc(userRef, { apCourses: selected }, { merge: true });
+  const selected = Array.from(document.querySelectorAll(".course-checkbox:checked"))
+    .map(cb => cb.value);
+
+  const user = auth.currentUser; // <-- always fetch fresh from Firebase
+  if (!user) {
+    alert("You must be logged in to save courses.");
+    return;
+  }
+
+  await setDoc(doc(db, "users", user.uid), {
+    apCourses: selected
+  }, { merge: true });
+
+  // Refresh userDoc so UI updates
   currentUserDoc.apCourses = selected;
-  renderAPCourses(apCourses);
-  reselectModal.classList.add("hidden");
+
+  renderAPCourses(allCourses); // re-render course list
+  closeReselectModal();
 }
 
 // ---------------- Gemini AI Integration ----------------
