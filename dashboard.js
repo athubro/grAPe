@@ -536,15 +536,30 @@ async function showQuizModal(course, unit, questions, checkSpan, isFinal) {
 }
 
 // ---------------- Auth ----------------
-onAuthStateChanged(auth, async user => {
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    currentUser = user;
+    // ✅ User is logged in
+    console.log("Logged in as:", user.email);
+
+    // load user doc from Firestore
     const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-    currentUserDoc = docSnap.exists() ? docSnap.data() : { apCourses: [] };
-    welcome.textContent = `Welcome, ${user.displayName || "Student"}!`;
-    renderAPCourses(apCourses);
+    const snap = await getDoc(userRef);
+
+    if (snap.exists()) {
+      currentUserDoc = snap.data();
+    } else {
+      // if somehow no doc yet, create one
+      await setDoc(userRef, { apCourses: [] });
+      currentUserDoc = { apCourses: [] };
+    }
+
+    // render dashboard only after we have data
+    renderDashboard(user);
   } else {
-    //window.location.href = "index.html";
+    // 🚨 Not logged in → go back to main page
+    window.location.href = "index.html";
   }
 });
+
