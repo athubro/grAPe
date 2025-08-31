@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Dashboard | Grape Classroom</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h2 id="welcome">Welcome to your dashboard</h2>
-  <ul id="ap-list"></ul>
+<body class="bg-purple-50 min-h-screen p-6">
+
+  <div class="flex items-center space-x-3 mb-6">
+    <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
+    <h1 id="welcome" class="text-3xl font-bold text-purple-700">Welcome to your dashboard</h1>
+  </div>
+
+  <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
   <script type="module" src="dashboard.js"></script>
 </body>
