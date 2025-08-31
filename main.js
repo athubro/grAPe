@@ -1,5 +1,13 @@
+// main.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -12,66 +20,76 @@ const firebaseConfig = {
   measurementId: "G-X2DELV9RFD"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// DOM Elements
-const googleLoginBtn = document.getElementById("google-login");
-const emailLoginBtn = document.getElementById("email-login");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+document.addEventListener("DOMContentLoaded", () => {
+  const googleBtn = document.getElementById("google-login");
+  const emailBtn = document.getElementById("email-login");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
 
-// Google Login
-if (googleLoginBtn) {
-  googleLoginBtn.addEventListener("click", async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      handleUser(result.user);
-    } catch (error) {
-      console.error(error.message);
-    }
-  });
-}
-
-// Email Login
-if (emailLoginBtn) {
-  emailLoginBtn.addEventListener("click", async () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      // if user doesn’t exist → create account
-      if (error.code === "auth/user-not-found") {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        console.error(error.message);
+  // Google login
+  if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        handleUser(result.user);
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
       }
+    });
+  }
+
+  // Email/password login
+  if (emailBtn) {
+    emailBtn.addEventListener("click", async () => {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        // If user doesn’t exist → create account
+        if (err.code === "auth/user-not-found") {
+          try {
+            await createUserWithEmailAndPassword(auth, email, password);
+          } catch (createErr) {
+            console.error(createErr);
+            alert(createErr.message);
+          }
+        } else {
+          console.error(err);
+          alert(err.message);
+        }
+      }
+    });
+  }
+
+  // Auth state listener
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      handleUser(user);
     }
   });
-}
-
-// Check auth state
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    await handleUser(user);
-  }
 });
 
+// Handle new/existing user
 async function handleUser(user) {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
   if (userSnap.exists()) {
-    // User already exists → go to dashboard
+    // User exists → go to dashboard
     window.location.href = "dashboard.html";
   } else {
-    // New user → send to AP selection page
+    // New user → create document and go to AP selection
     await setDoc(userRef, {
       email: user.email,
-      apCourses: [], // store later after selection
+      apCourses: [],
       createdAt: new Date(),
     });
     window.location.href = "ap-selection.html";
