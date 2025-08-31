@@ -384,9 +384,16 @@ function createEl(tag, className, text) {
 }
 
 // Render AP courses
-function renderAPCourses(courses) {
+function renderAPCourses(allCourses) {
   apList.innerHTML = "";
-  Object.keys(courses).forEach(courseName => {
+
+  // Only show courses the user selected
+  const userCourses = currentUserDoc.apCourses || [];
+
+  userCourses.forEach(courseName => {
+    const courseUnits = allCourses[courseName];
+    if (!courseUnits) return; // skip if course name is wrong
+
     const courseBtn = createEl(
       "button",
       "bg-purple-600 text-white p-4 rounded-xl shadow w-64 hover:bg-purple-700 mb-2",
@@ -394,14 +401,13 @@ function renderAPCourses(courses) {
     );
     apList.appendChild(courseBtn);
 
-    // Units container
     const unitsDiv = createEl("div", "ml-4 mb-4 hidden");
     apList.appendChild(unitsDiv);
 
     courseBtn.addEventListener("click", () => {
       unitsDiv.classList.toggle("hidden");
       unitsDiv.innerHTML = "";
-      courses[courseName].forEach(unit => {
+      courseUnits.forEach(unit => {
         const unitBtn = createEl(
           "button",
           "bg-purple-200 text-purple-700 py-2 px-3 rounded mb-1 w-full text-left hover:bg-purple-300",
@@ -412,13 +418,13 @@ function renderAPCourses(courses) {
         // Checkmark if passed
         const passedSpan = createEl("span", "ml-2 text-green-600 font-bold");
         unitBtn.appendChild(passedSpan);
-        if (currentUserDoc?.progress?.[courseName]?.[unit]?.passed) passedSpan.textContent = "✅";
+        if (currentUserDoc.progress?.[courseName]?.[unit]?.passed) passedSpan.textContent = "✅";
 
         // Unit click → open quiz
         unitBtn.addEventListener("click", () => openUnitQuiz(courseName, unit, passedSpan));
       });
 
-      // Add Final Exam button
+      // Final Exam button
       const finalBtn = createEl(
         "button",
         "bg-purple-400 text-white py-2 px-3 rounded w-full mt-2 hover:bg-purple-500",
@@ -427,12 +433,13 @@ function renderAPCourses(courses) {
       unitsDiv.appendChild(finalBtn);
       const finalCheck = createEl("span", "ml-2 text-green-600 font-bold");
       finalBtn.appendChild(finalCheck);
-      if (currentUserDoc?.finalExams?.[courseName]?.passed) finalCheck.textContent = "✅";
+      if (currentUserDoc.finalExams?.[courseName]?.passed) finalCheck.textContent = "✅";
 
       finalBtn.addEventListener("click", () => openFinalExam(courseName, finalCheck));
     });
   });
 }
+
 
 // Settings modal
 settingsBtn.addEventListener("click", () => settingsModal.classList.remove("hidden"));
