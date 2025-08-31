@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -17,7 +17,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// List of 39 AP courses
 const apCourses = [
   "AP Art History", "AP Biology", "AP Calculus AB", "AP Calculus BC", "AP Chemistry",
   "AP Chinese Language and Culture", "AP Comparative Government and Politics", "AP Computer Science A",
@@ -32,30 +31,45 @@ const apCourses = [
   "AP United States History", "AP World History: Modern", "AP Capstone Diploma Program"
 ];
 
-// Populate the form dynamically
 const apForm = document.getElementById("apForm");
+const saveBtn = document.getElementById("saveBtn");
 
+// Populate AP checkboxes
 apCourses.forEach(course => {
   const id = course.replace(/\s+/g, "_");
-  const checkboxWrapper = document.createElement("label");
-  checkboxWrapper.className = "bg-white p-3 rounded-xl shadow hover:bg-purple-100 cursor-pointer flex items-center";
-
-  checkboxWrapper.innerHTML = `
-    <input type="checkbox" name="apCourses" value="${course}" class="mr-2">
-    <span class="text-purple-700 font-semibold">${course}</span>
-  `;
-  apForm.appendChild(checkboxWrapper);
+  const label = document.createElement("label");
+  label.className = "bg-white p-3 rounded-xl shadow hover:bg-purple-100 cursor-pointer flex items-center";
+  label.innerHTML = `<input type="checkbox" name="apCourses" value="${course}" class="mr-2">
+                     <span class="text-purple-700 font-semibold">${course}</span>`;
+  apForm.appendChild(label);
 });
 
-// Handle Save button click
-document.getElementById("saveBtn").addEventListener("click", () => {
+// Auth listener
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists() && userSnap.data().apCourses?.length > 0) {
+      // User already has AP courses → skip selection
+      const name = user.email.split("@")[0]; // extract name from email
+      localStorage.setItem("username", name); // store for dashboard if needed
+      window.location.href = "dashboard.html";
+    }
+  }
+});
+
+// Save button
+saveBtn.addEventListener("click", async () => {
   const selected = [...document.querySelectorAll('input[name="apCourses"]:checked')].map(el => el.value);
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userRef = doc(db, "users", user.uid);
-      // Use setDoc with merge:true → safe for new and existing users
       await setDoc(userRef, { apCourses: selected }, { merge: true });
+
+      const name = user.email.split("@")[0]; // extract name from email
+      localStorage.setItem("username", name);
       window.location.href = "dashboard.html";
     }
   });
