@@ -218,8 +218,158 @@ const apCourses = {
     "Unit 5: Catullus, Selected Poems",
     "Unit 6: Caesar, Selected Passages",
     "Unit 7: Cicero, Selected Speeches"
+  ],
+  "AP Macroeconomics": [
+    "Unit 1: Basic Economic Concepts",
+    "Unit 2: Economic Indicators and the Business Cycle",
+    "Unit 3: National Income and Price Determination",
+    "Unit 4: Financial Sector",
+    "Unit 5: Long-Run Consequences of Stabilization Policies",
+    "Unit 6: Open Economy - International Trade and Finance"
+  ],
+  "AP Microeconomics": [
+    "Unit 1: Basic Economic Concepts",
+    "Unit 2: Supply and Demand",
+    "Unit 3: Production, Cost, and the Perfect Competition Model",
+    "Unit 4: Imperfect Competition",
+    "Unit 5: Factor Markets",
+    "Unit 6: Market Failure and the Role of Government"
+  ],
+  "AP Music Theory": [
+    "Unit 1: Music Fundamentals I",
+    "Unit 2: Music Fundamentals II",
+    "Unit 3: Music Fundamentals III",
+    "Unit 4: Harmony and Voice Leading I",
+    "Unit 5: Harmony and Voice Leading II",
+    "Unit 6: Harmony and Voice Leading III",
+    "Unit 7: Harmony and Voice Leading IV",
+    "Unit 8: Modes and Form"
+  ],
+  "AP Physics 1": [
+    "Unit 1: Kinematics",
+    "Unit 2: Dynamics",
+    "Unit 3: Circular Motion and Gravitation",
+    "Unit 4: Energy",
+    "Unit 5: Momentum",
+    "Unit 6: Simple Harmonic Motion",
+    "Unit 7: Torque and Rotational Motion"
+  ],
+  "AP Physics 2": [
+    "Unit 1: Fluids",
+    "Unit 2: Thermodynamics",
+    "Unit 3: Electric Force, Field, and Potential",
+    "Unit 4: Electric Circuits",
+    "Unit 5: Magnetism and Electromagnetic Induction",
+    "Unit 6: Geometric and Physical Optics",
+    "Unit 7: Quantum, Atomic, and Nuclear Physics"
+  ],
+  "AP Physics C: Electricity & Magnetism": [
+    "Unit 1: Electrostatics",
+    "Unit 2: Conductors, Capacitors, Dielectrics",
+    "Unit 3: Electric Circuits",
+    "Unit 4: Magnetic Fields",
+    "Unit 5: Electromagnetism"
+  ],
+  "AP Physics C: Mechanics": [
+    "Unit 1: Kinematics",
+    "Unit 2: Newton’s Laws of Motion",
+    "Unit 3: Work, Energy, and Power",
+    "Unit 4: Systems of Particles and Linear Momentum",
+    "Unit 5: Rotation",
+    "Unit 6: Oscillations",
+    "Unit 7: Gravitation"
+  ],
+  "AP Pre-Calculus": [
+    "Unit 1: Polynomial and Rational Functions",
+    "Unit 2: Exponential and Logarithmic Functions",
+    "Unit 3: Trigonometric and Polar Functions",
+    "Unit 4: Functions Involving Parameters, Vectors, and Matrices"
+  ],
+  "AP Psychology": [
+    "Unit 1: Scientific Foundations of Psychology",
+    "Unit 2: Biological Basis of Behavior",
+    "Unit 3: Sensation and Perception",
+    "Unit 4: Learning",
+    "Unit 5: Cognitive Psychology",
+    "Unit 6: Developmental Psychology",
+    "Unit 7: Motivation, Emotion, and Personality",
+    "Unit 8: Clinical Psychology",
+    "Unit 9: Social Psychology"
+  ],
+  "AP Research": [
+    "Unit 1: Question and Explore",
+    "Unit 2: Understand and Analyze",
+    "Unit 3: Evaluate Multiple Perspectives",
+    "Unit 4: Synthesize Ideas",
+    "Unit 5: Team, Transform, and Transmit"
+  ],
+  "AP Seminar": [
+    "Unit 1: Question and Explore",
+    "Unit 2: Understand and Analyze",
+    "Unit 3: Evaluate Multiple Perspectives",
+    "Unit 4: Synthesize Ideas",
+    "Unit 5: Team, Transform, and Transmit"
+  ],
+  "AP Spanish Language": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP Spanish Literature": [
+    "Unit 1: La época medieval",
+    "Unit 2: El siglo XVI",
+    "Unit 3: El siglo XVII",
+    "Unit 4: La literatura romántica, realista y naturalista",
+    "Unit 5: La Generación del 98 y el Modernismo",
+    "Unit 6: Teatro y poesía del siglo XX",
+    "Unit 7: El Boom latinoamericano",
+    "Unit 8: Escritores contemporáneos de Estados Unidos, y España"
+  ],
+  "AP Statistics": [
+    "Unit 1: Exploring One-Variable Data",
+    "Unit 2: Exploring Two-Variable Data",
+    "Unit 3: Collecting Data",
+    "Unit 4: Probability, Random Variables, and Probability Distributions",
+    "Unit 5: Sampling Distributions",
+    "Unit 6: Inference for Categorical Data - Proportions",
+    "Unit 7: Inference for Quantitative Data - Means",
+    "Unit 8: Inference for Categorical Data - Chi-Squares",
+    "Unit 9: Inference for Quantitative Data - Slopes"
+  ],
+  "AP US Government": [
+    "Unit 1: Foundations of American Democracy",
+    "Unit 2: Interactions Among Branches of Government",
+    "Unit 3: Civil Liberties and Civil Rights",
+    "Unit 4: American Political Ideologies and Beliefs",
+    "Unit 5: Political Participation"
+  ],
+  "AP US History": [
+    "Unit 1: 1491-1607 (Columbus to Jamestown)",
+    "Unit 2: 1607-1754 (Colonial Society)",
+    "Unit 3: 1754-1800 (American Revolution and Constitution)",
+    "Unit 4: 1800-1848 (American Expansion)",
+    "Unit 5: 1844-1877 (Civil War and Reconstruction)",
+    "Unit 6: 1865-1898 (Gilded Age)",
+    "Unit 7: 1898-1945 (Global Conflict)",
+    "Unit 8: 1945-1980 (Cold War and Protest)",
+    "Unit 9: 1980 to Present (Post-Cold War Shifts)"
+  ],
+  "AP World History: Modern": [
+    "Unit 1: The Global Tapestry",
+    "Unit 2: Networks of Exchange",
+    "Unit 3: Land-Based Empires",
+    "Unit 4: Transoceanic Interactions",
+    "Unit 5: Revolutions",
+    "Unit 6: Consequences of Industrialization",
+    "Unit 7: Global Conflict",
+    "Unit 8: Cold War and Decolonization",
+    "Unit 9: Globalization"
   ]
 };
+
 
 // Current user
 let currentUser = null;
