@@ -2,40 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AP Selection | Grape Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>AP Selection</title>
 </head>
-<body class="bg-purple-900 min-h-screen flex items-center justify-center text-white">
-  <div class="bg-purple-800 p-8 rounded-2xl shadow-lg w-96">
-    <h1 class="text-xl font-bold mb-4 text-center">Choose Your AP Subjects</h1>
-    <form id="apForm" class="flex flex-col gap-2">
-      <label><input type="checkbox" value="APUSH"> APUSH</label>
-      <label><input type="checkbox" value="AP Physics"> AP Physics</label>
-      <label><input type="checkbox" value="AP Calculus"> AP Calculus</label>
-      <label><input type="checkbox" value="AP CS"> AP CS</label>
-      <button class="bg-purple-600 mt-4 py-2 rounded-xl hover:bg-purple-500">Save</button>
-    </form>
+<body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
+  
+  <!-- Logo -->
+  <div class="flex items-center space-x-3 mb-6">
+    <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
+    <h1 class="text-3xl font-bold text-purple-700">Select Your AP Courses</h1>
   </div>
-  <script type="module">
-    import { getAuth } from "firebase/auth";
-    import { getFirestore, doc, updateDoc } from "firebase/firestore";
-    import { app } from "./main.js";
 
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <!-- Course Grid -->
+  <form id="apForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-md rounded-xl p-6 w-full max-w-3xl">
+    
+    <!-- Column 1 -->
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Biology" class="text-purple-600"> <span>AP Biology</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Calculus AB"> <span>AP Calculus AB</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Calculus BC"> <span>AP Calculus BC</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Chemistry"> <span>AP Chemistry</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Chinese Language and Culture"> <span>AP Chinese Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Comparative Government and Politics"> <span>AP Comparative Government and Politics</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Computer Science A"> <span>AP Computer Science A</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Computer Science Principles"> <span>AP Computer Science Principles</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP English Language and Composition"> <span>AP English Language and Composition</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP English Literature and Composition"> <span>AP English Literature and Composition</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Environmental Science"> <span>AP Environmental Science</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP European History"> <span>AP European History</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP French Language and Culture"> <span>AP French Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP German Language and Culture"> <span>AP German Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Human Geography"> <span>AP Human Geography</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Italian Language and Culture"> <span>AP Italian Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Japanese Language and Culture"> <span>AP Japanese Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Latin"> <span>AP Latin</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Macroeconomics"> <span>AP Macroeconomics</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Microeconomics"> <span>AP Microeconomics</span>
+    </label>
 
-    document.getElementById("apForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const selected = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(cb => cb.value);
-      const user = auth.currentUser;
-      if (user) {
-        await updateDoc(doc(db, "users", user.uid), {
-          apSelected: true,
-          subjects: selected
-        });
-        window.location.href = "dashboard.html";
-      }
+    <!-- Column 2 -->
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Music Theory"> <span>AP Music Theory</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Physics 1"> <span>AP Physics 1</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Physics 2"> <span>AP Physics 2</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Physics C: Electricity and Magnetism"> <span>AP Physics C: E&M</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Physics C: Mechanics"> <span>AP Physics C: Mechanics</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Precalculus"> <span>AP Precalculus</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Psychology"> <span>AP Psychology</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Research"> <span>AP Research</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Seminar"> <span>AP Seminar</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Spanish Language and Culture"> <span>AP Spanish Language and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Spanish Literature and Culture"> <span>AP Spanish Literature and Culture</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Statistics"> <span>AP Statistics</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Studio Art: 2-D Design"> <span>AP Studio Art: 2-D Design</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Studio Art: 3-D Design"> <span>AP Studio Art: 3-D Design</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP Studio Art: Drawing"> <span>AP Studio Art: Drawing</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP United States Government and Politics"> <span>AP US Gov & Politics</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP United States History"> <span>AP US History</span>
+    </label>
+    <label class="flex items-center space-x-2">
+      <input type="checkbox" name="apCourses" value="AP World History: Modern"> <span>AP World History: Modern</span>
+    </label>
+
+  </form>
+
+  <!-- Save button -->
+  <button id="saveBtn" class="mt-6 bg-purple-600 text-white px-6 py-3 rounded-xl shadow hover:bg-purple-700">
+    Save & Continue
+  </button>
+
+  <script>
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const selected = [...document.querySelectorAll('input[name="apCourses"]:checked')].map(el => el.value);
+      console.log("Selected APs:", selected);
+      // TODO: Save selected APs to Firebase user profile
+      window.location.href = "dashboard.html";
     });
   </script>
+
 </body>
 </html>
