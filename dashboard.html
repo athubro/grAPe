@@ -8,12 +8,39 @@
 </head>
 <body class="bg-purple-50 min-h-screen p-6">
 
-  <div class="flex items-center space-x-3 mb-6">
-    <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-    <h1 id="welcome" class="text-3xl font-bold text-purple-700">Welcome to your dashboard</h1>
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center mb-6">
+    <div class="flex items-center space-x-3">
+      <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
+      <h1 id="welcome" class="text-3xl font-bold text-purple-700">Welcome</h1>
+    </div>
+    <div>
+      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer hover:opacity-80">
+    </div>
+  </nav>
+
+  <!-- AP Courses -->
+  <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden justify-center items-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
+      <h2 class="text-xl font-bold text-purple-700 mb-4">Settings</h2>
+      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-3">Reselect AP Courses</button>
+      <button id="logoutBtn" class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">Log Out</button>
+      <button id="closeSettings" class="mt-3 text-purple-700 underline">Cancel</button>
+    </div>
   </div>
 
-  <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+  <!-- Reselect Modal -->
+  <div id="reselectModal" class="fixed inset-0 bg-black bg-opacity-40 hidden justify-center items-center z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg">
+      <h2 class="text-xl font-bold text-purple-700 mb-4">Reselect AP Courses</h2>
+      <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-4"></form>
+      <button id="saveReselect" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-2">Save</button>
+      <button id="closeReselect" class="w-full bg-gray-200 text-purple-700 py-2 rounded hover:bg-gray-300">Cancel</button>
+    </div>
+  </div>
 
   <script type="module" src="dashboard.js"></script>
 </body>
