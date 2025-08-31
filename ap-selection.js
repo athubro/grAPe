@@ -1,7 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCdOUtoPjAHyXoxBJPJvAVsveMuPA2vUSQ",
   authDomain: "grape-mcps.firebaseapp.com",
@@ -16,6 +17,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// List of 39 AP courses
 const apCourses = [
   "AP Art History", "AP Biology", "AP Calculus AB", "AP Calculus BC", "AP Chemistry",
   "AP Chinese Language and Culture", "AP Comparative Government and Politics", "AP Computer Science A",
@@ -30,27 +32,30 @@ const apCourses = [
   "AP United States History", "AP World History: Modern", "AP Capstone Diploma Program"
 ];
 
-// Populate form
-const apListDiv = document.getElementById("ap-list");
+// Populate the form dynamically
+const apForm = document.getElementById("apForm");
+
 apCourses.forEach(course => {
   const id = course.replace(/\s+/g, "_");
-  apListDiv.innerHTML += `
-    <label>
-      <input type="checkbox" value="${course}" id="${id}"> ${course}
-    </label>
+  const checkboxWrapper = document.createElement("label");
+  checkboxWrapper.className = "bg-white p-3 rounded-xl shadow hover:bg-purple-100 cursor-pointer flex items-center";
+
+  checkboxWrapper.innerHTML = `
+    <input type="checkbox" name="apCourses" value="${course}" class="mr-2">
+    <span class="text-purple-700 font-semibold">${course}</span>
   `;
+  apForm.appendChild(checkboxWrapper);
 });
 
-// Handle submit
-document.getElementById("apForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const selected = [];
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(cb => selected.push(cb.value));
+// Handle Save button click
+document.getElementById("saveBtn").addEventListener("click", () => {
+  const selected = [...document.querySelectorAll('input[name="apCourses"]:checked')].map(el => el.value);
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, { apCourses: selected });
+      // Use setDoc with merge:true → safe for new and existing users
+      await setDoc(userRef, { apCourses: selected }, { merge: true });
       window.location.href = "dashboard.html";
     }
   });
