@@ -526,6 +526,6 @@ onAuthStateChanged(auth, async user => {
     welcome.textContent = `Welcome, ${user.displayName || "Student"}!`;
     renderAPCourses(apCourses);
   } else {
-    window.location.href = "index.html";
+    //window.location.href = "index.html";
   }
 });
