@@ -32,6 +32,22 @@ const closeReselect = document.getElementById("closeReselect");
 
 // AP courses and units (simplified example)
 const apCourses = {
+  "AP African American Studies": ["Unit 1: Introduction to African American Studies"],
+  "AP Art & Design: 2D": ["Unit 1: Explore Materials, Processes, and Ideas", "Unit 2: Make Art and Design", "Unit 3: Present Art and Design"],
+  "AP Art & Design: 3D": ["Unit 1: Explore Materials, Processes, and Ideas", "Unit 2: Make Art and Design", "Unit 3: Present Art and Design"],
+  "AP Art & Design: Drawing": ["Unit 1: Explore Materials, Processes, and Ideas", "Unit 2: Make Art and Design", "Unit 3: Present Art and Design"],
+  "AP Art History": [
+    "Unit 1: Global Prehistoric Art, 30,000-500 BCE",
+    "Unit 2: Ancient Mediterranean Art, 3500-300 BCE",
+    "Unit 3: Early European and Colonial American Art, 200-1750 CE",
+    "Unit 4: Later European and American Art, 1750-1980 CE",
+    "Unit 5: Indigenous American Art, 1000 BCE-1980 CE",
+    "Unit 6: African Art, 1100-1980 CE",
+    "Unit 7: West and Central Asian Art, 500 BCE-1980 CE",
+    "Unit 8: South, East, and Southeast Asian Art, 300 BCE-1980 CE",
+    "Unit 9: Art in the Pacific, 700-1980 CE",
+    "Unit 10: Global Contemporary Art, 1980 CE to Present"
+  ],
   "AP Biology": [
     "Unit 1: Chemistry of Life",
     "Unit 2: Cell Structure and Function",
@@ -44,9 +60,164 @@ const apCourses = {
   ],
   "AP Calculus AB": [
     "Unit 1: Limits and Continuity",
-    "Unit 2: Differentiation",
-    "Unit 3: Applications of Differentiation",
-    "Unit 4: Integration"
+    "Unit 2: Differentiation - Definition and Fundamental Properties",
+    "Unit 3: Differentiation - Composite, Implicit, and Inverse Functions",
+    "Unit 4: Contextual Applications of Differentiation",
+    "Unit 5: Analytical Applications of Differentiation",
+    "Unit 6: Integration and Accumulation of Change",
+    "Unit 7: Differential Equations",
+    "Unit 8: Applications of Integration"
+  ],
+  "AP Calculus BC": [
+    "Unit 1: Limits and Continuity",
+    "Unit 2: Differentiation - Definition and Fundamental Properties",
+    "Unit 3: Differentiation - Composite, Implicit, and Inverse Functions",
+    "Unit 4: Contextual Applications of Differentiation",
+    "Unit 5: Analytical Applications of Differentiation",
+    "Unit 6: Integration and Accumulation of Change",
+    "Unit 7: Differential Equations",
+    "Unit 8: Applications of Integration",
+    "Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions",
+    "Unit 10: Infinite Sequences and Series"
+  ],
+  "AP Chemistry": [
+    "Unit 1: Atomic Structure and Properties",
+    "Unit 2: Molecular and Ionic Bonding",
+    "Unit 3: Intermolecular Forces and Properties",
+    "Unit 4: Chemical Reactions",
+    "Unit 5: Kinetics",
+    "Unit 6: Thermodynamics",
+    "Unit 7: Equilibrium",
+    "Unit 8: Acids and Bases",
+    "Unit 9: Applications of Thermodynamics"
+  ],
+  "AP Chinese": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP Comparative Government": [
+    "Unit 1: Political Systems, Regimes, and Governments",
+    "Unit 2: Political Institutions",
+    "Unit 3: Political Culture and Participation",
+    "Unit 4: Party, Electoral Systems, and Citizen Organizations",
+    "Unit 5: Political and Economic Changes and Development"
+  ],
+  "AP Computer Science A": [
+    "Unit 1: Primitive Types",
+    "Unit 2: Using Objects",
+    "Unit 3: Boolean Expressions and If Statements",
+    "Unit 4: Iteration",
+    "Unit 5: Writing Classes",
+    "Unit 6: Arrays",
+    "Unit 7: ArrayLists",
+    "Unit 8: 2D Arrays",
+    "Unit 9: Inheritance",
+    "Unit 10: Recursion"
+  ],
+  "AP Computer Science Principles": [
+    "Unit 1: Creative Development",
+    "Unit 2: Data",
+    "Unit 3: Algorithms and Programming",
+    "Unit 4: Computer Systems and Networks",
+    "Unit 5: Impact of Computing"
+  ],
+  "AP English Language": [
+    "Unit 1: Claims, Reasoning, and Evidence",
+    "Unit 2: Organizing Information for a Specific Audience",
+    "Unit 3: Perspectives and How Arguments Relate",
+    "Unit 4: How Writers Develop Arguments, Intros, and Conclusions",
+    "Unit 5: How a Writer Brings All Parts of an Argument Together",
+    "Unit 6: Position, Perspective, and Bias",
+    "Unit 7: Successful and Unsuccessful Arguments",
+    "Unit 8: Stylistic Choices",
+    "Unit 9: Developing a Complex Argument"
+  ],
+  "AP English Literature": [
+    "Unit 1: Short Fiction I: Introduction to Short Fiction",
+    "Unit 2: Poetry I: Introduction to Poetry",
+    "Unit 3: Longer Fiction and Drama I: Introduction to Longer Fiction and Drama",
+    "Unit 4: Short Fiction II: Character, Conflict, and Storytelling",
+    "Unit 5: Poetry II: Structure and Figurative Language",
+    "Unit 6: Longer Fiction or Drama II: Literary Techniques in Longer Works",
+    "Unit 7: Short Fiction III: Societal and Historical Context",
+    "Unit 8: Poetry III: Contrast, Ambiguous Language, and Other Techniques",
+    "Unit 9: Longer Fiction or Drama III: Nuanced Analysis"
+  ],
+  "AP Environmental Science": [
+    "Unit 1: The Living World: Ecosystems",
+    "Unit 2: The Living World: Biodiversity",
+    "Unit 3: Populations",
+    "Unit 4: Earth Systems and Resources",
+    "Unit 5: Land and Water Use",
+    "Unit 6: Energy Resources and Consumption",
+    "Unit 7: Atmospheric Pollution",
+    "Unit 8: Aquatic and Terrestrial Pollution",
+    "Unit 9: Global Change"
+  ],
+  "AP European History": [
+    "Unit 1: Renaissance and Exploration",
+    "Unit 2: Age of Reformation",
+    "Unit 3: Absolutism and Constitutionalism",
+    "Unit 4: Scientific, Philosophical, and Political Developments",
+    "Unit 5: Conflict, Crisis, and Reaction in the Late 18th Century",
+    "Unit 6: Industrialization and Its Effects",
+    "Unit 7: 19th Century Perspectives and Political Developments",
+    "Unit 8: 20th Century Global Conflicts",
+    "Unit 9: Cold War and Contemporary Europe"
+  ],
+  "AP French": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP German": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP Human Geography": [
+    "Unit 1: Thinking Geographically",
+    "Unit 2: Population and Migration Patterns and Processes",
+    "Unit 3: Cultural Patterns and Processes",
+    "Unit 4: Political Patterns and Processes",
+    "Unit 5: Agriculture and Rural Land-Use Patterns and Processes",
+    "Unit 6: Cities and Urban Land-Use",
+    "Unit 7: Industrial and Economic Development Patterns and Processes"
+  ],
+  "AP Italian": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP Japanese": [
+    "Unit 1: Families in Different Societies",
+    "Unit 2: The Influence of Language and Culture on Identity",
+    "Unit 3: Influences of Beauty and Art",
+    "Unit 4: How Science and Technology Affect Our Lives",
+    "Unit 5: Factors That Impact the Quality of Life",
+    "Unit 6: Environmental, Political, and Societal Challenges"
+  ],
+  "AP Latin": [
+    "Unit 1: Vergil, Aeneid, Book 1",
+    "Unit 2: Vergil, Aeneid, Book 2",
+    "Unit 3: Vergil, Aeneid, Book 4",
+    "Unit 4: Vergil, Aeneid, Book 6",
+    "Unit 5: Catullus, Selected Poems",
+    "Unit 6: Caesar, Selected Passages",
+    "Unit 7: Cicero, Selected Speeches"
   ]
 };
 
