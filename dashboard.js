@@ -20,7 +20,7 @@ const db = getFirestore(app);
 
 onAuthStateChanged(auth, async (user)=>{
   if(!user){
-    window.location.href="index.html";
+    //window.location.href="index.html";
     return;
   }
   welcome.textContent=`Welcome, ${user.displayName||nameFromEmail(user.email)}`;
