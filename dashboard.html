@@ -19,52 +19,67 @@
       transition: background-color 0.3s ease;
     }
 
-    /* Navbar Styles */
+    /* Navbar Styles (Duolingo-Inspired) */
     nav {
-      transition: all 0.3s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+      transition: transform 0.3s ease;
     }
 
     nav:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     #courses {
-      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #4c1d95;
+      transition: color 0.3s ease, transform 0.3s ease;
     }
 
     #courses:hover {
+      color: #8b5cf6;
       transform: scale(1.05);
-      box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
     }
 
     #xp-display {
-      background: linear-gradient(45deg, #10b981, #34d399);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #047857;
+      background: none;
+      padding: 0.25rem 0.5rem;
+      transition: transform 0.3s ease, color 0.3s ease;
     }
 
     #xp-display::before {
       content: '🎖️';
+      font-size: 1.25rem;
+      transition: transform 0.3s ease;
     }
 
     #xp-display:hover {
+      color: #10b981;
       transform: scale(1.05);
-      box-shadow: 0 6px 12px -2px rgba(16, 185, 129, 0.3);
+    }
+
+    #xp-display:hover::before {
+      transform: rotate(15deg);
     }
 
     #settingsBtn {
+      width: 1.5rem;
+      height: 1.5rem;
+      opacity: 0.7;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
@@ -217,14 +232,21 @@
 
     /* Responsive Adjustments */
     @media (max-width: 640px) {
+      nav {
+        padding: 0.5rem;
+      }
+
       #courses {
-        font-size: 1.25rem;
-        padding: 0.4rem 0.8rem;
+        font-size: 1rem;
       }
 
       #xp-display {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      #settingsBtn {
+        width: 1.25rem;
+        height: 1.25rem;
       }
 
       #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
@@ -239,16 +261,16 @@
   </style>
 </head>
 <body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
-  <!-- Navbar -->
-  <div class="w-full flex items-center justify-between bg-purple-200/70 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6 border border-purple-300">
-    <nav class="flex justify-between items-center w-full max-w-5xl">
+  <!-- Navbar (Duolingo-Inspired) -->
+  <div class="w-full flex items-center justify-center">
+    <nav class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-        <h1 id="courses" class="font-bold text-purple-700 px-3 py-1 rounded">Courses</h1>
-        <span id="xp-display" class="text-xl font-bold">0</span>
+        <img src="grape.png" alt="Grape Logo" class="w-8 h-8">
+        <h1 id="courses" class="font-bold">Courses</h1>
+        <span id="xp-display">0</span>
       </div>
       <div>
-        <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded hover:opacity-80">
+        <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="cursor-pointer">
       </div>
     </nav>
   </div>
@@ -1013,7 +1035,7 @@ Output JSON.
       }
       const data = snap.data();
 
-      courses.textContent = `Courses, ${nameFromEmail(user.email)}`;
+      courses.textContent = `Courses`;
 
       renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
 
