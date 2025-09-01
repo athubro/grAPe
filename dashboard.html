@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Grape Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/png" href="grape.png" />
   <style>
     /* General Reset and Base Styles */
     * {
@@ -14,12 +15,13 @@
     }
 
     body {
-      background: linear-gradient(135deg, #f3e8ff, #ddd6fe);
+      background: linear-gradient(to bottom, #4c1d95, #6d28d9); /* from index.html */
       font-family: 'Inter', sans-serif;
+      color: #ffffff; /* white text */
       transition: background-color 0.3s ease;
     }
 
-    /* Navbar Styles (Duolingo-Inspired) */
+    /* Navbar Styles (Duolingo-Inspired with index.html Colors) */
     nav {
       display: flex;
       align-items: center;
@@ -27,9 +29,9 @@
       width: 100%;
       max-width: 1200px;
       padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.95);
+      background: linear-gradient(to right, #4c1d95, #6d28d9);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+      border-bottom: 1px solid rgba(196, 181, 253, 0.3); /* purple-300 */
       transition: transform 0.3s ease;
     }
 
@@ -40,12 +42,12 @@
     #courses {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #4c1d95;
+      color: #c4b5fd; /* purple-300 */
       transition: color 0.3s ease, transform 0.3s ease;
     }
 
     #courses:hover {
-      color: #8b5cf6;
+      color: #a78bfa; /* purple-500 */
       transform: scale(1.05);
     }
 
@@ -55,7 +57,7 @@
       gap: 0.5rem;
       font-size: 1rem;
       font-weight: 600;
-      color: #047857;
+      color: #8b5cf6; /* purple-600 */
       background: none;
       padding: 0.25rem 0.5rem;
       transition: transform 0.3s ease, color 0.3s ease;
@@ -64,15 +66,17 @@
     #xp-display::before {
       content: '🎖️';
       font-size: 1.25rem;
-      transition: transform 0.3s ease;
+      color: #c4b5fd; /* purple-300 */
+      transition: transform 0.3s ease, color 0.3s ease;
     }
 
     #xp-display:hover {
-      color: #10b981;
+      color: #a78bfa; /* purple-500 */
       transform: scale(1.05);
     }
 
     #xp-display:hover::before {
+      color: #a78bfa; /* purple-500 */
       transform: rotate(15deg);
     }
 
@@ -80,10 +84,12 @@
       width: 1.5rem;
       height: 1.5rem;
       opacity: 0.7;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); /* purple-800 */
+      transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
     }
 
     #settingsBtn:hover {
+      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); /* purple-500 */
       transform: rotate(90deg);
       opacity: 1;
     }
@@ -97,17 +103,16 @@
 
     #course-select {
       width: 100%;
-      background: #ffffff;
-      border: 1px solid #d8b4fe;
+      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      border: 1px solid #a78bfa; /* purple-500 */
       border-radius: 0.75rem;
       padding: 0.75rem;
       font-size: 1rem;
-      color: #4c1d95;
-      background: linear-gradient(145deg, #ffffff, #f3e8ff);
+      color: #ffffff; /* white text */
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg fill='%238b5cf6' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%23a78bfa' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
       background-repeat: no-repeat;
       background-position: right 0.75rem center;
       background-size: 1.5rem;
@@ -116,7 +121,7 @@
     #course-select:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      border-color: #8b5cf6;
+      border-color: #8b5cf6; /* purple-600 */
     }
 
     #course-select:focus {
@@ -127,8 +132,8 @@
 
     #course-select option {
       padding: 0.5rem;
-      color: #4c1d95;
-      background: #ffffff;
+      color: #ffffff; /* white text */
+      background: #5b21b6; /* purple-800 */
     }
 
     #units-list {
@@ -140,20 +145,20 @@
     #units-list button {
       display: block;
       width: 100%;
-      background: #ffffff;
-      border: 1px solid #d8b4fe;
+      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      border: 1px solid #a78bfa; /* purple-500 */
       border-radius: 0.5rem;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       text-align: left;
-      color: #4c1d95;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      color: #ffffff; /* white text */
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     }
 
     #units-list button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      border-color: #8b5cf6;
+      background: #6d28d9; /* purple-700 */
     }
 
     /* Modal Styles */
@@ -162,9 +167,11 @@
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-      background: linear-gradient(145deg, #ffffff, #f3e8ff);
-      border: 1px solid #c4b5fd;
+      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      border: 1px solid #a78bfa; /* purple-500 */
       box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
+      border-radius: 1rem; /* rounded-2xl */
+      color: #ffffff; /* white text */
       transition: transform 0.3s ease;
     }
 
@@ -177,31 +184,34 @@
     }
 
     #reselectBtn, #saveReselect {
-      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+      background: #8b5cf6; /* purple-600 */
+      color: #ffffff; /* white text */
     }
 
     #reselectBtn:hover, #saveReselect:hover {
-      background: linear-gradient(45deg, #7c3aed, #9f67fa);
+      background: #a78bfa; /* purple-500 */
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
     }
 
     #logoutBtn {
-      background: linear-gradient(45deg, #ef4444, #f87171);
+      background: #ef4444; /* red-500 */
+      color: #ffffff; /* white text */
     }
 
     #logoutBtn:hover {
-      background: linear-gradient(45deg, #dc2626, #ef4444);
+      background: #dc2626; /* red-600 */
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
 
     #closeSettings, #closeReselect, #closeQuiz {
+      color: #c4b5fd; /* purple-300 */
       transition: color 0.3s ease;
     }
 
     #closeSettings:hover, #closeReselect:hover, #closeQuiz:hover {
-      color: #6d28d9;
+      color: #a78bfa; /* purple-500 */
       text-decoration: none;
     }
 
@@ -212,15 +222,16 @@
       gap: 0.5rem;
       padding: 0.75rem;
       border-radius: 0.5rem;
+      color: #ffffff; /* white text */
       transition: background-color 0.3s ease;
     }
 
     #reselectForm label:hover {
-      background: #ede9fe;
+      background: #6d28d9; /* purple-700 */
     }
 
     #reselectForm input[type="checkbox"] {
-      accent-color: #8b5cf6;
+      accent-color: #8b5cf6; /* purple-600 */
       width: 1.25rem;
       height: 1.25rem;
       transition: transform 0.2s ease;
@@ -228,6 +239,21 @@
 
     #reselectForm input[type="checkbox"]:hover {
       transform: scale(1.1);
+    }
+
+    /* Quiz Form Elements */
+    #quizModal input[type="radio"] {
+      accent-color: #8b5cf6; /* purple-600 */
+    }
+
+    #quizModal textarea {
+      background: #4c1d95; /* purple-900 */
+      border: 1px solid #a78bfa; /* purple-500 */
+      color: #ffffff; /* white text */
+    }
+
+    #quizModal .border {
+      border-color: #a78bfa; /* purple-500 */
     }
 
     /* Responsive Adjustments */
@@ -260,12 +286,12 @@
     }
   </style>
 </head>
-<body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
-  <!-- Navbar (Duolingo-Inspired) -->
+<body class="min-h-screen flex flex-col items-center p-6">
+  <!-- Navbar (Duolingo-Inspired with index.html Colors) -->
   <div class="w-full flex items-center justify-center">
     <nav class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <img src="grape.png" alt="Grape Logo" class="w-8 h-8">
+        <img src="grape.png" alt="Grape Logo" class="w-8 h-8 rounded-full">
         <h1 id="courses" class="font-bold">Courses</h1>
         <span id="xp-display">0</span>
       </div>
@@ -287,21 +313,21 @@
 
   <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
-      <h2 class="text-xl font-bold text-purple-700 mb-4">Settings</h2>
-      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-3">Reselect AP Courses</button>
+    <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-4">Settings</h2>
+      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-3">Reselect AP Courses</button>
       <button id="logoutBtn" class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">Log Out</button>
-      <button id="closeSettings" class="mt-3 text-purple-700 underline">Cancel</button>
+      <button id="closeSettings" class="mt-3 text-purple-300 underline">Cancel</button>
     </div>
   </div>
 
   <!-- Reselect Modal -->
   <div id="reselectModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg">
-      <h2 class="text-xl font-bold text-purple-700 mb-4">Reselect AP Courses</h2>
+    <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-4">Reselect AP Courses</h2>
       <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-4"></form>
-      <button id="saveReselect" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-2">Save</button>
-      <button id="closeReselect" class="w-full bg-gray-200 text-purple-700 py-2 rounded hover:bg-gray-300">Cancel</button>
+      <button id="saveReselect" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-2">Save</button>
+      <button id="closeReselect" class="w-full bg-gray-200 text-purple-300 py-2 rounded hover:bg-gray-300">Cancel</button>
     </div>
   </div>
 
@@ -851,16 +877,16 @@ Output JSON.
       }
 
       units.forEach(unit => {
-        const unitBtn = createEl('button', 'block bg-purple-200 rounded p-2 mb-1', unit);
-        const check = createEl('span', 'ml-2 text-green-600');
+        const unitBtn = createEl('button', '', unit);
+        const check = createEl('span', 'ml-2 text-green-400');
         if (progressDoc?.[courseName]?.[unit]?.passed) check.textContent = '✅';
         unitBtn.appendChild(check);
         unitBtn.addEventListener('click', () => openUnitQuiz(courseName, unit, check));
         unitsList.appendChild(unitBtn);
       });
 
-      const finalBtn = createEl('button', 'block bg-purple-500 text-white rounded p-2 mt-2', 'Final Exam');
-      const finalCheck = createEl('span', 'ml-2 text-green-600');
+      const finalBtn = createEl('button', 'text-white', 'Final Exam');
+      const finalCheck = createEl('span', 'ml-2 text-green-400');
       if (progressDoc?.finalExams?.[courseName]?.passed) finalCheck.textContent = '✅';
       finalBtn.appendChild(finalCheck);
       finalBtn.addEventListener('click', () => openFinalExam(courseName, finalCheck));
@@ -892,10 +918,10 @@ Output JSON.
       const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
       modal.id = 'quizModal';
       modal.innerHTML = `
-        <div class="bg-white p-6 rounded max-w-2xl w-full">
-          <h2 class="font-bold mb-4">${course} — ${unit}</h2>
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+          <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
           <div id="quizContent"></div>
-          <button id="closeQuiz" class="mt-4 bg-gray-200 px-3 py-1 rounded">Close</button>
+          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
         </div>`;
       document.body.appendChild(modal);
       const quizContent = modal.querySelector('#quizContent');
@@ -906,7 +932,7 @@ Output JSON.
         quizContent.innerHTML = '';
         if (index >= questions.length) {
           const passed = score >= passThreshold;
-          quizContent.innerHTML = `<p>${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p>Earned XP: ${earnedXP}</p>`;
+          quizContent.innerHTML = `<p class="text-white">${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p class="text-white">Earned XP: ${earnedXP}</p>`;
           const user = auth.currentUser;
           if (user) {
             const ref = doc(db, 'users', user.uid);
@@ -928,19 +954,19 @@ Output JSON.
         }
         const q = questions[index];
         const card = createEl('div', 'border p-3 rounded mb-3');
-        card.appendChild(createEl('p', 'font-semibold', q.question));
+        card.appendChild(createEl('p', 'font-semibold text-white', q.question));
 
         if (q.source) {
-          card.appendChild(createEl('p', 'italic mb-2', q.source));
+          card.appendChild(createEl('p', 'italic mb-2 text-white', q.source));
         }
 
-        const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded mt-2', 'Submit');
+        const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded mt-2 hover:bg-purple-500', 'Submit');
         submit.disabled = true;
 
         if (q.type === 'mcq' || q.type === 'source') {
           const form = createEl('form', '');
           q.choices.forEach((choice, i) => {
-            const label = createEl('label', 'block mb-1');
+            const label = createEl('label', 'block mb-1 text-white');
             const radio = document.createElement('input');
             radio.type = 'radio';
             radio.name = 'choice';
@@ -1001,13 +1027,13 @@ Output JSON.
     function populateReselectForm(selected = []) {
       reselectForm.innerHTML = '';
       Object.keys(apCourses).forEach(course => {
-        const label = createEl('label', 'block mb-1');
+        const label = createEl('label', 'block mb-1 text-white');
         const input = document.createElement('input');
         input.type = 'checkbox';
         input.value = course;
         if (selected.includes(course)) input.checked = true;
         label.appendChild(input);
-        label.appendChild(document.createTextNode(course));
+        label.appendChild(document.createTextNode(` ${course}`));
         reselectForm.appendChild(label);
       });
     }
