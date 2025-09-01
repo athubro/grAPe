@@ -721,11 +721,11 @@
       ]
     };
 
-    // OpenRouter API Setup
-    // SECURITY NOTE: API key is exposed client-side. For production, move to a backend (e.g., Firebase Functions).
-    const OPENROUTER_API_KEY = "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";
-    const OPENROUTER_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
-    const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+    // OpenAI API Setup
+    // SECURITY WARNING: API key is exposed client-side. Revoke this key immediately and use a backend (e.g., Firebase Functions) for production.
+    const OPENAI_API_KEY = "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";
+    const OPENAI_MODEL = "gpt-4o-mini"; // Cost-effective model
+    const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
     // Debounce utility to prevent button spamming
     function debounce(func, wait) {
@@ -752,28 +752,28 @@
       }
     }
 
-    async function openRouterJSON(prompt, schema) {
+    async function openAIJSON(prompt, schema) {
       const body = {
-        model: OPENROUTER_MODEL,
+        model: OPENAI_MODEL,
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" }
       };
       return await withRetry(async () => {
-        const res = await fetch(OPENROUTER_URL, {
+        const res = await fetch(OPENAI_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${OPENROUTER_API_KEY}`
+            "Authorization": `Bearer ${OPENAI_API_KEY}`
           },
           body: JSON.stringify(body)
         });
         if (!res.ok) {
           const errorText = await res.text();
-          console.error(`OpenRouter API error: ${res.status} ${errorText}`);
+          console.error(`OpenAI API error: ${res.status} ${errorText}`);
           if (res.status === 401) {
-            throw new Error("Invalid API key. Please check your OpenRouter API key and project settings.");
+            throw new Error("Invalid API key. Please verify your OpenAI API key in platform settings (https://platform.openai.com/api-keys).");
           }
-          throw new Error(`OpenRouter error: ${res.status} ${errorText}`);
+          throw new Error(`OpenAI error: ${res.status} ${errorText}`);
         }
         const data = await res.json();
         return JSON.parse(data.choices[0].message.content);
@@ -819,7 +819,7 @@ Output JSON only with the schema: {"questions": [{type, question, source?, choic
         }
       };
       try {
-        const { questions } = await openRouterJSON(prompt, schema);
+        const { questions } = await openAIJSON(prompt, schema);
         await setDoc(cacheRef, { questions });
         return questions;
       } catch (error) {
@@ -855,7 +855,7 @@ Decide pass/fail and give short feedback.
 Output JSON with schema: {"pass": boolean, "feedback": string}.
 `;
       try {
-        const result = await openRouterJSON(prompt, schema);
+        const result = await openAIJSON(prompt, schema);
         await setDoc(cacheRef, result);
         return result;
       } catch (error) {
@@ -938,7 +938,7 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
             await openUnitQuiz(courseName, unit, check);
           } catch (error) {
             alert(error.message.includes('401') 
-              ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+              ? 'Invalid API key. Please verify your OpenAI API key in platform settings (https://platform.openai.com/api-keys).'
               : 'Error loading quiz. Please try again later.');
           }
           unitBtn.disabled = false;
@@ -957,7 +957,7 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
           await openFinalExam(courseName, finalCheck);
         } catch (error) {
           alert(error.message.includes('401') 
-            ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+            ? 'Invalid API key. Please verify your OpenAI API key in platform settings (https://platform.openai.com/api-keys).'
             : 'Error loading final exam. Please try again later.');
         }
         finalBtn.disabled = false;
@@ -971,7 +971,7 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
           await openUnitQuiz(courseName, units[0], firstUnitBtn.querySelector('span'));
         } catch (error) {
           alert(error.message.includes('401') 
-            ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+            ? 'Invalid API key. Please verify your OpenAI API key in platform settings (https://platform.openai.com/api-keys).'
             : 'Error loading quiz. Please try again later.');
         }
         firstUnitBtn.disabled = false;
@@ -1078,7 +1078,7 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
               renderNext();
             } catch (error) {
               alert(error.message.includes('401') 
-                ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+                ? 'Invalid API key. Please verify your OpenAI API key in platform settings (https://platform.openai.com/api-keys).'
                 : 'Error grading response. Please try again later.');
             }
           };
