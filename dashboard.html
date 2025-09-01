@@ -4,49 +4,89 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Grape Classroom</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="dashboard.css">
 </head>
-<body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
+<body>
+  <!-- Sparkle Background -->
+  <div class="sparkle-bg"></div>
 
-  <!-- Navbar -->
-<!-- Navbar -->
-<div class="w-full flex items-center justify-between bg-purple-200/70 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6 border border-purple-300">
-  <nav class="flex justify-between items-center w-full max-w-5xl">
-    <div class="flex items-center space-x-3">
-      <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-      <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded bg-purple-100/50">Welcome</h1>
-    </div>
-    <div>
-      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded bg-purple-100/50 hover:opacity-80">
+  <!-- Sidebar Toggle Button (Mobile) -->
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+    </svg>
+  </button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar hidden" id="sidebar">
+    <div class="p-6">
+      <div class="flex items-center mb-8">
+        <img src="grape.png" alt="Grape Logo" class="w-12 h-12 mr-3">
+        <h1 id="welcome" class="text-2xl font-bold text-neon-magenta"></h1>
+      </div>
+      <button id="settingsBtn" class="flex items-center gap-2 w-full mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+        Settings
+      </button>
+      <button id="logoutBtn" class="flex items-center gap-2 w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
+        </svg>
+        Log Out
+      </button>
     </div>
   </nav>
-</div>
 
+  <!-- Main Content -->
+  <div class="content ml-64 transition-all duration-300">
+    <div id="ap-list" class="ap-list"></div>
 
-  <!-- AP Courses -->
-  <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center"></div>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden">
+      <div class="modal-content">
+        <h2 class="text-2xl font-bold text-neon-magenta mb-6">Settings</h2>
+        <button id="reselectBtn" class="w-full">Reselect AP Courses</button>
+        <button id="closeSettings" class="mt-4">Close</button>
+      </div>
+    </div>
 
-  <!-- Settings Modal -->
-  <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
-      <h2 class="text-xl font-bold text-purple-700 mb-4">Settings</h2>
-      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-3">Reselect AP Courses</button>
-      <button id="logoutBtn" class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">Log Out</button>
-      <button id="closeSettings" class="mt-3 text-purple-700 underline">Cancel</button>
+    <!-- Reselect Modal -->
+    <div id="reselectModal" class="hidden">
+      <div class="modal-content">
+        <h2 class="text-2xl font-bold text-neon-magenta mb-6">Reselect AP Courses</h2>
+        <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-6"></form>
+        <div class="flex gap-3">
+          <button id="saveReselect" class="w-full">Save</button>
+          <button id="closeReselect" class="w-full">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Reselect Modal -->
-  <div id="reselectModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg">
-      <h2 class="text-xl font-bold text-purple-700 mb-4">Reselect AP Courses</h2>
-      <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-4"></form>
-      <button id="saveReselect" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-2">Save</button>
-      <button id="closeReselect" class="w-full bg-gray-200 text-purple-700 py-2 rounded hover:bg-gray-300">Cancel</button>
-    </div>
-  </div>
+  <script type="module">
+    // Toggle sidebar on mobile
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const content = document.querySelector('.content');
 
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      content.classList.toggle('ml-64');
+      content.classList.toggle('ml-0');
+    });
+
+    // Apply staggered animation to course cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.course-card');
+      cards.forEach((card, index) => {
+        card.style.setProperty('--index', index);
+      });
+    });
+  </script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
