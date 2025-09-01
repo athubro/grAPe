@@ -51,24 +51,47 @@
       opacity: 1;
     }
 
-    /* AP Courses Grid */
-    #ap-list {
+    /* Course Dropdown Styles */
+    #course-select-container {
       width: 100%;
       max-width: 1200px;
+      margin-top: 1rem;
     }
 
-    #ap-list > * {
+    #course-select {
+      width: 100%;
       background: #ffffff;
       border: 1px solid #d8b4fe;
-      border-radius: 1rem;
-      padding: 1.5rem;
+      border-radius: 0.75rem;
+      padding: 0.75rem;
+      font-size: 1rem;
+      color: #4c1d95;
+      background: linear-gradient(145deg, #ffffff, #f3e8ff);
+      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%238b5cf6' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.5rem;
     }
 
-    #ap-list > *:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2);
+    #course-select:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
       border-color: #8b5cf6;
+    }
+
+    #course-select:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+    }
+
+    #course-select option {
+      padding: 0.5rem;
+      color: #4c1d95;
+      background: #ffffff;
     }
 
     /* Modal Styles */
@@ -166,6 +189,11 @@
       #settingsModal .bg-white, #reselectModal .bg-white {
         width: 90%;
       }
+
+      #course-select {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -183,8 +211,13 @@
     </nav>
   </div>
 
-  <!-- AP Courses -->
-  <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center"></div>
+  <!-- Course Dropdown -->
+  <div id="course-select-container" class="w-full max-w-5xl">
+    <select id="course-select" name="course" class="w-full">
+      <option value="" disabled>Select a Course</option>
+      <!-- Options populated by dashboard.js -->
+    </select>
+  </div>
 
   <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
@@ -206,6 +239,37 @@
     </div>
   </div>
 
-  <script type="module" src="dashboard.js"></script>
+  <script type="module">
+    // Placeholder script to demonstrate default course selection
+    // Replace with actual logic from dashboard.js
+    document.addEventListener('DOMContentLoaded', () => {
+      const courseSelect = document.getElementById('course-select');
+
+      // Example: Simulate fetching user's enrolled courses
+      const enrolledCourses = [
+        { id: 'course1', name: 'AP Calculus BC' },
+        { id: 'course2', name: 'AP Physics C' },
+        { id: 'course3', name: 'AP Computer Science A' }
+      ];
+
+      // Populate dropdown with enrolled courses
+      enrolledCourses.forEach(course => {
+        const option = document.createElement('option');
+        option.value = course.id;
+        option.textContent = course.name;
+        courseSelect.appendChild(option);
+      });
+
+      // Set the first course as default if available
+      if (enrolledCourses.length > 0) {
+        courseSelect.value = enrolledCourses[0].id;
+        // Optionally dispatch change event to trigger any existing listeners
+        courseSelect.dispatchEvent(new Event('change'));
+      }
+    });
+
+    // Import and execute original dashboard.js
+    import './dashboard.js';
+  </script>
 </body>
 </html>
