@@ -1,9 +1,14 @@
-// ========================= Firebase (CDN v11) =========================
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  setPersistence, 
+  browserLocalPersistence, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-// --- Your Firebase project ---
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAekCu-kTFwWcxT0UPy58nXlt8ZNA0VsLI",
   authDomain: "grape-mcps.firebaseapp.com",
@@ -13,40 +18,53 @@ const firebaseConfig = {
   appId: "1:909399056268:web:3ac13a43d1e1846649c0a9"
 };
 
-// Initialize only once
+// Initialize Firebase only once
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-onAuthStateChanged(auth, async (user)=>{
-  if(!user){
-    window.location.href="index.html";
+// Force persistent login
+await setPersistence(auth, browserLocalPersistence);
+
+// Wait until Firebase restores the user before doing anything
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    // user not logged in, safe to redirect
+    window.location.href = "index.html";
     return;
   }
-  welcome.textContent=`Welcome, ${user.displayName||nameFromEmail(user.email)}`;
 
-  const ref=doc(db,"users",user.uid);
-  let snap=await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{apCourses:[],progress:{},finalExams:{}});
-    snap=await getDoc(ref);
+  // user is logged in, safe to proceed
+  welcome.textContent = `Welcome, ${user.displayName || nameFromEmail(user.email)}`;
+
+  const ref = doc(db, "users", user.uid);
+  let snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, { apCourses: [], progress: {}, finalExams: {} });
+    snap = await getDoc(ref);
   }
-  const data=snap.data();
-  renderAPCoursesForUser(data.apCourses||[], data.progress||{});
+  const data = snap.data();
 
-  settingsBtn.onclick=openSettings;
-  closeSettings.onclick=closeSettingsModal;
-  reselectBtn.onclick=openReselect;
-  closeReselect.onclick=closeReselectModal;
-  populateReselectForm(data.apCourses||[]);
-  saveReselect.onclick=async()=>{
-    const selected=Array.from(reselectForm.querySelectorAll("input:checked")).map(cb=>cb.value);
-    await setDoc(ref,{apCourses:selected},{merge:true});
-    renderAPCoursesForUser(selected,data.progress||{});
+  renderAPCoursesForUser(data.apCourses || [], data.progress || {});
+
+  // Bind UI buttons
+  settingsBtn.onclick = openSettings;
+  closeSettings.onclick = closeSettingsModal;
+  reselectBtn.onclick = openReselect;
+  closeReselect.onclick = closeReselectModal;
+  populateReselectForm(data.apCourses || []);
+  saveReselect.onclick = async () => {
+    const selected = Array.from(reselectForm.querySelectorAll("input:checked")).map(cb => cb.value);
+    await setDoc(ref, { apCourses: selected }, { merge: true });
+    renderAPCoursesForUser(selected, data.progress || {});
     reselectModal.classList.add("hidden");
   };
-  logoutBtn.onclick=async()=>{await signOut(auth);window.location.href="index.html";};
+  logoutBtn.onclick = async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  };
 });
+
 
 // ========================= Gemini API Setup =========================
 const GEMINI_API_KEY = "AIzaSyAekCu-kTFwWcxT0UPy58nXlt8ZNA0VsLI"; // move server-side in production
