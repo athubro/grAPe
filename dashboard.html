@@ -9,30 +9,20 @@
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-  <!-- Sparkle Background -->
-  <div class="sparkle-bg"></div>
-
-  <!-- Sidebar Toggle Button (Mobile) -->
-  <button class="sidebar-toggle" id="sidebarToggle">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-    </svg>
-  </button>
-
   <!-- Sidebar -->
-  <nav class="sidebar hidden" id="sidebar">
-    <div class="p-6">
-      <div class="flex items-center mb-8">
-        <img src="grape.png" alt="Grape Logo" class="w-12 h-12 mr-3">
+  <nav class="sidebar" id="sidebar">
+    <div class="p-6 flex flex-col items-center">
+      <div class="flex flex-col items-center mb-8">
+        <img src="grape.png" alt="Grape Logo" class="w-12 h-12 mb-3">
         <h1 id="welcome" class="text-2xl font-bold text-neon-magenta"></h1>
       </div>
-      <button id="settingsBtn" class="flex items-center gap-2 w-full mb-3">
+      <button id="settingsBtn" class="flex items-center justify-center gap-2 w-full mb-3">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
         </svg>
         Settings
       </button>
-      <button id="logoutBtn" class="flex items-center gap-2 w-full">
+      <button id="logoutBtn" class="flex items-center justify-center gap-2 w-full">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
         </svg>
@@ -42,7 +32,7 @@
   </nav>
 
   <!-- Main Content -->
-  <div class="content ml-64 transition-all duration-300">
+  <div class="content">
     <div id="ap-list" class="ap-list"></div>
 
     <!-- Settings Modal -->
@@ -59,26 +49,15 @@
       <div class="modal-content">
         <h2 class="text-2xl font-bold text-neon-magenta mb-6">Reselect AP Courses</h2>
         <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-6"></form>
-        <div class="flex gap-3">
-          <button id="saveReselect" class="w-full">Save</button>
-          <button id="closeReselect" class="w-full">Cancel</button>
+        <div class="flex flex-col gap-3 items-center">
+          <button id="saveReselect" class="w-1/2">Save</button>
+          <button id="closeReselect" class="w-1/2">Cancel</button>
         </div>
       </div>
     </div>
   </div>
 
   <script type="module">
-    // Toggle sidebar on mobile
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const content = document.querySelector('.content');
-
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('hidden');
-      content.classList.toggle('ml-64');
-      content.classList.toggle('ml-0');
-    });
-
     // Apply staggered animation to course cards
     document.addEventListener('DOMContentLoaded', () => {
       const cards = document.querySelectorAll('.course-card');
