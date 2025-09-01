@@ -25,7 +25,7 @@ onAuthStateChanged(auth, async (user) => {
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
       const data = userSnap.data();
-      welcome.textContent = `Welcome to your dashboard, ${user.email}`;
+      welcome.textContent = `Welcome`;
       if (data.apCourses && data.apCourses.length > 0) {
         data.apCourses.forEach(course => {
           const li = document.createElement("li");
