@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,24 +5,183 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Grape Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    /* General Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f3e8ff, #ddd6fe);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Navbar Styles */
+    nav {
+      transition: all 0.3s ease-in-out;
+    }
+
+    nav:hover {
+      transform: translateY(-2px);
+    }
+
+    #welcome {
+      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #welcome:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
+    }
+
+    #settingsBtn {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #settingsBtn:hover {
+      transform: rotate(90deg);
+      opacity: 1;
+    }
+
+    /* AP Courses Grid */
+    #ap-list {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    #ap-list > * {
+      background: #ffffff;
+      border: 1px solid #d8b4fe;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    #ap-list > *:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2);
+      border-color: #8b5cf6;
+    }
+
+    /* Modal Styles */
+    #settingsModal, #reselectModal {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    #settingsModal .bg-white, #reselectModal .bg-white {
+      background: linear-gradient(145deg, #ffffff, #f3e8ff);
+      border: 1px solid #c4b5fd;
+      box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    #settingsModal.show, #reselectModal.show {
+      display: flex !important;
+    }
+
+    button {
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #reselectBtn, #saveReselect {
+      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+    }
+
+    #reselectBtn:hover, #saveReselect:hover {
+      background: linear-gradient(45deg, #7c3aed, #9f67fa);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+    }
+
+    #logoutBtn {
+      background: linear-gradient(45deg, #ef4444, #f87171);
+    }
+
+    #logoutBtn:hover {
+      background: linear-gradient(45deg, #dc2626, #ef4444);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    #closeSettings, #closeReselect {
+      transition: color 0.3s ease;
+    }
+
+    #closeSettings:hover, #closeReselect:hover {
+      color: #6d28d9;
+      text-decoration: none;
+    }
+
+    /* Form Checkboxes in Reselect Modal */
+    #reselectForm label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+
+    #reselectForm label:hover {
+      background: #ede9fe;
+    }
+
+    #reselectForm input[type="checkbox"] {
+      accent-color: #8b5cf6;
+      width: 1.25rem;
+      height: 1.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    #reselectForm input[type="checkbox"]:hover {
+      transform: scale(1.1);
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 640px) {
+      #welcome {
+        font-size: 1.5rem;
+      }
+
+      #settingsModal .bg-white, #reselectModal .bg-white {
+        width: 90%;
+      }
+    }
+  </style>
 </head>
 <body class="bg-purple-50 min-h-screen flex flex-col items-center p-6">
-
   <!-- Navbar -->
-<!-- Navbar -->
-<div class="w-full flex items-center justify-between bg-purple-200/70 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6 border border-purple-300">
-  <nav class="flex justify-between items-center w-full max-w-5xl">
-    <div class="flex items-center space-x-3">
-      <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-      <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded bg-purple-100/50">Welcome</h1>
-    </div>
-    <div>
-      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded bg-purple-100/50 hover:opacity-80">
-    </div>
-  </nav>
-</div>
-
+  <div class="w-full flex items-center justify-between bg-purple-200/70 backdrop-blur-sm p-4 rounded-xl shadow-md mb-6 border border-purple-300">
+    <nav class="flex justify-between items-center w-full max-w-5xl">
+      <div class="flex items-center space-x-3">
+        <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
+        <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded">Welcome</h1>
+      </div>
+      <div>
+        <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded hover:opacity-80">
+      </div>
+    </nav>
+  </div>
 
   <!-- AP Courses -->
   <div id="ap-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center"></div>
