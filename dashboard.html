@@ -15,9 +15,9 @@
     }
 
     body {
-      background: #5b21b6; /* purple-800, solid color from index.html */
+      background: #5b21b6; /* Matches index.html login card */
       font-family: 'Inter', sans-serif;
-      color: #ffffff; /* text-white */
+      color: #ffffff; /* Matches index.html text-white */
       transition: background-color 0.3s ease;
     }
 
@@ -29,9 +29,9 @@
       width: 100%;
       max-width: 1200px;
       padding: 0.75rem 1rem;
-      background: #5b21b6; /* purple-800 */
+      background: #5b21b6; /* Matches body background */
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #c4b5fd; /* purple-300 */
+      border-bottom: 1px solid #c4b5fd; /* Matches index.html purple-300 */
       transition: transform 0.3s ease;
     }
 
@@ -42,12 +42,12 @@
     #courses {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #c4b5fd; /* purple-300 */
+      color: #c4b5fd; /* Matches index.html link color */
       transition: color 0.3s ease, transform 0.3s ease;
     }
 
     #courses:hover {
-      color: #a78bfa; /* purple-500 */
+      color: #a78bfa; /* Matches index.html link hover */
       transform: scale(1.05);
     }
 
@@ -57,7 +57,7 @@
       gap: 0.5rem;
       font-size: 1rem;
       font-weight: 600;
-      color: #8b5cf6; /* purple-600 */
+      color: #8b5cf6; /* Matches index.html button color */
       background: none;
       padding: 0.25rem 0.5rem;
       transition: transform 0.3s ease, color 0.3s ease;
@@ -66,17 +66,17 @@
     #xp-display::before {
       content: '🎖️';
       font-size: 1.25rem;
-      color: #c4b5fd; /* purple-300 */
+      color: #c4b5fd; /* Matches index.html link color */
       transition: transform 0.3s ease, color 0.3s ease;
     }
 
     #xp-display:hover {
-      color: #a78bfa; /* purple-500 */
+      color: #a78bfa; /* Matches index.html button hover */
       transform: scale(1.05);
     }
 
     #xp-display:hover::before {
-      color: #a78bfa; /* purple-500 */
+      color: #a78bfa; /* Matches index.html link hover */
       transform: rotate(15deg);
     }
 
@@ -84,12 +84,12 @@
       width: 1.5rem;
       height: 1.5rem;
       opacity: 0.7;
-      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); /* purple-800 */
+      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); /* Approximates #5b21b6 */
       transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
     }
 
     #settingsBtn:hover {
-      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); /* purple-500 */
+      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); /* Approximates #a78bfa */
       transform: rotate(90deg);
       opacity: 1;
     }
@@ -103,12 +103,12 @@
 
     #course-select {
       width: 100%;
-      background: #5b21b6; /* purple-800 */
-      border: 1px solid #a78bfa; /* purple-500 */
+      background: #5b21b6; /* Matches index.html login card */
+      border: 1px solid #a78bfa; /* Matches index.html border */
       border-radius: 0.75rem;
       padding: 0.75rem;
       font-size: 1rem;
-      color: #ffffff; /* text-white */
+      color: #ffffff; /* Matches index.html text-white */
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       appearance: none;
@@ -121,19 +121,19 @@
     #course-select:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      border-color: #8b5cf6; /* purple-600 */
+      border-color: #8b5cf6; /* Matches index.html button color */
     }
 
     #course-select:focus {
       outline: none;
       border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px #c4b5fd; /* purple-300 */
+      box-shadow: 0 0 0 3px #c4b5fd; /* Matches index.html focus ring */
     }
 
     #course-select option {
       padding: 0.5rem;
-      color: #ffffff; /* text-white */
-      background: #5b21b6; /* purple-800 */
+      color: #ffffff; /* Matches index.html text-white */
+      background: #5b21b6; /* Matches index.html login card */
     }
 
     #units-list {
@@ -145,20 +145,20 @@
     #units-list button {
       display: block;
       width: 100%;
-      background: #5b21b6; /* purple-800 */
-      border: 1px solid #a78bfa; /* purple-500 */
+      background: #5b21b6; /* Matches index.html login card */
+      border: 1px solid #a78bfa; /* Matches index.html border */
       border-radius: 0.5rem;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       text-align: left;
-      color: #ffffff; /* text-white */
+      color: #ffffff; /* Matches index.html text-white */
       transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     }
 
     #units-list button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      background: #6d28d9; /* purple-700 */
+      background: #6d28d9; /* Slightly lighter for hover, inspired by index.html */
     }
 
     /* Modal Styles */
@@ -167,11 +167,11 @@
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-      background: #5b21b6; /* purple-800 */
-      border: 1px solid #a78bfa; /* purple-500 */
+      background: #5b21b6; /* Matches index.html login card */
+      border: 1px solid #a78bfa; /* Matches index.html border */
       box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
-      border-radius: 1rem; /* rounded-2xl */
-      color: #ffffff; /* text-white */
+      border-radius: 1rem; /* Matches index.html rounded-2xl */
+      color: #ffffff; /* Matches index.html text-white */
       transition: transform 0.3s ease;
     }
 
@@ -184,34 +184,34 @@
     }
 
     #reselectBtn, #saveReselect {
-      background: #8b5cf6; /* purple-600 */
-      color: #ffffff; /* text-white */
+      background: #8b5cf6; /* Matches index.html button */
+      color: #ffffff; /* Matches index.html text-white */
     }
 
     #reselectBtn:hover, #saveReselect:hover {
-      background: #a78bfa; /* purple-500 */
+      background: #a78bfa; /* Matches index.html button hover */
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
     }
 
     #logoutBtn {
-      background: #ef4444; /* red-500 */
-      color: #ffffff; /* text-white */
+      background: #ef4444; /* Matches existing red-500 */
+      color: #ffffff; /* Matches index.html text-white */
     }
 
     #logoutBtn:hover {
-      background: #dc2626; /* red-600 */
+      background: #dc2626; /* Matches existing red-600 */
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
 
     #closeSettings, #closeReselect, #closeQuiz {
-      color: #c4b5fd; /* purple-300 */
+      color: #c4b5fd; /* Matches index.html link color */
       transition: color 0.3s ease;
     }
 
     #closeSettings:hover, #closeReselect:hover, #closeQuiz:hover {
-      color: #a78bfa; /* purple-500 */
+      color: #a78bfa; /* Matches index.html link hover */
       text-decoration: none;
     }
 
@@ -222,16 +222,16 @@
       gap: 0.5rem;
       padding: 0.75rem;
       border-radius: 0.5rem;
-      color: #ffffff; /* text-white */
+      color: #ffffff; /* Matches index.html text-white */
       transition: background-color 0.3s ease;
     }
 
     #reselectForm label:hover {
-      background: #6d28d9; /* purple-700 */
+      background: #6d28d9; /* Slightly lighter for hover */
     }
 
     #reselectForm input[type="checkbox"] {
-      accent-color: #8b5cf6; /* purple-600 */
+      accent-color: #8b5cf6; /* Matches index.html button color */
       width: 1.25rem;
       height: 1.25rem;
       transition: transform 0.2s ease;
@@ -243,17 +243,17 @@
 
     /* Quiz Form Elements */
     #quizModal input[type="radio"] {
-      accent-color: #8b5cf6; /* purple-600 */
+      accent-color: #8b5cf6; /* Matches index.html button color */
     }
 
     #quizModal textarea {
-      background: #5b21b6; /* purple-800 */
-      border: 1px solid #a78bfa; /* purple-500 */
-      color: #ffffff; /* text-white */
+      background: #5b21b6; /* Matches index.html login card */
+      border: 1px solid #a78bfa; /* Matches index.html border */
+      color: #ffffff; /* Matches index.html text-white */
     }
 
     #quizModal .border {
-      border-color: #a78bfa; /* purple-500 */
+      border-color: #a78bfa; /* Matches index.html border */
     }
 
     /* Responsive Adjustments */
@@ -844,7 +844,7 @@ Output JSON.
       // If no courses selected, show message
       if (!selected || selected.length === 0) {
         unitsList.textContent = "No courses selected. Open settings to select courses.";
-        unitsList.className = "text-white"; // Ensure white text
+        unitsList.className = "text-white"; // Matches index.html text-white
         return;
       }
 
@@ -874,7 +874,7 @@ Output JSON.
       const units = apCourses[courseName];
       if (!units) {
         unitsList.textContent = 'No units available for this course.';
-        unitsList.className = "text-white"; // Ensure white text
+        unitsList.className = "text-white"; // Matches index.html text-white
         return;
       }
 
