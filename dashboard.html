@@ -30,60 +30,74 @@
       overflow-x: hidden !important;
     }
 
-    /* Top Bar */
-    nav.sidebar#sidebar {
+    /* Navbar */
+    nav#navbar {
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
       width: 100% !important;
-      height: auto !important;
       background: rgba(139, 92, 246, 0.9) !important;
       backdrop-filter: blur(8px) !important;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
       z-index: 50 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
       padding: 12px !important;
     }
 
-    nav.sidebar#sidebar .nav-content {
+    nav#navbar .nav-content {
       display: flex !important;
       align-items: center !important;
-      justify-content: center !important;
-      gap: 16px !important;
-      flex-wrap: wrap !important;
+      justify-content: space-between !important;
+      max-width: 1280px !important;
+      margin: 0 auto !important;
     }
 
-    nav.sidebar#sidebar img {
+    nav#navbar .nav-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
+
+    nav#navbar img.logo {
       width: 36px !important;
       height: 36px !important;
     }
 
-    nav.sidebar#sidebar .settings-icon {
+    nav#navbar h1#welcome {
+      font-size: 1.5rem !important;
+      font-weight: 700 !important;
+      color: var(--neon-magenta) !important;
+      padding: 4px 8px !important;
+      border-radius: 6px !important;
+      background: rgba(139, 92, 246, 0.3) !important;
+    }
+
+    nav#navbar img#settingsBtn {
       width: 24px !important;
       height: 24px !important;
       cursor: pointer !important;
+      padding: 4px !important;
+      border-radius: 6px !important;
+      background: rgba(139, 92, 246, 0.3) !important;
       transition: all 0.2s ease-in-out !important;
     }
 
-    nav.sidebar#sidebar .settings-icon:hover {
+    nav#navbar img#settingsBtn:hover {
       transform: scale(1.1) !important;
       filter: drop-shadow(0 0 5px rgba(240, 171, 252, 0.5)) !important;
     }
 
-    nav.sidebar#sidebar .settings-icon:active {
+    nav#navbar img#settingsBtn:active {
       transform: scale(0.9) !important;
     }
 
     /* Main Content */
     div.content {
-      flex: 1 !important;
       margin-top: 60px !important;
       padding: 12px !important;
+      flex: 1 !important;
     }
 
-    /* Course Cards */
+    /* AP Courses */
     #ap-list {
       max-width: 1200px !important;
       margin: 0 auto !important;
@@ -181,23 +195,56 @@
     #settingsModal .modal-content button {
       padding: 8px 16px !important;
       border-radius: 8px !important;
-      background: var(--neon-magenta) !important;
       color: #fff !important;
       font-weight: 600 !important;
       transition: all 0.2s ease-in-out !important;
-      width: 50% !important;
+      width: 100% !important;
       text-align: center !important;
       border: none !important;
       cursor: pointer !important;
     }
 
-    #settingsModal .modal-content button:hover {
+    #settingsModal .modal-content #reselectBtn {
+      background: var(--neon-magenta) !important;
+      margin-bottom: 8px !important;
+    }
+
+    #settingsModal .modal-content #reselectBtn:hover {
       background: var(--light-lavender) !important;
       box-shadow: 0 0 10px rgba(240, 171, 252, 0.5) !important;
       transform: scale(1.05) !important;
     }
 
-    #settingsModal .modal-content button:active {
+    #settingsModal .modal-content #reselectBtn:active {
+      transform: scale(0.95) !important;
+    }
+
+    #settingsModal .modal-content #logoutBtn {
+      background: #EF4444 !important;
+      margin-bottom: 8px !important;
+    }
+
+    #settingsModal .modal-content #logoutBtn:hover {
+      background: #DC2626 !important;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5) !important;
+      transform: scale(1.05) !important;
+    }
+
+    #settingsModal .modal-content #logoutBtn:active {
+      transform: scale(0.95) !important;
+    }
+
+    #settingsModal .modal-content #closeSettings {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: var(--light-lavender) !important;
+    }
+
+    #settingsModal .modal-content #closeSettings:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+      transform: scale(1.05) !important;
+    }
+
+    #settingsModal .modal-content #closeSettings:active {
       transform: scale(0.95) !important;
     }
 
@@ -227,7 +274,7 @@
       padding: 16px !important;
       border-radius: 12px !important;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-      max-width: 480px !important;
+      max-width: 640px !important;
       width: 100% !important;
       margin: 8px !important;
       transform: scale(0) !important;
@@ -244,7 +291,6 @@
     #reselectModal .modal-content button {
       padding: 8px 16px !important;
       border-radius: 8px !important;
-      background: var(--neon-magenta) !important;
       color: #fff !important;
       font-weight: 600 !important;
       transition: all 0.2s ease-in-out !important;
@@ -254,13 +300,17 @@
       cursor: pointer !important;
     }
 
-    #reselectModal .modal-content button:hover {
+    #reselectModal .modal-content #saveReselect {
+      background: var(--neon-magenta) !important;
+    }
+
+    #reselectModal .modal-content #saveReselect:hover {
       background: var(--light-lavender) !important;
       box-shadow: 0 0 10px rgba(240, 171, 252, 0.5) !important;
       transform: scale(1.05) !important;
     }
 
-    #reselectModal .modal-content button:active {
+    #reselectModal .modal-content #saveReselect:active {
       transform: scale(0.95) !important;
     }
 
@@ -271,6 +321,43 @@
 
     #reselectModal .modal-content #closeReselect:hover {
       background: rgba(255, 255, 255, 0.2) !important;
+      transform: scale(1.05) !important;
+    }
+
+    #reselectModal .modal-content #closeReselect:active {
+      transform: scale(0.95) !important;
+    }
+
+    /* Reselect Form */
+    #reselectForm {
+      width: 100% !important;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+      gap: 8px !important;
+      max-height: 384px !important;
+      overflow-y: auto !important;
+      margin-bottom: 12px !important;
+    }
+
+    #reselectForm label {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      margin-bottom: 8px !important;
+      color: var(--light-lavender) !important;
+      font-weight: 500 !important;
+    }
+
+    #reselectForm input[type="checkbox"] {
+      width: 18px !important;
+      height: 18px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 4px !important;
+      margin-right: 8px !important;
+    }
+
+    #reselectForm input[type="checkbox"]:checked {
+      background: var(--neon-magenta) !important;
     }
 
     /* Quiz Modal */
@@ -351,54 +438,13 @@
       box-shadow: 0 0 8px rgba(240, 171, 252, 0.5) !important;
     }
 
-    /* Welcome Message */
-    h1#welcome {
-      font-size: 1.5rem !important;
-      font-weight: 700 !important;
-      color: var(--neon-magenta) !important;
-      text-align: center !important;
-      letter-spacing: 0.5px !important;
-    }
-
-    /* Reselect Form */
-    #reselectForm {
-      width: 100% !important;
-      display: grid !important;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
-      gap: 8px !important;
-      max-height: 384px !important;
-      overflow-y: auto !important;
-      margin-bottom: 12px !important;
-    }
-
-    #reselectForm label {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-      margin-bottom: 8px !important;
-      color: var(--light-lavender) !important;
-      font-weight: 500 !important;
-    }
-
-    #reselectForm input[type="checkbox"] {
-      width: 18px !important;
-      height: 18px !important;
-      background: rgba(255, 255, 255, 0.1) !important;
-      border-radius: 4px !important;
-      margin-right: 8px !important;
-    }
-
-    #reselectForm input[type="checkbox"]:checked {
-      background: var(--neon-magenta) !important;
-    }
-
     /* Responsive Adjustments */
     @media (max-width: 768px) {
-      nav.sidebar#sidebar {
+      nav#navbar {
         padding: 8px !important;
       }
 
-      nav.sidebar#sidebar .nav-content {
+      nav#navbar .nav-content {
         gap: 8px !important;
       }
 
@@ -437,14 +483,14 @@
   </style>
 </head>
 <body>
-  <!-- Top Bar -->
-  <nav class="sidebar" id="sidebar">
+  <!-- Navbar -->
+  <nav id="navbar">
     <div class="nav-content">
-      <img src="grape.png" alt="Grape Logo">
-      <h1 id="welcome">Welcome</h1>
-      <svg id="settingsIcon" class="settings-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-      </svg>
+      <div class="nav-left">
+        <img src="grape.png" alt="Grape Logo" class="logo">
+        <h1 id="welcome">Welcome</h1>
+      </div>
+      <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings">
     </div>
   </nav>
 
@@ -456,14 +502,14 @@
     <div id="settingsModal" class="hidden">
       <div class="modal-content">
         <h2 class="text-xl font-bold text-neon-magenta mb-4">Settings</h2>
-        <button id="reselectBtn" class="w-full">Reselect AP Courses</button>
-        <button id="logoutBtn" class="w-full mt-2">
+        <button id="reselectBtn">Reselect AP Courses</button>
+        <button id="logoutBtn">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline-block w-5 h-5 mr-2">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
           </svg>
           Log Out
         </button>
-        <button id="closeSettings" class="mt-2">Close</button>
+        <button id="closeSettings">Close</button>
       </div>
     </div>
 
@@ -473,8 +519,8 @@
         <h2 class="text-xl font-bold text-neon-magenta mb-4">Reselect AP Courses</h2>
         <form id="reselectForm" class="mb-4"></form>
         <div class="flex flex-col gap-2 items-center">
-          <button id="saveReselect" class="w-1/2">Save</button>
-          <button id="closeReselect" class="w-1/2">Cancel</button>
+          <button id="saveReselect">Save</button>
+          <button id="closeReselect">Cancel</button>
         </div>
       </div>
     </div>
@@ -493,8 +539,8 @@
 
       // Attach and debug button event listeners
       const attachButtonListeners = () => {
-        const buttons = [
-          { id: 'settingsIcon', action: () => {
+        const elements = [
+          { id: 'settingsBtn', action: () => {
             console.log('Settings icon clicked');
             document.getElementById('settingsModal').classList.remove('hidden');
           }},
@@ -508,10 +554,9 @@
           { id: 'closeReselect', action: () => console.log('Close Reselect button clicked') }
         ];
 
-        buttons.forEach(({ id, action }) => {
+        elements.forEach(({ id, action }) => {
           const element = document.getElementById(id);
           if (element) {
-            // Remove existing listeners to prevent duplicates
             const newElement = element.cloneNode(true);
             element.replaceWith(newElement);
             newElement.addEventListener('click', action);
