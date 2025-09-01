@@ -28,27 +28,40 @@
       transform: translateY(-2px);
     }
 
-    #welcome {
+    #courses {
       background: linear-gradient(45deg, #8b5cf6, #a78bfa);
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 0.75rem;
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      font-size: 1.5rem;
     }
 
-    #welcome:hover {
+    #courses:hover {
       transform: scale(1.05);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
     }
 
     #xp-display {
-      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+      background: linear-gradient(45deg, #10b981, #34d399);
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #xp-display::before {
+      content: '🎖️';
+    }
+
+    #xp-display:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px -2px rgba(16, 185, 129, 0.3);
     }
 
     #settingsBtn {
@@ -130,7 +143,7 @@
 
     /* Modal Styles */
     #settingsModal, #reselectModal, #quizModal {
-      animation: fadeIn 0.3s ease-in-out;
+      animation: none;
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
@@ -202,22 +215,16 @@
       transform: scale(1.1);
     }
 
-    /* Animation Keyframes */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
     /* Responsive Adjustments */
     @media (max-width: 640px) {
-      #welcome {
-        font-size: 1.5rem;
+      #courses {
+        font-size: 1.25rem;
+        padding: 0.4rem 0.8rem;
+      }
+
+      #xp-display {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
       }
 
       #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
@@ -237,8 +244,8 @@
     <nav class="flex justify-between items-center w-full max-w-5xl">
       <div class="flex items-center space-x-3">
         <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
-        <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded">Welcome</h1>
-        <span id="xp-display" class="text-xl font-bold">XP: 0</span>
+        <h1 id="courses" class="font-bold text-purple-700 px-3 py-1 rounded">Courses</h1>
+        <span id="xp-display" class="text-xl font-bold">0</span>
       </div>
       <div>
         <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded hover:opacity-80">
@@ -307,7 +314,7 @@
     await setPersistence(auth, browserLocalPersistence);
 
     // DOM Elements
-    const welcome = document.getElementById("welcome");
+    const courses = document.getElementById("courses");
     const xpDisplay = document.getElementById("xp-display");
     const courseSelect = document.getElementById("course-select");
     const unitsList = document.getElementById("units-list");
@@ -662,9 +669,25 @@
     };
 
     // Gemini API Setup
-    const GEMINI_API_KEY = "AIzaSyAekCu-kTFwWcxT0UPy58nXlt8ZNA0VsLI";
+    const GEMINI_API_KEY = "AIzaSyCiOF-9HDpuDL_PgQgozuI98L_OGbkz_Mw";
     const GEMINI_MODEL = "gemini-1.5-flash";
     const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+    async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          return await fn();
+        } catch (error) {
+          if (error.message.includes('429') && attempt < maxRetries) {
+            const delay = baseDelay * Math.pow(2, attempt - 1);
+            console.log(`429 error, retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
 
     async function geminiJSON(prompt, schema) {
       const body = {
@@ -674,15 +697,21 @@
           response_schema: schema
         }
       };
-      const res = await fetch(GEMINI_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+      return await withRetry(async () => {
+        const res = await fetch(GEMINI_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error(`Gemini API error: ${res.status} ${errorText}`);
+          throw new Error(`Gemini error: ${res.status} ${errorText}`);
+        }
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        return JSON.parse(text);
       });
-      if (!res.ok) throw new Error(`Gemini error: ${res.status} ${await res.text()}`);
-      const data = await res.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return JSON.parse(text);
     }
 
     async function generateQuiz(course, unit, isFinal = false) {
@@ -762,7 +791,7 @@ Output JSON.
       courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
       unitsList.innerHTML = '';
 
-      xpDisplay.textContent = `XP: ${xp}`;
+      xpDisplay.textContent = `${xp}`;
 
       // If no courses selected, show message
       if (!selected || selected.length === 0) {
@@ -818,13 +847,23 @@ Output JSON.
 
     // Quiz Flow
     async function openUnitQuiz(course, unit, checkSpan) {
-      const qs = await generateQuiz(course, unit, false);
-      await showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
+      try {
+        const qs = await generateQuiz(course, unit, false);
+        await showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
+      } catch (error) {
+        console.error('Failed to load quiz:', error);
+        alert('Error loading quiz. Please try again later or check your API quota.');
+      }
     }
 
     async function openFinalExam(course, checkSpan) {
-      const qs = await generateQuiz(course, 'Final Exam', true);
-      await showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
+      try {
+        const qs = await generateQuiz(course, 'Final Exam', true);
+        await showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
+      } catch (error) {
+        console.error('Failed to load final exam:', error);
+        alert('Error loading final exam. Please try again later or check your API quota.');
+      }
     }
 
     async function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal) {
@@ -861,7 +900,7 @@ Output JSON.
             const snap = await getDoc(ref);
             const currentXP = snap.data().xp || 0;
             await updateDoc(ref, { xp: currentXP + earnedXP });
-            xpDisplay.textContent = `XP: ${currentXP + earnedXP}`;
+            xpDisplay.textContent = `${currentXP + earnedXP}`;
           }
           return;
         }
@@ -974,7 +1013,7 @@ Output JSON.
       }
       const data = snap.data();
 
-      welcome.textContent = `Welcome, ${nameFromEmail(user.email)}`;
+      courses.textContent = `Courses, ${nameFromEmail(user.email)}`;
 
       renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
 
