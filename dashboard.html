@@ -42,6 +42,15 @@
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
     }
 
+    #xp-display {
+      background: linear-gradient(45deg, #8b5cf6, #a78bfa);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
     #settingsBtn {
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
@@ -208,7 +217,7 @@
     /* Responsive Adjustments */
     @media (max-width: 640px) {
       #welcome {
-        font-size: quick
+        font-size: 1.5rem;
       }
 
       #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
@@ -229,6 +238,7 @@
       <div class="flex items-center space-x-3">
         <img src="grape.png" alt="Grape Logo" class="w-12 h-12">
         <h1 id="welcome" class="text-3xl font-bold text-purple-700 px-3 py-1 rounded">Welcome</h1>
+        <span id="xp-display" class="text-xl font-bold">XP: 0</span>
       </div>
       <div>
         <img id="settingsBtn" src="https://img.icons8.com/ios11/512/7950F2/settings.png" alt="Settings" class="w-8 h-8 cursor-pointer p-1 rounded hover:opacity-80">
@@ -249,7 +259,7 @@
   <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
     <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-lg">
-      <h2 class="text-xl font-bold text-purple-700 mb-4">Settings/assertive
+      <h2 class="text-xl font-bold text-purple-700 mb-4">Settings</h2>
       <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 mb-3">Reselect AP Courses</button>
       <button id="logoutBtn" class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">Log Out</button>
       <button id="closeSettings" class="mt-3 text-purple-700 underline">Cancel</button>
@@ -275,7 +285,7 @@
       browserLocalPersistence, 
       signOut 
     } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {
@@ -298,6 +308,7 @@
 
     // DOM Elements
     const welcome = document.getElementById("welcome");
+    const xpDisplay = document.getElementById("xp-display");
     const courseSelect = document.getElementById("course-select");
     const unitsList = document.getElementById("units-list");
     const settingsBtn = document.getElementById("settingsBtn");
@@ -681,7 +692,9 @@ You are generating AP-style questions for ${course}, topic: ${unit}.
 ${isFinal ? "Make 20 questions (16 MCQ, at least 2 source-analysis, 4 open-response)." 
            : "Make 5 questions (3 MCQ, 1 source-analysis, 1 open-response)."}
 For MCQs: include 4 choices, 'correct', and 'explanation'.
-For open: include 'rubric'.
+For source-analysis: include 'source' text, 4 choices, 'correct', 'explanation'.
+For open-response: include 'rubric'.
+Type is 'mcq' for standard MCQ, 'source' for source-analysis, 'open' for open-response.
 Output JSON only.
 `;
       const schema = {
@@ -744,10 +757,12 @@ Output JSON.
     }
 
     // Render user’s courses in dropdown and units
-    function renderAPCoursesForUser(selected, progressDoc = {}) {
+    function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
       // Clear existing content
       courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
       unitsList.innerHTML = '';
+
+      xpDisplay.textContent = `XP: ${xp}`;
 
       // If no courses selected, show message
       if (!selected || selected.length === 0) {
@@ -825,22 +840,28 @@ Output JSON.
       const quizContent = modal.querySelector('#quizContent');
       modal.querySelector('#closeQuiz').onclick = () => modal.remove();
 
-      let index = 0, score = 0;
+      let index = 0, score = 0, earnedXP = 0;
       async function renderNext() {
         quizContent.innerHTML = '';
         if (index >= questions.length) {
           const passed = score >= passThreshold;
-          quizContent.textContent = `${passed ? 'Passed' : 'Try again'} — ${score}/${totalCount}`;
+          quizContent.innerHTML = `<p>${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p>Earned XP: ${earnedXP}</p>`;
           const user = auth.currentUser;
           if (user) {
             const ref = doc(db, 'users', user.uid);
-            if (isFinal) {
-              await setDoc(ref, { finalExams: { [course]: { passed, score } } }, { merge: true });
-              if (passed) checkSpan.textContent = '✅';
-            } else {
-              await setDoc(ref, { progress: { [course]: { [unit]: { passed, score } } } }, { merge: true });
-              if (passed) checkSpan.textContent = '✅';
+            if (passed) {
+              if (isFinal) {
+                await setDoc(ref, { finalExams: { [course]: { passed, score } } }, { merge: true });
+              } else {
+                await setDoc(ref, { progress: { [course]: { [unit]: { passed, score } } } }, { merge: true });
+              }
+              checkSpan.textContent = '✅';
             }
+            // Update XP
+            const snap = await getDoc(ref);
+            const currentXP = snap.data().xp || 0;
+            await updateDoc(ref, { xp: currentXP + earnedXP });
+            xpDisplay.textContent = `XP: ${currentXP + earnedXP}`;
           }
           return;
         }
@@ -852,29 +873,48 @@ Output JSON.
           card.appendChild(createEl('p', 'italic mb-2', q.source));
         }
 
+        const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded mt-2', 'Submit');
+        submit.disabled = true;
+
         if (q.type === 'mcq' || q.type === 'source') {
-          q.choices.forEach(choice => {
-            const btn = createEl('button', 'block border rounded p-2 w-full mb-1', choice);
-            btn.onclick = () => {
-              if (choice === q.correct) score++;
-              index++;
-              renderNext();
-            };
-            card.appendChild(btn);
+          const form = createEl('form', '');
+          q.choices.forEach((choice, i) => {
+            const label = createEl('label', 'block mb-1');
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'choice';
+            radio.value = choice;
+            radio.onclick = () => { submit.disabled = false; };
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(` ${choice}`));
+            form.appendChild(label);
           });
+          submit.onclick = () => {
+            const selected = form.querySelector('input:checked')?.value;
+            if (selected === q.correct) {
+              score++;
+              earnedXP += 15;
+            }
+            index++;
+            renderNext();
+          };
+          card.appendChild(form);
         } else if (q.type === 'open') {
           const ta = document.createElement('textarea');
           ta.className = 'w-full border p-2 mb-2';
-          const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded', 'Submit');
+          ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
           submit.onclick = async () => {
             const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
-            if (res.pass) score++;
+            if (res.pass) {
+              score++;
+              earnedXP += 50;
+            }
             index++;
             renderNext();
           };
           card.appendChild(ta);
-          card.appendChild(submit);
         }
+        card.appendChild(submit);
         quizContent.appendChild(card);
       }
       renderNext();
@@ -926,17 +966,17 @@ Output JSON.
 
       clearTimeout(redirectTimeout);
 
-      welcome.textContent = `Dashboard`;
-
       const ref = doc(db, 'users', user.uid);
       let snap = await getDoc(ref);
       if (!snap.exists()) {
-        await setDoc(ref, { apCourses: [], progress: {}, finalExams: {} });
+        await setDoc(ref, { apCourses: [], progress: {}, finalExams: {}, xp: 0 });
         snap = await getDoc(ref);
       }
       const data = snap.data();
 
-      renderAPCoursesForUser(data.apCourses || [], data.progress || {});
+      welcome.textContent = `Welcome, ${nameFromEmail(user.email)}`;
+
+      renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
 
       settingsBtn.onclick = openSettings;
       closeSettings.onclick = closeSettingsModal;
@@ -946,7 +986,7 @@ Output JSON.
       saveReselect.onclick = async () => {
         const selected = Array.from(reselectForm.querySelectorAll('input:checked')).map(cb => cb.value);
         await setDoc(ref, { apCourses: selected }, { merge: true });
-        renderAPCoursesForUser(selected, data.progress || {});
+        renderAPCoursesForUser(selected, data.progress || {}, data.xp || 0);
         reselectModal.classList.add('hidden');
       };
       logoutBtn.onclick = async () => {
