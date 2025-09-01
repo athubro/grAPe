@@ -1,23 +1,21 @@
-// Import Firebase SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { 
   getAuth, 
-  signInWithEmailAndPassword, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
+  onAuthStateChanged, 
   setPersistence, 
-  browserLocalPersistence 
-} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  browserLocalPersistence, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyCdOUtoPjAHyXoxBJPJvAVsveMuPA2vUSQ",
+  apiKey: "AIzaSyAekCu-kTFwWcxT0UPy58nXlt8ZNA0VsLI",
   authDomain: "grape-mcps.firebaseapp.com",
   projectId: "grape-mcps",
   storageBucket: "grape-mcps.firebasestorage.app",
   messagingSenderId: "909399056268",
-  appId: "1:909399056268:web:3ac13a43d1e1846649c0a9",
-  measurementId: "G-X2DELV9RFD"
+  appId: "1:909399056268:web:3ac13a43d1e1846649c0a9"
 };
 
 // Initialize Firebase
