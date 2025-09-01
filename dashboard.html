@@ -926,7 +926,7 @@ Output JSON.
 
       clearTimeout(redirectTimeout);
 
-      welcome.textContent = `Welcome`;
+      welcome.textContent = `Dashboard`;
 
       const ref = doc(db, 'users', user.uid);
       let snap = await getDoc(ref);
