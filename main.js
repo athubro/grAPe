@@ -1,6 +1,13 @@
 // Import Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  setPersistence, 
+  browserLocalPersistence 
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -17,6 +24,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// ✅ Force persistence to LOCAL so user stays signed in across tabs & reloads
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Persistence set to LOCAL (user stays signed in).");
+  })
+  .catch((error) => {
+    console.error("Persistence error:", error);
+  });
 
 // Run after DOM loads
 document.addEventListener("DOMContentLoaded", () => {
