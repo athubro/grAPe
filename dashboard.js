@@ -27,14 +27,24 @@ const db = getFirestore(app);
 await setPersistence(auth, browserLocalPersistence);
 
 // Wait until Firebase restores the user before doing anything
+// Set a timeout for redirect (e.g., 5 seconds)
+let redirectTimeout = setTimeout(() => {
+  if (!auth.currentUser) {
+    window.location.href = "index.html";
+  }
+}, 5000);
+
+// Wait until Firebase restores the user
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    // user not logged in, safe to redirect
-    //window.location.href = "index.html";
+    console.log("No user signed in yet, waiting...");
     return;
   }
 
-  // user is logged in, safe to proceed
+  // Clear the redirect timeout since we have a valid user
+  clearTimeout(redirectTimeout);
+
+  // User is logged in, safe to proceed
   welcome.textContent = `Welcome, ${user.displayName || nameFromEmail(user.email)}`;
 
   const ref = doc(db, "users", user.uid);
@@ -64,6 +74,8 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "index.html";
   };
 });
+
+
 
 
 // ========================= Gemini API Setup =========================
