@@ -15,9 +15,9 @@
     }
 
     body {
-      background: linear-gradient(to bottom, #4c1d95, #6d28d9); /* from index.html */
+      background: #5b21b6; /* purple-800, solid color from index.html */
       font-family: 'Inter', sans-serif;
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       transition: background-color 0.3s ease;
     }
 
@@ -29,9 +29,9 @@
       width: 100%;
       max-width: 1200px;
       padding: 0.75rem 1rem;
-      background: linear-gradient(to right, #4c1d95, #6d28d9);
+      background: #5b21b6; /* purple-800 */
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(196, 181, 253, 0.3); /* purple-300 */
+      border-bottom: 1px solid #c4b5fd; /* purple-300 */
       transition: transform 0.3s ease;
     }
 
@@ -103,12 +103,12 @@
 
     #course-select {
       width: 100%;
-      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      background: #5b21b6; /* purple-800 */
       border: 1px solid #a78bfa; /* purple-500 */
       border-radius: 0.75rem;
       padding: 0.75rem;
       font-size: 1rem;
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       appearance: none;
@@ -127,12 +127,12 @@
     #course-select:focus {
       outline: none;
       border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 0 0 3px #c4b5fd; /* purple-300 */
     }
 
     #course-select option {
       padding: 0.5rem;
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       background: #5b21b6; /* purple-800 */
     }
 
@@ -145,13 +145,13 @@
     #units-list button {
       display: block;
       width: 100%;
-      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      background: #5b21b6; /* purple-800 */
       border: 1px solid #a78bfa; /* purple-500 */
       border-radius: 0.5rem;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       text-align: left;
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     }
 
@@ -167,11 +167,11 @@
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-      background: linear-gradient(145deg, #5b21b6, #4c1d95); /* purple-800 to purple-900 */
+      background: #5b21b6; /* purple-800 */
       border: 1px solid #a78bfa; /* purple-500 */
       box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
       border-radius: 1rem; /* rounded-2xl */
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       transition: transform 0.3s ease;
     }
 
@@ -185,7 +185,7 @@
 
     #reselectBtn, #saveReselect {
       background: #8b5cf6; /* purple-600 */
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
     }
 
     #reselectBtn:hover, #saveReselect:hover {
@@ -196,7 +196,7 @@
 
     #logoutBtn {
       background: #ef4444; /* red-500 */
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
     }
 
     #logoutBtn:hover {
@@ -222,7 +222,7 @@
       gap: 0.5rem;
       padding: 0.75rem;
       border-radius: 0.5rem;
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
       transition: background-color 0.3s ease;
     }
 
@@ -247,9 +247,9 @@
     }
 
     #quizModal textarea {
-      background: #4c1d95; /* purple-900 */
+      background: #5b21b6; /* purple-800 */
       border: 1px solid #a78bfa; /* purple-500 */
-      color: #ffffff; /* white text */
+      color: #ffffff; /* text-white */
     }
 
     #quizModal .border {
@@ -844,6 +844,7 @@ Output JSON.
       // If no courses selected, show message
       if (!selected || selected.length === 0) {
         unitsList.textContent = "No courses selected. Open settings to select courses.";
+        unitsList.className = "text-white"; // Ensure white text
         return;
       }
 
@@ -873,6 +874,7 @@ Output JSON.
       const units = apCourses[courseName];
       if (!units) {
         unitsList.textContent = 'No units available for this course.';
+        unitsList.className = "text-white"; // Ensure white text
         return;
       }
 
