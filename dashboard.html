@@ -722,7 +722,8 @@
     };
 
     // OpenRouter API Setup
-    const OPENROUTER_API_KEY = "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";
+    // SECURITY NOTE: API key is exposed client-side. For production, move to a backend (e.g., Firebase Functions).
+    const OPENROUTER_API_KEY = "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";
     const OPENROUTER_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
     const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -769,6 +770,9 @@
         if (!res.ok) {
           const errorText = await res.text();
           console.error(`OpenRouter API error: ${res.status} ${errorText}`);
+          if (res.status === 401) {
+            throw new Error("Invalid API key. Please check your OpenRouter API key and project settings.");
+          }
           throw new Error(`OpenRouter error: ${res.status} ${errorText}`);
         }
         const data = await res.json();
@@ -814,9 +818,14 @@ Output JSON only with the schema: {"questions": [{type, question, source?, choic
           }
         }
       };
-      const { questions } = await openRouterJSON(prompt, schema);
-      await setDoc(cacheRef, { questions });
-      return questions;
+      try {
+        const { questions } = await openRouterJSON(prompt, schema);
+        await setDoc(cacheRef, { questions });
+        return questions;
+      } catch (error) {
+        console.error('Quiz generation failed:', error);
+        throw error;
+      }
     }
 
     async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
@@ -845,9 +854,14 @@ ${userAnswer}
 Decide pass/fail and give short feedback.
 Output JSON with schema: {"pass": boolean, "feedback": string}.
 `;
-      const result = await openRouterJSON(prompt, schema);
-      await setDoc(cacheRef, result);
-      return result;
+      try {
+        const result = await openRouterJSON(prompt, schema);
+        await setDoc(cacheRef, result);
+        return result;
+      } catch (error) {
+        console.error('Grading failed:', error);
+        throw error;
+      }
     }
 
     // String hash for caching
@@ -920,7 +934,13 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
         unitBtn.appendChild(check);
         unitBtn.addEventListener('click', debounce(async () => {
           unitBtn.disabled = true;
-          await openUnitQuiz(courseName, unit, check);
+          try {
+            await openUnitQuiz(courseName, unit, check);
+          } catch (error) {
+            alert(error.message.includes('401') 
+              ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+              : 'Error loading quiz. Please try again later.');
+          }
           unitBtn.disabled = false;
         }, 1000));
         unitsList.appendChild(unitBtn);
@@ -933,7 +953,13 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
       finalBtn.appendChild(finalCheck);
       finalBtn.addEventListener('click', debounce(async () => {
         finalBtn.disabled = true;
-        await openFinalExam(courseName, finalCheck);
+        try {
+          await openFinalExam(courseName, finalCheck);
+        } catch (error) {
+          alert(error.message.includes('401') 
+            ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+            : 'Error loading final exam. Please try again later.');
+        }
         finalBtn.disabled = false;
       }, 1000));
       unitsList.appendChild(finalBtn);
@@ -941,30 +967,26 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
       // Auto-open quiz for first unit
       if (autoOpenFirst && firstUnitBtn && !progressDoc?.[courseName]?.[units[0]]?.passed) {
         firstUnitBtn.disabled = true;
-        await openUnitQuiz(courseName, units[0], firstUnitBtn.querySelector('span'));
+        try {
+          await openUnitQuiz(courseName, units[0], firstUnitBtn.querySelector('span'));
+        } catch (error) {
+          alert(error.message.includes('401') 
+            ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+            : 'Error loading quiz. Please try again later.');
+        }
         firstUnitBtn.disabled = false;
       }
     }
 
     // Quiz Flow
     async function openUnitQuiz(course, unit, checkSpan) {
-      try {
-        const qs = await generateQuiz(course, unit, false);
-        await showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
-      } catch (error) {
-        console.error('Failed to load quiz:', error);
-        alert('Error loading quiz. Please try again later or check your API quota.');
-      }
+      const qs = await generateQuiz(course, unit, false);
+      await showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
     }
 
     async function openFinalExam(course, checkSpan) {
-      try {
-        const qs = await generateQuiz(course, 'Final Exam', true);
-        await showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
-      } catch (error) {
-        console.error('Failed to load final exam:', error);
-        alert('Error loading final exam. Please try again later or check your API quota.');
-      }
+      const qs = await generateQuiz(course, 'Final Exam', true);
+      await showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
     }
 
     async function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal) {
@@ -1046,13 +1068,19 @@ Output JSON with schema: {"pass": boolean, "feedback": string}.
           ta.className = 'w-full border p-2 mb-2';
           ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
           submit.onclick = async () => {
-            const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
-            if (res.pass) {
-              score++;
-              earnedXP += 50;
+            try {
+              const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
+              if (res.pass) {
+                score++;
+                earnedXP += 50;
+              }
+              index++;
+              renderNext();
+            } catch (error) {
+              alert(error.message.includes('401') 
+                ? 'Invalid API key. Please verify your OpenRouter API key in project settings.'
+                : 'Error grading response. Please try again later.');
             }
-            index++;
-            renderNext();
           };
           card.appendChild(ta);
         }
