@@ -32,7 +32,7 @@ let redirectTimeout = setTimeout(() => {
   if (!auth.currentUser) {
     window.location.href = "index.html";
   }
-}, 5000);
+}, 500);
 
 // Wait until Firebase restores the user
 onAuthStateChanged(auth, async (user) => {
