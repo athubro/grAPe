@@ -46,7 +46,7 @@ onAuthStateChanged(auth, async (user) => {
   clearTimeout(redirectTimeout);
 
   // User is logged in, safe to proceed
-  welcome.textContent = `Welcome, ${user.displayName || nameFromEmail(user.email)}`;
+  welcome.textContent = `Welcome`;
 
   const ref = doc(db, "users", user.uid);
   let snap = await getDoc(ref);
