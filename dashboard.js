@@ -30,7 +30,7 @@ await setPersistence(auth, browserLocalPersistence);
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     // user not logged in, safe to redirect
-    window.location.href = "index.html";
+    //window.location.href = "index.html";
     return;
   }
 
