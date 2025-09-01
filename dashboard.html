@@ -15,13 +15,13 @@
     }
 
     body {
-      background: #5b21b6; /* Matches index.html login card */
+      background: #5b21b6;
       font-family: 'Inter', sans-serif;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: background-color 0.3s ease;
     }
 
-    /* Navbar Styles (Duolingo-Inspired with index.html Colors) */
+    /* Navbar Styles */
     nav {
       display: flex;
       align-items: center;
@@ -29,9 +29,9 @@
       width: 100%;
       max-width: 1200px;
       padding: 0.75rem 1rem;
-      background: #5b21b6; /* Matches body background */
+      background: #5b21b6;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #c4b5fd; /* Matches index.html purple-300 */
+      border-bottom: 1px solid #c4b5fd;
       transition: transform 0.3s ease;
     }
 
@@ -42,12 +42,12 @@
     #courses {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: color 0.3s ease, transform 0.3s ease;
     }
 
     #courses:hover {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       transform: scale(1.05);
     }
 
@@ -57,7 +57,7 @@
       gap: 0.5rem;
       font-size: 1rem;
       font-weight: 600;
-      color: #8b5cf6; /* Matches index.html button color */
+      color: #8b5cf6;
       background: none;
       padding: 0.25rem 0.5rem;
       transition: transform 0.3s ease, color 0.3s ease;
@@ -66,17 +66,17 @@
     #xp-display::before {
       content: '🎖️';
       font-size: 1.25rem;
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: transform 0.3s ease, color 0.3s ease;
     }
 
     #xp-display:hover {
-      color: #a78bfa; /* Matches index.html button hover */
+      color: #a78bfa;
       transform: scale(1.05);
     }
 
     #xp-display:hover::before {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       transform: rotate(15deg);
     }
 
@@ -84,12 +84,12 @@
       width: 1.5rem;
       height: 1.5rem;
       opacity: 0.7;
-      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); /* Approximates #5b21b6 */
+      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%);
       transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
     }
 
     #settingsBtn:hover {
-      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); /* Approximates #a78bfa */
+      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%);
       transform: rotate(90deg);
       opacity: 1;
     }
@@ -103,12 +103,12 @@
 
     #course-select {
       width: 100%;
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       border-radius: 0.75rem;
       padding: 0.75rem;
       font-size: 1rem;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       appearance: none;
@@ -121,19 +121,19 @@
     #course-select:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      border-color: #8b5cf6; /* Matches index.html button color */
+      border-color: #8b5cf6;
     }
 
     #course-select:focus {
       outline: none;
       border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px #c4b5fd; /* Matches index.html focus ring */
+      box-shadow: 0 0 0 3px #c4b5fd;
     }
 
     #course-select option {
       padding: 0.5rem;
-      color: #ffffff; /* Matches index.html text-white */
-      background: #5b21b6; /* Matches index.html login card */
+      color: #ffffff;
+      background: #5b21b6;
     }
 
     #units-list {
@@ -145,20 +145,25 @@
     #units-list button {
       display: block;
       width: 100%;
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       border-radius: 0.5rem;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       text-align: left;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     }
 
     #units-list button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      background: #6d28d9; /* Slightly lighter for hover, inspired by index.html */
+      background: #6d28d9;
+    }
+
+    #units-list button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     /* Modal Styles */
@@ -167,11 +172,11 @@
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
-      border-radius: 1rem; /* Matches index.html rounded-2xl */
-      color: #ffffff; /* Matches index.html text-white */
+      border-radius: 1rem;
+      color: #ffffff;
       transition: transform 0.3s ease;
     }
 
@@ -184,34 +189,34 @@
     }
 
     #reselectBtn, #saveReselect {
-      background: #8b5cf6; /* Matches index.html button */
-      color: #ffffff; /* Matches index.html text-white */
+      background: #8b5cf6;
+      color: #ffffff;
     }
 
     #reselectBtn:hover, #saveReselect:hover {
-      background: #a78bfa; /* Matches index.html button hover */
+      background: #a78bfa;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
     }
 
     #logoutBtn {
-      background: #ef4444; /* Matches existing red-500 */
-      color: #ffffff; /* Matches index.html text-white */
+      background: #ef4444;
+      color: #ffffff;
     }
 
     #logoutBtn:hover {
-      background: #dc2626; /* Matches existing red-600 */
+      background: #dc2626;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
 
     #closeSettings, #closeReselect, #closeQuiz {
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: color 0.3s ease;
     }
 
     #closeSettings:hover, #closeReselect:hover, #closeQuiz:hover {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       text-decoration: none;
     }
 
@@ -222,16 +227,16 @@
       gap: 0.5rem;
       padding: 0.75rem;
       border-radius: 0.5rem;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: background-color 0.3s ease;
     }
 
     #reselectForm label:hover {
-      background: #6d28d9; /* Slightly lighter for hover */
+      background: #6d28d9;
     }
 
     #reselectForm input[type="checkbox"] {
-      accent-color: #8b5cf6; /* Matches index.html button color */
+      accent-color: #8b5cf6;
       width: 1.25rem;
       height: 1.25rem;
       transition: transform 0.2s ease;
@@ -243,17 +248,17 @@
 
     /* Quiz Form Elements */
     #quizModal input[type="radio"] {
-      accent-color: #8b5cf6; /* Matches index.html button color */
+      accent-color: #8b5cf6;
     }
 
     #quizModal textarea {
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
-      color: #ffffff; /* Matches index.html text-white */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
+      color: #ffffff;
     }
 
     #quizModal .border {
-      border-color: #a78bfa; /* Matches index.html border */
+      border-color: #a78bfa;
     }
 
     /* Responsive Adjustments */
@@ -287,7 +292,7 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-6">
-  <!-- Navbar (Duolingo-Inspired with index.html Colors) -->
+  <!-- Navbar -->
   <div class="w-full flex items-center justify-center">
     <nav class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -716,10 +721,19 @@
       ]
     };
 
-    // Gemini API Setup
-    const GEMINI_API_KEY = "AIzaSyCiOF-9HDpuDL_PgQgozuI98L_OGbkz_Mw";
-    const GEMINI_MODEL = "gemini-1.5-flash";
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+    // OpenRouter API Setup
+    const OPENROUTER_API_KEY = "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";
+    const OPENROUTER_MODEL = "meta-llama/llama-3.1-8b-instruct:free";
+    const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+    // Debounce utility to prevent button spamming
+    function debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
 
     async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -737,32 +751,38 @@
       }
     }
 
-    async function geminiJSON(prompt, schema) {
+    async function openRouterJSON(prompt, schema) {
       const body = {
-        contents: [{ role: "user", parts: [{ text: prompt }]}],
-        generationConfig: {
-          response_mime_type: "application/json",
-          response_schema: schema
-        }
+        model: OPENROUTER_MODEL,
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" }
       };
       return await withRetry(async () => {
-        const res = await fetch(GEMINI_URL, {
+        const res = await fetch(OPENROUTER_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${OPENROUTER_API_KEY}`
+          },
           body: JSON.stringify(body)
         });
         if (!res.ok) {
           const errorText = await res.text();
-          console.error(`Gemini API error: ${res.status} ${errorText}`);
-          throw new Error(`Gemini error: ${res.status} ${errorText}`);
+          console.error(`OpenRouter API error: ${res.status} ${errorText}`);
+          throw new Error(`OpenRouter error: ${res.status} ${errorText}`);
         }
         const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        return JSON.parse(text);
+        return JSON.parse(data.choices[0].message.content);
       });
     }
 
     async function generateQuiz(course, unit, isFinal = false) {
+      const cacheRef = doc(db, 'quizzes', `${course}_${unit}_${isFinal}`);
+      const cacheSnap = await getDoc(cacheRef);
+      if (cacheSnap.exists()) {
+        return cacheSnap.data().questions;
+      }
+
       const count = isFinal ? 20 : 5;
       const prompt = `
 You are generating AP-style questions for ${course}, topic: ${unit}.
@@ -772,7 +792,7 @@ For MCQs: include 4 choices, 'correct', and 'explanation'.
 For source-analysis: include 'source' text, 4 choices, 'correct', 'explanation'.
 For open-response: include 'rubric'.
 Type is 'mcq' for standard MCQ, 'source' for source-analysis, 'open' for open-response.
-Output JSON only.
+Output JSON only with the schema: {"questions": [{type, question, source?, choices?, correct?, explanation?, rubric?}, ...]}.
 `;
       const schema = {
         type: "object",
@@ -794,11 +814,18 @@ Output JSON only.
           }
         }
       };
-      const { questions } = await geminiJSON(prompt, schema);
+      const { questions } = await openRouterJSON(prompt, schema);
+      await setDoc(cacheRef, { questions });
       return questions;
     }
 
     async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
+      const cacheRef = doc(db, 'grades', `${course}_${unit}_${question}_${userAnswer.hashCode()}`);
+      const cacheSnap = await getDoc(cacheRef);
+      if (cacheSnap.exists()) {
+        return cacheSnap.data();
+      }
+
       const schema = {
         type: "object",
         properties: {
@@ -816,10 +843,22 @@ Student answer:
 ${userAnswer}
 
 Decide pass/fail and give short feedback.
-Output JSON.
+Output JSON with schema: {"pass": boolean, "feedback": string}.
 `;
-      return await geminiJSON(prompt, schema);
+      const result = await openRouterJSON(prompt, schema);
+      await setDoc(cacheRef, result);
+      return result;
     }
+
+    // String hash for caching
+    String.prototype.hashCode = function () {
+      let hash = 0;
+      for (let i = 0; i < this.length; i++) {
+        hash = ((hash << 5) - hash) + this.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash;
+    };
 
     // Helpers
     function createEl(tag, className, text) {
@@ -834,65 +873,77 @@ Output JSON.
     }
 
     // Render user’s courses in dropdown and units
-    function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
-      // Clear existing content
+    async function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
       courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
       unitsList.innerHTML = '';
-
       xpDisplay.textContent = `${xp}`;
 
-      // If no courses selected, show message
       if (!selected || selected.length === 0) {
         unitsList.textContent = "No courses selected. Open settings to select courses.";
-        unitsList.className = "text-white"; // Matches index.html text-white
+        unitsList.className = "text-white";
         return;
       }
 
-      // Populate dropdown with enrolled courses
       selected.forEach(courseName => {
         const option = createEl('option', '', courseName);
         option.value = courseName;
         courseSelect.appendChild(option);
       });
 
-      // Set first course as default
+      // Auto-open quiz for first course and unit
       if (selected.length > 0) {
         courseSelect.value = selected[0];
-        renderUnits(selected[0], progressDoc);
+        await renderUnits(selected[0], progressDoc, true);
       }
 
-      // Update units when course selection changes
-      courseSelect.addEventListener('change', () => {
+      courseSelect.addEventListener('change', async () => {
         const selectedCourse = courseSelect.value;
-        renderUnits(selectedCourse, progressDoc);
+        await renderUnits(selectedCourse, progressDoc, true);
       });
     }
 
-    // Render units for the selected course
-    function renderUnits(courseName, progressDoc = {}) {
+    // Render units and auto-open quiz for first unit
+    async function renderUnits(courseName, progressDoc = {}, autoOpenFirst = false) {
       unitsList.innerHTML = '';
       const units = apCourses[courseName];
       if (!units) {
         unitsList.textContent = 'No units available for this course.';
-        unitsList.className = "text-white"; // Matches index.html text-white
+        unitsList.className = "text-white";
         return;
       }
 
+      let firstUnitBtn = null;
       units.forEach(unit => {
         const unitBtn = createEl('button', '', unit);
         const check = createEl('span', 'ml-2 text-green-400');
         if (progressDoc?.[courseName]?.[unit]?.passed) check.textContent = '✅';
         unitBtn.appendChild(check);
-        unitBtn.addEventListener('click', () => openUnitQuiz(courseName, unit, check));
+        unitBtn.addEventListener('click', debounce(async () => {
+          unitBtn.disabled = true;
+          await openUnitQuiz(courseName, unit, check);
+          unitBtn.disabled = false;
+        }, 1000));
         unitsList.appendChild(unitBtn);
+        if (!firstUnitBtn) firstUnitBtn = unitBtn;
       });
 
       const finalBtn = createEl('button', 'text-white', 'Final Exam');
       const finalCheck = createEl('span', 'ml-2 text-green-400');
       if (progressDoc?.finalExams?.[courseName]?.passed) finalCheck.textContent = '✅';
       finalBtn.appendChild(finalCheck);
-      finalBtn.addEventListener('click', () => openFinalExam(courseName, finalCheck));
+      finalBtn.addEventListener('click', debounce(async () => {
+        finalBtn.disabled = true;
+        await openFinalExam(courseName, finalCheck);
+        finalBtn.disabled = false;
+      }, 1000));
       unitsList.appendChild(finalBtn);
+
+      // Auto-open quiz for first unit
+      if (autoOpenFirst && firstUnitBtn && !progressDoc?.[courseName]?.[units[0]]?.passed) {
+        firstUnitBtn.disabled = true;
+        await openUnitQuiz(courseName, units[0], firstUnitBtn.querySelector('span'));
+        firstUnitBtn.disabled = false;
+      }
     }
 
     // Quiz Flow
@@ -927,7 +978,10 @@ Output JSON.
         </div>`;
       document.body.appendChild(modal);
       const quizContent = modal.querySelector('#quizContent');
-      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+      modal.querySelector('#closeQuiz').onclick = () => {
+        modal.remove();
+        document.querySelectorAll('#units-list button').forEach(btn => btn.disabled = false);
+      };
 
       let index = 0, score = 0, earnedXP = 0;
       async function renderNext() {
@@ -946,7 +1000,6 @@ Output JSON.
               }
               checkSpan.textContent = '✅';
             }
-            // Update XP
             const snap = await getDoc(ref);
             const currentXP = snap.data().xp || 0;
             await updateDoc(ref, { xp: currentXP + earnedXP });
@@ -1065,7 +1118,7 @@ Output JSON.
 
       courses.textContent = `Courses`;
 
-      renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
+      await renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
 
       settingsBtn.onclick = openSettings;
       closeSettings.onclick = closeSettingsModal;
@@ -1075,7 +1128,7 @@ Output JSON.
       saveReselect.onclick = async () => {
         const selected = Array.from(reselectForm.querySelectorAll('input:checked')).map(cb => cb.value);
         await setDoc(ref, { apCourses: selected }, { merge: true });
-        renderAPCoursesForUser(selected, data.progress || {}, data.xp || 0);
+        await renderAPCoursesForUser(selected, data.progress || {}, data.xp || 0);
         reselectModal.classList.add('hidden');
       };
       logoutBtn.onclick = async () => {
