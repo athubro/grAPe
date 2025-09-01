@@ -4,13 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Grape Classroom</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-
     :root {
       --cosmic-purple: #5B21B6;
       --vibrant-purple: #8B5CF6;
@@ -19,43 +14,126 @@
       --page-bg: #4C1D95;
     }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      @apply font-poppins bg-page-bg min-h-screen text-white overflow-x-hidden flex;
+      font-family: 'Poppins', sans-serif !important;
+      background: var(--page-bg) !important;
+      min-height: 100vh !important;
+      color: #fff !important;
+      display: flex !important;
+      overflow-x: hidden !important;
     }
 
     /* Sidebar */
-    .sidebar {
-      @apply fixed top-0 left-0 h-full w-64 bg-vibrant-purple/90 backdrop-blur-md shadow-xl z-50 flex flex-col items-center;
+    nav.sidebar#sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100% !important;
+      width: 256px !important;
+      background: rgba(139, 92, 246, 0.9) !important;
+      backdrop-filter: blur(8px) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      z-index: 50 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      padding: 24px !important;
     }
 
-    .sidebar button {
-      @apply w-3/4 text-center px-4 py-3 text-white font-semibold hover:bg-neon-magenta/40 transition-all duration-200 flex items-center justify-center gap-3 rounded-lg;
+    nav.sidebar#sidebar img {
+      width: 48px !important;
+      height: 48px !important;
+      margin-bottom: 12px !important;
     }
 
-    .sidebar svg {
-      @apply w-5 h-5;
+    nav.sidebar#sidebar button {
+      width: 75% !important;
+      text-align: center !important;
+      padding: 12px !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      background: transparent !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease-in-out !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 12px !important;
+    }
+
+    nav.sidebar#sidebar button:hover {
+      background: rgba(240, 171, 252, 0.4) !important;
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 10px rgba(240, 171, 252, 0.5) !important;
+    }
+
+    nav.sidebar#sidebar button:active {
+      transform: scale(0.95) !important;
+    }
+
+    nav.sidebar#sidebar svg {
+      width: 20px !important;
+      height: 20px !important;
     }
 
     /* Main Content */
-    .content {
-      @apply flex-1 ml-64 p-6 transition-all duration-300;
+    div.content {
+      flex: 1 !important;
+      margin-left: 256px !important;
+      padding: 24px !important;
+      transition: all 0.3s ease-in-out !important;
     }
 
     /* Course Cards */
     #ap-list {
-      @apply max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center;
+      max-width: 1280px !important;
+      margin: 0 auto !important;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+      gap: 24px !important;
+      justify-items: center !important;
     }
 
-    .course-card {
-      @apply bg-vibrant-purple/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(240,171,252,0.5)] animate-fade-in w-full max-w-md;
+    #ap-list .course-card {
+      background: rgba(139, 92, 246, 0.8) !important;
+      backdrop-filter: blur(8px) !important;
+      padding: 24px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      transition: all 0.3s ease-in-out !important;
+      animation: fade-in 0.5s ease-out forwards !important;
+      width: 100% !important;
+      max-width: 384px !important;
     }
 
-    .course-card button {
-      @apply w-full text-center text-white font-medium p-3 rounded-lg hover:bg-neon-magenta/30 transition-all duration-200;
+    #ap-list .course-card:hover {
+      transform: scale(1.05) !important;
+      box-shadow: 0 0 15px rgba(240, 171, 252, 0.5) !important;
     }
 
-    .course-card button:active {
-      @apply transform scale-95;
+    #ap-list .course-card button {
+      width: 100% !important;
+      text-align: center !important;
+      color: #fff !important;
+      font-weight: 500 !important;
+      padding: 12px !important;
+      border-radius: 8px !important;
+      background: transparent !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    #ap-list .course-card button:hover {
+      background: rgba(240, 171, 252, 0.3) !important;
+    }
+
+    #ap-list .course-card button:active {
+      transform: scale(0.95) !important;
     }
 
     @keyframes fade-in {
@@ -65,118 +143,236 @@
 
     /* Modals */
     #settingsModal, #reselectModal {
-      @apply fixed inset-0 bg-black/70 flex items-center justify-center z-50 transition-opacity duration-500;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(0, 0, 0, 0.7) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 50 !important;
+      opacity: 0 !important;
+      transition: opacity 0.5s ease-in-out !important;
+    }
+
+    #settingsModal:not(.hidden), #reselectModal:not(.hidden) {
+      opacity: 1 !important;
     }
 
     #settingsModal .modal-content, #reselectModal .modal-content {
-      @apply bg-vibrant-purple/85 backdrop-blur-md p-8 rounded-2xl shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-500 scale-0 animate-modal-in flex flex-col items-center;
+      background: rgba(139, 92, 246, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
+      padding: 32px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      max-width: 512px !important;
+      width: 100% !important;
+      margin: 16px !important;
+      transform: scale(0) !important;
+      transition: all 0.5s ease-in-out !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
     }
 
-    @keyframes modal-in {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    #settingsModal:not(.hidden) .modal-content, #reselectModal:not(.hidden) .modal-content {
+      transform: scale(1) !important;
     }
 
-    #settingsModal button, #reselectModal button {
-      @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(240,171,252,0.5)] transform hover:scale-105;
+    #settingsModal .modal-content button, #reselectModal .modal-content button {
+      padding: 8px 16px !important;
+      border-radius: 8px !important;
+      background: var(--neon-magenta) !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      transition: all 0.2s ease-in-out !important;
     }
 
-    #settingsModal button:active, #reselectModal button:active {
-      @apply transform scale-95;
+    #settingsModal .modal-content button:hover, #reselectModal .modal-content button:hover {
+      background: var(--light-lavender) !important;
+      box-shadow: 0 0 10px rgba(240, 171, 252, 0.5) !important;
+      transform: scale(1.05) !important;
     }
 
-    #settingsModal #closeSettings, #reselectModal #closeReselect {
-      @apply bg-white/10 hover:bg-white/20 text-light-lavender;
+    #settingsModal .modal-content button:active, #reselectModal .modal-content button:active {
+      transform: scale(0.95) !important;
+    }
+
+    #settingsModal .modal-content #closeSettings, #reselectModal .modal-content #closeReselect {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: var(--light-lavender) !important;
+    }
+
+    #settingsModal .modal-content #closeSettings:hover, #reselectModal .modal-content #closeReselect:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
     }
 
     /* Quiz Modal */
     .quiz-modal {
-      @apply fixed inset-0 bg-black/70 flex items-center justify-center z-50 transition-opacity duration-500;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      background: rgba(0, 0, 0, 0.7) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 50 !important;
+      opacity: 0 !important;
+      transition: opacity 0.5s ease-in-out !important;
+    }
+
+    .quiz-modal:not(.hidden) {
+      opacity: 1 !important;
     }
 
     .quiz-modal .modal-content {
-      @apply bg-vibrant-purple/85 backdrop-blur-md p-8 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all duration-500 animate-modal-in flex flex-col items-center;
+      background: rgba(139, 92, 246, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
+      padding: 32px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+      max-width: 768px !important;
+      width: 100% !important;
+      margin: 16px !important;
+      transform: scale(0) !important;
+      transition: all 0.5s ease-in-out !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
     }
 
-    .quiz-modal button {
-      @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(240,171,252,0.5)] transform hover:scale-105;
+    .quiz-modal:not(.hidden) .modal-content {
+      transform: scale(1) !important;
     }
 
-    .quiz-modal button:active {
-      @apply transform scale-95;
+    .quiz-modal .modal-content button {
+      padding: 8px 16px !important;
+      border-radius: 8px !important;
+      background: var(--neon-magenta) !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      transition: all 0.2s ease-in-out !important;
     }
 
-    .quiz-modal textarea {
-      @apply w-full bg-white/10 border-none p-3 rounded-lg text-white placeholder-gray-300 focus:ring-2 focus:ring-neon-magenta transition-all duration-200;
+    .quiz-modal .modal-content button:hover {
+      background: var(--light-lavender) !important;
+      box-shadow: 0 0 10px rgba(240, 171, 252, 0.5) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .quiz-modal .modal-content button:active {
+      transform: scale(0.95) !important;
+    }
+
+    .quiz-modal .modal-content textarea {
+      width: 100% !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: none !important;
+      padding: 12px !important;
+      border-radius: 8px !important;
+      color: #fff !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    .quiz-modal .modal-content textarea:focus {
+      outline: none !important;
+      box-shadow: 0 0 8px rgba(240, 171, 252, 0.5) !important;
     }
 
     /* Welcome Message */
-    #welcome {
-      @apply text-2xl font-bold tracking-wide text-neon-magenta text-center;
+    h1#welcome {
+      font-size: 1.5rem !important;
+      font-weight: 700 !important;
+      color: var(--neon-magenta) !important;
+      text-align: center !important;
+      letter-spacing: 0.5px !important;
     }
 
     /* Reselect Form */
     #reselectForm {
-      @apply w-full;
+      width: 100% !important;
     }
 
     #reselectForm label {
-      @apply flex items-center justify-start mb-3 text-light-lavender font-medium;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      margin-bottom: 12px !important;
+      color: var(--light-lavender) !important;
+      font-weight: 500 !important;
     }
 
     #reselectForm input[type="checkbox"] {
-      @apply h-5 w-5 text-neon-magenta focus:ring-neon-magenta rounded bg-white/10 mr-2;
+      width: 20px !important;
+      height: 20px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 4px !important;
+      margin-right: 8px !important;
+    }
+
+    #reselectForm input[type="checkbox"]:checked {
+      background: var(--neon-magenta) !important;
     }
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
-      .sidebar {
-        @apply w-full h-auto fixed top-0 left-0 bg-vibrant-purple/90 p-4;
+      nav.sidebar#sidebar {
+        width: 100% !important;
+        height: auto !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        padding: 16px !important;
       }
 
-      .content {
-        @apply ml-0 mt-24;
+      div.content {
+        margin-left: 0 !important;
+        margin-top: 96px !important;
       }
 
       #ap-list {
-        @apply grid-cols-1;
+        grid-template-columns: 1fr !important;
       }
 
-      .course-card {
-        @apply max-w-full;
-      }
-
-      .quiz-modal .modal-content {
-        @apply max-w-full mx-2;
+      #ap-list .course-card {
+        max-width: 100% !important;
       }
 
       #settingsModal .modal-content, #reselectModal .modal-content {
-        @apply max-w-full mx-2;
+        max-width: 100% !important;
+        margin: 8px !important;
+      }
+
+      .quiz-modal .modal-content {
+        max-width: 100% !important;
+        margin: 8px !important;
       }
     }
 
     /* Staggered Animation for Cards */
-    .course-card {
-      animation-delay: calc(var(--index) * 100ms);
+    #ap-list .course-card {
+      animation-delay: calc(var(--index) * 100ms) !important;
     }
   </style>
 </head>
 <body>
   <!-- Sidebar -->
   <nav class="sidebar" id="sidebar">
-    <div class="p-6 flex flex-col items-center">
-      <div class="flex flex-col items-center mb-8">
-        <img src="grape.png" alt="Grape Logo" class="w-12 h-12 mb-3">
-        <h1 id="welcome" class="text-2xl font-bold text-neon-magenta"></h1>
-      </div>
-      <button id="settingsBtn" class="flex items-center justify-center gap-2 w-full mb-3">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+    <div class="flex flex-col items-center">
+      <img src="grape.png" alt="Grape Logo" class="w-12 h-12 mb-3">
+      <h1 id="welcome">Welcome</h1>
+      <button id="settingsBtn" class="mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
         </svg>
         Settings
       </button>
-      <button id="logoutBtn" class="flex items-center justify-center gap-2 w-full">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+      <button id="logoutBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
         </svg>
         Log Out
@@ -213,7 +409,7 @@
   <script type="module">
     // Apply staggered animation to course cards
     document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('.course-card');
+      const cards = document.querySelectorAll('#ap-list .course-card');
       cards.forEach((card, index) => {
         card.style.setProperty('--index', index);
       });
