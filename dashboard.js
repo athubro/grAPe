@@ -18,6 +18,36 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    window.location.href="index.html";
+    return;
+  }
+  welcome.textContent=`Welcome, ${user.displayName||nameFromEmail(user.email)}`;
+
+  const ref=doc(db,"users",user.uid);
+  let snap=await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref,{apCourses:[],progress:{},finalExams:{}});
+    snap=await getDoc(ref);
+  }
+  const data=snap.data();
+  renderAPCoursesForUser(data.apCourses||[], data.progress||{});
+
+  settingsBtn.onclick=openSettings;
+  closeSettings.onclick=closeSettingsModal;
+  reselectBtn.onclick=openReselect;
+  closeReselect.onclick=closeReselectModal;
+  populateReselectForm(data.apCourses||[]);
+  saveReselect.onclick=async()=>{
+    const selected=Array.from(reselectForm.querySelectorAll("input:checked")).map(cb=>cb.value);
+    await setDoc(ref,{apCourses:selected},{merge:true});
+    renderAPCoursesForUser(selected,data.progress||{});
+    reselectModal.classList.add("hidden");
+  };
+  logoutBtn.onclick=async()=>{await signOut(auth);window.location.href="index.html";};
+});
+
 // ========================= Gemini API Setup =========================
 const GEMINI_API_KEY = "AIzaSyAekCu-kTFwWcxT0UPy58nXlt8ZNA0VsLI"; // move server-side in production
 const GEMINI_MODEL = "gemini-1.5-flash";
@@ -590,32 +620,4 @@ function populateReselectForm(selected=[]){
 }
 
 // ========================= Auth Flow =========================
-onAuthStateChanged(auth, async (user)=>{
-  if(!user){
-    window.location.href="index.html";
-    return;
-  }
-  welcome.textContent=`Welcome, ${user.displayName||nameFromEmail(user.email)}`;
 
-  const ref=doc(db,"users",user.uid);
-  let snap=await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{apCourses:[],progress:{},finalExams:{}});
-    snap=await getDoc(ref);
-  }
-  const data=snap.data();
-  renderAPCoursesForUser(data.apCourses||[], data.progress||{});
-
-  settingsBtn.onclick=openSettings;
-  closeSettings.onclick=closeSettingsModal;
-  reselectBtn.onclick=openReselect;
-  closeReselect.onclick=closeReselectModal;
-  populateReselectForm(data.apCourses||[]);
-  saveReselect.onclick=async()=>{
-    const selected=Array.from(reselectForm.querySelectorAll("input:checked")).map(cb=>cb.value);
-    await setDoc(ref,{apCourses:selected},{merge:true});
-    renderAPCoursesForUser(selected,data.progress||{});
-    reselectModal.classList.add("hidden");
-  };
-  logoutBtn.onclick=async()=>{await signOut(auth);window.location.href="index.html";};
-});
