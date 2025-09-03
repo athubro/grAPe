@@ -15,13 +15,12 @@
     }
 
     body {
-      background: #5b21b6; /* Matches index.html login card */
+      background: #5b21b6;
       font-family: 'Inter', sans-serif;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: background-color 0.3s ease;
     }
 
-    /* Navbar Styles (Duolingo-Inspired with index.html Colors) */
     nav {
       display: flex;
       align-items: center;
@@ -29,9 +28,9 @@
       width: 100%;
       max-width: 1200px;
       padding: 0.75rem 1rem;
-      background: #5b21b6; /* Matches body background */
+      background: #5b21b6;
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #c4b5fd; /* Matches index.html purple-300 */
+      border-bottom: 1px solid #c4b5fd;
       transition: transform 0.3s ease;
     }
 
@@ -42,12 +41,12 @@
     #courses {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: color 0.3s ease, transform 0.3s ease;
     }
 
     #courses:hover {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       transform: scale(1.05);
     }
 
@@ -57,7 +56,7 @@
       gap: 0.5rem;
       font-size: 1rem;
       font-weight: 600;
-      color: #8b5cf6; /* Matches index.html button color */
+      color: #8b5cf6;
       background: none;
       padding: 0.25rem 0.5rem;
       transition: transform 0.3s ease, color 0.3s ease;
@@ -66,17 +65,17 @@
     #xp-display::before {
       content: '🎖️';
       font-size: 1.25rem;
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: transform 0.3s ease, color 0.3s ease;
     }
 
     #xp-display:hover {
-      color: #a78bfa; /* Matches index.html button hover */
+      color: #a78bfa;
       transform: scale(1.05);
     }
 
     #xp-display:hover::before {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       transform: rotate(15deg);
     }
 
@@ -84,17 +83,16 @@
       width: 1.5rem;
       height: 1.5rem;
       opacity: 0.7;
-      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); /* Approximates #5b21b6 */
+      filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%);
       transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
     }
 
     #settingsBtn:hover {
-      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); /* Approximates #a78bfa */
+      filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%);
       transform: rotate(90deg);
       opacity: 1;
     }
 
-    /* Course Dropdown and Units Styles */
     #course-select-container {
       width: 100%;
       max-width: 1200px;
@@ -103,12 +101,12 @@
 
     #course-select {
       width: 100%;
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       border-radius: 0.75rem;
       padding: 0.75rem;
       font-size: 1rem;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       appearance: none;
@@ -121,19 +119,19 @@
     #course-select:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      border-color: #8b5cf6; /* Matches index.html button color */
+      border-color: #8b5cf6;
     }
 
     #course-select:focus {
       outline: none;
       border-color: #8b5cf6;
-      box-shadow: 0 0 0 3px #c4b5fd; /* Matches index.html focus ring */
+      box-shadow: 0 0 0 3px #c4b5fd;
     }
 
     #course-select option {
       padding: 0.5rem;
-      color: #ffffff; /* Matches index.html text-white */
-      background: #5b21b6; /* Matches index.html login card */
+      color: #ffffff;
+      background: #5b21b6;
     }
 
     #units-list {
@@ -145,33 +143,32 @@
     #units-list button {
       display: block;
       width: 100%;
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       border-radius: 0.5rem;
       padding: 0.75rem;
       margin-bottom: 0.5rem;
       text-align: left;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     }
 
     #units-list button:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3);
-      background: #6d28d9; /* Slightly lighter for hover, inspired by index.html */
+      background: #6d28d9;
     }
 
-    /* Modal Styles */
     #settingsModal, #reselectModal, #quizModal {
       animation: none;
     }
 
     #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
       box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
-      border-radius: 1rem; /* Matches index.html rounded-2xl */
-      color: #ffffff; /* Matches index.html text-white */
+      border-radius: 1rem;
+      color: #ffffff;
       transition: transform 0.3s ease;
     }
 
@@ -183,55 +180,54 @@
       transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    #reselectBtn, #saveReselect {
-      background: #8b5cf6; /* Matches index.html button */
-      color: #ffffff; /* Matches index.html text-white */
+    #reselectBtn, #saveReselect, #startQuiz {
+      background: #8b5cf6;
+      color: #ffffff;
     }
 
-    #reselectBtn:hover, #saveReselect:hover {
-      background: #a78bfa; /* Matches index.html button hover */
+    #reselectBtn:hover, #saveReselect:hover, #startQuiz:hover {
+      background: #a78bfa;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
     }
 
     #logoutBtn {
-      background: #ef4444; /* Matches existing red-500 */
-      color: #ffffff; /* Matches index.html text-white */
+      background: #ef4444;
+      color: #ffffff;
     }
 
     #logoutBtn:hover {
-      background: #dc2626; /* Matches existing red-600 */
+      background: #dc2626;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
     }
 
     #closeSettings, #closeReselect, #closeQuiz {
-      color: #c4b5fd; /* Matches index.html link color */
+      color: #c4b5fd;
       transition: color 0.3s ease;
     }
 
     #closeSettings:hover, #closeReselect:hover, #closeQuiz:hover {
-      color: #a78bfa; /* Matches index.html link hover */
+      color: #a78bfa;
       text-decoration: none;
     }
 
-    /* Form Checkboxes in Reselect Modal */
     #reselectForm label {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem;
       border-radius: 0.5rem;
-      color: #ffffff; /* Matches index.html text-white */
+      color: #ffffff;
       transition: background-color 0.3s ease;
     }
 
     #reselectForm label:hover {
-      background: #6d28d9; /* Slightly lighter for hover */
+      background: #6d28d9;
     }
 
     #reselectForm input[type="checkbox"] {
-      accent-color: #8b5cf6; /* Matches index.html button color */
+      accent-color: #8b5cf6;
       width: 1.25rem;
       height: 1.25rem;
       transition: transform 0.2s ease;
@@ -241,22 +237,20 @@
       transform: scale(1.1);
     }
 
-    /* Quiz Form Elements */
     #quizModal input[type="radio"] {
-      accent-color: #8b5cf6; /* Matches index.html button color */
+      accent-color: #8b5cf6;
     }
 
     #quizModal textarea {
-      background: #5b21b6; /* Matches index.html login card */
-      border: 1px solid #a78bfa; /* Matches index.html border */
-      color: #ffffff; /* Matches index.html text-white */
+      background: #5b21b6;
+      border: 1px solid #a78bfa;
+      color: #ffffff;
     }
 
     #quizModal .border {
-      border-color: #a78bfa; /* Matches index.html border */
+      border-color: #a78bfa;
     }
 
-    /* Responsive Adjustments */
     @media (max-width: 640px) {
       nav {
         padding: 0.5rem;
@@ -287,7 +281,6 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-6">
-  <!-- Navbar (Duolingo-Inspired with index.html Colors) -->
   <div class="w-full flex items-center justify-center">
     <nav class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
@@ -301,17 +294,14 @@
     </nav>
   </div>
 
-  <!-- Course Dropdown -->
   <div id="course-select-container" class="w-full max-w-5xl">
     <select id="course-select" name="course" class="w-full">
       <option value="" disabled>Select a Course</option>
     </select>
   </div>
 
-  <!-- Units List -->
   <div id="units-list" class="w-full max-w-5xl"></div>
 
-  <!-- Settings Modal -->
   <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
     <div class="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
       <h2 class="text-xl font-bold text-white mb-4">Settings</h2>
@@ -321,7 +311,6 @@
     </div>
   </div>
 
-  <!-- Reselect Modal -->
   <div id="reselectModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex justify-center items-center z-50">
     <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-xl">
       <h2 class="text-xl font-bold text-white mb-4">Reselect AP Courses</h2>
@@ -342,7 +331,6 @@
     } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCdOUtoPjAHyXoxBJPJvAVsveMuPA2vUSQ",
       authDomain: "grape-mcps.firebaseapp.com",
@@ -353,15 +341,12 @@
       measurementId: "G-X2DELV9RFD"
     };
 
-    // Initialize Firebase only once
     const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Force persistent login
     await setPersistence(auth, browserLocalPersistence);
 
-    // DOM Elements
     const courses = document.getElementById("courses");
     const xpDisplay = document.getElementById("xp-display");
     const courseSelect = document.getElementById("course-select");
@@ -376,7 +361,6 @@
     const saveReselect = document.getElementById("saveReselect");
     const closeReselect = document.getElementById("closeReselect");
 
-    // AP Courses
     const apCourses = {
       "AP African American Studies": ["Unit 1: Introduction to African American Studies"],
       "AP Art & Design: 2D": ["Unit 1: Explore Materials, Processes, and Ideas", "Unit 2: Make Art and Design", "Unit 3: Present Art and Design"],
@@ -716,7 +700,6 @@
       ]
     };
 
-    // Gemini API Setup
     const GEMINI_API_KEY = "AIzaSyCiOF-9HDpuDL_PgQgozuI98L_OGbkz_Mw";
     const GEMINI_MODEL = "gemini-1.5-flash";
     const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
@@ -758,7 +741,15 @@
         }
         const data = await res.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        return JSON.parse(text);
+        if (!text) {
+          throw new Error("No response text received from Gemini API");
+        }
+        try {
+          return JSON.parse(text);
+        } catch (parseError) {
+          console.error("JSON parse error:", parseError, "Response text:", text);
+          throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
+        }
       });
     }
 
@@ -794,8 +785,15 @@ Output JSON only.
           }
         }
       };
-      const { questions } = await geminiJSON(prompt, schema);
-      return questions;
+      try {
+        const { questions } = await geminiJSON(prompt, schema);
+        if (!questions || !Array.isArray(questions)) {
+          throw new Error("Invalid questions format received from Gemini API");
+        }
+        return questions;
+      } catch (error) {
+        throw new Error(`Failed to generate quiz: ${error.message}`);
+      }
     }
 
     async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
@@ -818,10 +816,13 @@ ${userAnswer}
 Decide pass/fail and give short feedback.
 Output JSON.
 `;
-      return await geminiJSON(prompt, schema);
+      try {
+        return await geminiJSON(prompt, schema);
+      } catch (error) {
+        throw new Error(`Failed to grade open response: ${error.message}`);
+      }
     }
 
-    // Helpers
     function createEl(tag, className, text) {
       const el = document.createElement(tag);
       if (className) el.className = className;
@@ -833,48 +834,41 @@ Output JSON.
       return (email || "Student").split("@")[0];
     }
 
-    // Render user’s courses in dropdown and units
     function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
-      // Clear existing content
       courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
       unitsList.innerHTML = '';
 
       xpDisplay.textContent = `${xp}`;
 
-      // If no courses selected, show message
       if (!selected || selected.length === 0) {
         unitsList.textContent = "No courses selected. Open settings to select courses.";
-        unitsList.className = "text-white"; // Matches index.html text-white
+        unitsList.className = "text-white";
         return;
       }
 
-      // Populate dropdown with enrolled courses
       selected.forEach(courseName => {
         const option = createEl('option', '', courseName);
         option.value = courseName;
         courseSelect.appendChild(option);
       });
 
-      // Set first course as default
       if (selected.length > 0) {
         courseSelect.value = selected[0];
         renderUnits(selected[0], progressDoc);
       }
 
-      // Update units when course selection changes
       courseSelect.addEventListener('change', () => {
         const selectedCourse = courseSelect.value;
         renderUnits(selectedCourse, progressDoc);
       });
     }
 
-    // Render units for the selected course
     function renderUnits(courseName, progressDoc = {}) {
       unitsList.innerHTML = '';
       const units = apCourses[courseName];
       if (!units) {
         unitsList.textContent = 'No units available for this course.';
-        unitsList.className = "text-white"; // Matches index.html text-white
+        unitsList.className = "text-white";
         return;
       }
 
@@ -895,11 +889,10 @@ Output JSON.
       unitsList.appendChild(finalBtn);
     }
 
-    // Quiz Flow
     async function openUnitQuiz(course, unit, checkSpan) {
       try {
         const qs = await generateQuiz(course, unit, false);
-        await showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
+        showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
       } catch (error) {
         console.error('Failed to load quiz:', error);
         showErrorModal(course, unit, 'Error loading quiz. Please try again later or check your API quota.');
@@ -909,7 +902,218 @@ Output JSON.
     async function openFinalExam(course, checkSpan) {
       try {
         const qs = await generateQuiz(course, 'Final Exam', true);
-        await showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
+        showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
       } catch (error) {
         console.error('Failed to load final exam:', error);
-        showErrorModal(course, 'Final Exam',
+        showErrorModal(course, 'Final Exam', 'Error loading final exam. Please try again later or check your API quota.');
+      }
+    }
+
+    function showErrorModal(course, unit, msg) {
+      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
+      modal.id = 'quizModal';
+      modal.classList.add('show');
+      modal.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+          <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
+          <p class="text-white">${msg}</p>
+          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+    }
+
+    function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal) {
+      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
+      modal.id = 'quizModal';
+      modal.classList.add('show');
+      modal.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+          <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
+          <div id="quizContent">
+            <p class="text-white mb-4">Ready to start the ${isFinal ? 'final exam' : 'quiz'}?</p>
+            <button id="startQuiz" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-500">Start</button>
+          </div>
+          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
+        </div>`;
+      document.body.appendChild(modal);
+      const quizContent = modal.querySelector('#quizContent');
+      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+
+      let index = 0, score = 0, earnedXP = 0;
+
+      modal.querySelector('#startQuiz').onclick = () => {
+        quizContent.innerHTML = '';
+        renderNext();
+      };
+
+      async function renderNext() {
+        quizContent.innerHTML = '';
+        if (index >= questions.length) {
+          const passed = score >= passThreshold;
+          quizContent.innerHTML = `<p class="text-white">${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p class="text-white">Earned XP: ${earnedXP}</p>`;
+          const user = auth.currentUser;
+          if (user) {
+            const ref = doc(db, 'users', user.uid);
+            if (passed) {
+              if (isFinal) {
+                await setDoc(ref, { finalExams: { [course]: { passed, score } } }, { merge: true });
+              } else {
+                await setDoc(ref, { progress: { [course]: { [unit]: { passed, score } } } }, { merge: true });
+              }
+              checkSpan.textContent = '✅';
+            }
+            const snap = await getDoc(ref);
+            const currentXP = snap.data().xp || 0;
+            await updateDoc(ref, { xp: currentXP + earnedXP });
+            xpDisplay.textContent = `${currentXP + earnedXP}`;
+          }
+          return;
+        }
+        const q = questions[index];
+        if (!q || !q.question) {
+          quizContent.innerHTML = `<p class="text-white">Error: Invalid question data.</p>`;
+          return;
+        }
+        const card = createEl('div', 'border p-3 rounded mb-3');
+        card.appendChild(createEl('p', 'font-semibold text-white', q.question));
+
+        if (q.source) {
+          card.appendChild(createEl('p', 'italic mb-2 text-white', q.source));
+        }
+
+        const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded mt-2 hover:bg-purple-500', 'Submit');
+        submit.disabled = true;
+
+        if (q.type === 'mcq' || q.type === 'source') {
+          if (!q.choices || !Array.isArray(q.choices) || q.choices.length < 4) {
+            quizContent.innerHTML = `<p class="text-white">Error: Invalid choices for question ${index + 1}.</p>`;
+            return;
+          }
+          const form = createEl('form', '');
+          q.choices.forEach((choice, i) => {
+            const label = createEl('label', 'block mb-1 text-white');
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'choice';
+            radio.value = choice;
+            radio.onclick = () => { submit.disabled = false; };
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(` ${choice}`));
+            form.appendChild(label);
+          });
+          submit.onclick = () => {
+            const selected = form.querySelector('input:checked')?.value;
+            if (selected === q.correct) {
+              score++;
+              earnedXP += 15;
+            }
+            index++;
+            renderNext();
+          };
+          card.appendChild(form);
+        } else if (q.type === 'open') {
+          const ta = document.createElement('textarea');
+          ta.className = 'w-full border p-2 mb-2';
+          ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
+          submit.onclick = async () => {
+            try {
+              const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
+              if (res.pass) {
+                score++;
+                earnedXP += 50;
+              }
+              index++;
+              renderNext();
+            } catch (error) {
+              console.error('Failed to grade open response:', error);
+              quizContent.innerHTML = `<p class="text-white">Error grading response. Please try again.</p>`;
+            }
+          };
+          card.appendChild(ta);
+        }
+        card.appendChild(submit);
+        quizContent.appendChild(card);
+      }
+    }
+
+    function openSettings() {
+      settingsModal.classList.remove('hidden');
+      settingsModal.classList.add('show');
+    }
+
+    function closeSettingsModal() {
+      settingsModal.classList.add('hidden');
+      settingsModal.classList.remove('show');
+    }
+
+    function openReselect() {
+      reselectModal.classList.remove('hidden');
+      reselectModal.classList.add('show');
+    }
+
+    function closeReselectModal() {
+      reselectModal.classList.add('hidden');
+      reselectModal.classList.remove('show');
+    }
+
+    function populateReselectForm(selected = []) {
+      reselectForm.innerHTML = '';
+      Object.keys(apCourses).forEach(course => {
+        const label = createEl('label', 'block mb-1 text-white');
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = course;
+        if (selected.includes(course)) input.checked = true;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(` ${course}`));
+        reselectForm.appendChild(label);
+      });
+    }
+
+    let redirectTimeout = setTimeout(() => {
+      if (!auth.currentUser) {
+        window.location.href = 'index.html';
+      }
+    }, 5000);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.log('No user signed in yet, waiting...');
+        return;
+      }
+
+      clearTimeout(redirectTimeout);
+
+      const ref = doc(db, 'users', user.uid);
+      let snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, { apCourses: [], progress: {}, finalExams: {}, xp: 0 });
+        snap = await getDoc(ref);
+      }
+      const data = snap.data();
+
+      courses.textContent = `Courses`;
+
+      renderAPCoursesForUser(data.apCourses || [], data.progress || {}, data.xp || 0);
+
+      settingsBtn.onclick = openSettings;
+      closeSettings.onclick = closeSettingsModal;
+      reselectBtn.onclick = openReselect;
+      closeReselect.onclick = closeReselectModal;
+      populateReselectForm(data.apCourses || []);
+      saveReselect.onclick = async () => {
+        const selected = Array.from(reselectForm.querySelectorAll('input:checked')).map(cb => cb.value);
+        await setDoc(ref, { apCourses: selected }, { merge: true });
+        renderAPCoursesForUser(selected, data.progress || {}, data.xp || 0);
+        reselectModal.classList.add('hidden');
+        reselectModal.classList.remove('show');
+      };
+      logoutBtn.onclick = async () => {
+        await signOut(auth);
+        window.location.href = 'index.html';
+      };
+    });
+  </script>
+</body>
+</html>
