@@ -179,12 +179,12 @@
       transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    #reselectBtn, #saveReselect {
+    #reselectBtn, #saveReselect, #startQuiz {
       background: #8b5cf6;
       color: #ffffff;
     }
 
-    #reselectBtn:hover, #saveReselect:hover {
+    #reselectBtn:hover, #saveReselect:hover, #startQuiz:hover {
       background: #a78bfa;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
@@ -234,10 +234,6 @@
 
     #reselectForm input[type="checkbox"]:hover {
       transform: scale(1.1);
-    }
-
-    #quizModal input[type="radio"] {
-      accent-color: #8b5cf6;
     }
 
     #quizModal textarea {
@@ -785,10 +781,9 @@ Output JSON only.
         }
       };
       try {
-        // Attempt to generate questions, with one retry if no valid questions
         for (let attempt = 1; attempt <= 2; attempt++) {
           const { questions } = await geminiJSON(prompt, schema);
-          console.log(`Raw Gemini response (attempt ${attempt}):`, questions); // Debug log
+          console.log(`Raw Gemini response (attempt ${attempt}):`, questions);
           if (!questions || !Array.isArray(questions)) {
             console.error("Invalid questions format received from Gemini API");
             if (attempt === 2) {
@@ -796,7 +791,6 @@ Output JSON only.
             }
             continue;
           }
-          // Validate and filter questions
           const validQuestions = questions.filter(q => {
             if (!q || !q.question || !q.type) {
               console.warn("Invalid question (missing question or type):", q);
@@ -926,53 +920,60 @@ Output JSON.
     }
 
     async function openUnitQuiz(course, unit, checkSpan) {
-      try {
-        const qs = await generateQuiz(course, unit, false);
-        showQuizModal(course, unit, qs, 5, 5, checkSpan, false);
-      } catch (error) {
-        console.error('Failed to load quiz:', error);
-        showErrorModal(course, unit, `Error loading quiz: ${error.message}. Please try again later.`);
-      }
-    }
-
-    async function openFinalExam(course, checkSpan) {
-      try {
-        const qs = await generateQuiz(course, 'Final Exam', true);
-        showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true);
-      } catch (error) {
-        console.error('Failed to load final exam:', error);
-        showErrorModal(course, 'Final Exam', `Error loading final exam: ${error.message}. Please try again later.`);
-      }
-    }
-
-    function showErrorModal(course, unit, msg) {
       const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
       modal.id = 'quizModal';
       modal.classList.add('show');
       modal.innerHTML = `
         <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
           <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
-          <p class="text-white">${msg}</p>
-          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
-        </div>`;
-      document.body.appendChild(modal);
-      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
-    }
-
-    function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal) {
-      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
-      modal.id = 'quizModal';
-      modal.classList.add('show');
-      modal.innerHTML = `
-        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
-          <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
-          <div id="quizContent"></div>
+          <div id="quizContent">
+            <button id="startQuiz" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple500">Start</button>
+          </div>
           <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
         </div>`;
       document.body.appendChild(modal);
       const quizContent = modal.querySelector('#quizContent');
       modal.querySelector('#closeQuiz').onclick = () => modal.remove();
 
+      modal.querySelector('#startQuiz').onclick = async () => {
+        try {
+          const qs = await generateQuiz(course, unit, false);
+          showQuizModal(course, unit, qs, 5, 5, checkSpan, false, modal, quizContent);
+        } catch (error) {
+          console.error('Failed to load quiz:', error);
+          quizContent.innerHTML = `<p class="text-white">Error loading quiz: ${error.message}. Please try again later.</p>`;
+        }
+      };
+    }
+
+    async function openFinalExam(course, checkSpan) {
+      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
+      modal.id = 'quizModal';
+      modal.classList.add('show');
+      modal.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+          <h2 class="font-bold text-xl text-white mb-4">${course} — Final Exam</h2>
+          <div id="quizContent">
+            <button id="startQuiz" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple500">Start</button>
+          </div>
+          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
+        </div>`;
+      document.body.appendChild(modal);
+      const quizContent = modal.querySelector('#quizContent');
+      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+
+      modal.querySelector('#startQuiz').onclick = async () => {
+        try {
+          const qs = await generateQuiz(course, 'Final Exam', true);
+          showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true, modal, quizContent);
+        } catch (error) {
+          console.error('Failed to load final exam:', error);
+          quizContent.innerHTML = `<p class="text-white">Error loading final exam: ${error.message}. Please try again later.</p>`;
+        }
+      };
+    }
+
+    async function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal, modal, quizContent) {
       let index = 0, score = 0, earnedXP = 0;
 
       async function renderNext() {
@@ -1012,9 +1013,6 @@ Output JSON.
           card.appendChild(createEl('p', 'italic mb-2 text-white', q.source));
         }
 
-        const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded mt-2 hover:bg-purple-500', 'Submit');
-        submit.disabled = true;
-
         if (q.type === 'mcq' || q.type === 'source') {
           if (!q.choices || !Array.isArray(q.choices) || q.choices.length < 4) {
             quizContent.innerHTML = `<p class="text-white">Error: Invalid choices for question ${index + 1}.</p>`;
@@ -1022,31 +1020,23 @@ Output JSON.
             renderNext();
             return;
           }
-          const form = createEl('form', '');
-          q.choices.forEach((choice, i) => {
-            const label = createEl('label', 'block mb-1 text-white');
-            const radio = document.createElement('input');
-            radio.type = 'radio';
-            radio.name = 'choice';
-            radio.value = choice;
-            radio.onclick = () => { submit.disabled = false; };
-            label.appendChild(radio);
-            label.appendChild(document.createTextNode(` ${choice}`));
-            form.appendChild(label);
+          q.choices.forEach(choice => {
+            const btn = createEl('button', 'block border rounded p-2 w-full mb-1 text-white', choice);
+            btn.onclick = () => {
+              if (choice === q.correct) {
+                score++;
+                earnedXP += 15;
+              }
+              index++;
+              renderNext();
+            };
+            card.appendChild(btn);
           });
-          submit.onclick = () => {
-            const selected = form.querySelector('input:checked')?.value;
-            if (selected === q.correct) {
-              score++;
-              earnedXP += 15;
-            }
-            index++;
-            renderNext();
-          };
-          card.appendChild(form);
         } else if (q.type === 'open') {
           const ta = document.createElement('textarea');
           ta.className = 'w-full border p-2 mb-2';
+          const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded', 'Submit');
+          submit.disabled = true;
           ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
           submit.onclick = async () => {
             try {
@@ -1065,8 +1055,8 @@ Output JSON.
             }
           };
           card.appendChild(ta);
+          card.appendChild(submit);
         }
-        card.appendChild(submit);
         quizContent.appendChild(card);
       }
       renderNext();
