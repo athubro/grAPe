@@ -696,372 +696,748 @@
     };
 
     const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
-    const GEMINI_MODEL = "gemini-1.5-flash";
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_MODEL = "gemini-1.5-flash";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-    async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+async function withRetry(fn, maxRetries = 3, baseDelay = 2000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed:`, error.message);
+      
+      // Check for rate limiting (429) or server errors (5xx)
+      const isRetryableError = error.message.includes('429') || 
+                              error.message.includes('503') || 
+                              error.message.includes('500') ||
+                              error.message.includes('Failed to fetch');
+      
+      if (isRetryableError && attempt < maxRetries) {
+        const delay = baseDelay * Math.pow(2, attempt - 1);
+        console.log(`Retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+async function geminiJSON(prompt, schema) {
+  const body = {
+    contents: [{ 
+      role: "user", 
+      parts: [{ text: prompt }]
+    }],
+    generationConfig: {
+      temperature: 0.7,
+      topK: 40,
+      topP: 0.95,
+      maxOutputTokens: 4096,
+      responseMimeType: "application/json",
+      responseSchema: schema
+    },
+    safetySettings: [
+      {
+        category: "HARM_CATEGORY_HARASSMENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_HATE_SPEECH",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      }
+    ]
+  };
+
+  return await withRetry(async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    try {
+      const res = await fetch(GEMINI_URL, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "User-Agent": "Quiz-App/1.0"
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`Gemini API error: ${res.status} - ${res.statusText}`, errorText);
+        
+        // Handle specific error codes
+        if (res.status === 429) {
+          throw new Error(`Rate limit exceeded (429): ${errorText}`);
+        } else if (res.status === 400) {
+          throw new Error(`Bad request (400): ${errorText}`);
+        } else if (res.status === 403) {
+          throw new Error(`API key invalid or quota exceeded (403): ${errorText}`);
+        } else if (res.status >= 500) {
+          throw new Error(`Server error (${res.status}): ${errorText}`);
+        }
+        
+        throw new Error(`HTTP ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      
+      // Better error handling for API response structure
+      if (!data.candidates || data.candidates.length === 0) {
+        console.error("No candidates in response:", data);
+        throw new Error("No response candidates received from Gemini API");
+      }
+
+      const candidate = data.candidates[0];
+      
+      // Check for content filtering
+      if (candidate.finishReason === "SAFETY" || candidate.finishReason === "BLOCKED_CONTENT") {
+        throw new Error("Content was blocked by safety filters");
+      }
+
+      if (!candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+        console.error("Invalid candidate structure:", candidate);
+        throw new Error("Invalid response structure from Gemini API");
+      }
+
+      const text = candidate.content.parts[0].text;
+      if (!text || text.trim() === '') {
+        throw new Error("Empty response text received from Gemini API");
+      }
+
+      try {
+        const parsed = JSON.parse(text.trim());
+        return parsed;
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError);
+        console.error("Response text:", text);
+        
+        // Try to clean the response and parse again
+        const cleanedText = text.replace(/```json\s?|\s?```/g, '').trim();
         try {
-          return await fn();
-        } catch (error) {
-          if (error.message.includes('429') && attempt < maxRetries) {
-            const delay = baseDelay * Math.pow(2, attempt - 1);
-            console.log(`429 error, retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-            continue;
-          }
-          throw error;
+          return JSON.parse(cleanedText);
+        } catch (secondParseError) {
+          throw new Error(`Failed to parse Gemini response as JSON: ${parseError.message}`);
         }
       }
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout - Gemini API took too long to respond');
+      }
+      throw error;
     }
+  });
+}
 
-    async function geminiJSON(prompt, schema) {
-      const body = {
-        contents: [{ role: "user", parts: [{ text: prompt }]}],
-        generationConfig: {
-          response_mime_type: "application/json",
-          response_schema: schema
-        }
-      };
-      return await withRetry(async () => {
-        const res = await fetch(GEMINI_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error(`Gemini API error: ${res.status} ${errorText}`);
-          throw new Error(`Gemini error: ${res.status} ${errorText}`);
-        }
-        const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) {
-          throw new Error("No response text received from Gemini API");
-        }
-        try {
-          return JSON.parse(text);
-        } catch (parseError) {
-          console.error("JSON parse error:", parseError, "Response text:", text);
-          throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
-        }
-      });
-    }
+async function generateQuiz(course, unit, isFinal = false) {
+  if (!course || !unit) {
+    throw new Error('Course and unit are required');
+  }
 
-    async function generateQuiz(course, unit, isFinal = false) {
-      const count = isFinal ? 20 : 5;
-      const prompt = `
-You are generating AP-style questions for ${course}, topic: ${unit}.
-${isFinal ? "Make 20 questions (16 MCQ, at least 2 source-analysis, 4 open-response)." 
-           : "Make 5 questions (3 MCQ, 1 source-analysis, 1 open-response)."}
-For MCQs: include 4 choices, 'correct', and 'explanation'.
-For source-analysis: include 'source' text, 4 choices, 'correct', 'explanation'.
-For open-response: include 'rubric'.
-Type is 'mcq' for standard MCQ, 'source' for source-analysis, 'open' for open-response.
-Output JSON only.
-`;
-      const schema = {
-        type: "object",
-        properties: {
-          questions: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                type: { type: "string" },
-                question: { type: "string" },
-                source: { type: "string" },
-                choices: { type: "array", items: { type: "string" } },
-                correct: { type: "string" },
-                explanation: { type: "string" },
-                rubric: { type: "string" }
-              }
+  const count = isFinal ? 20 : 5;
+  const mcqCount = isFinal ? 16 : 3;
+  const sourceCount = isFinal ? 2 : 1;  // At least 2 for final
+  const openCount = isFinal ? 4 : 1;
+
+  const prompt = `You are an expert AP teacher creating ${isFinal ? 'a final exam' : 'a quiz'} for ${course}, focusing on: ${unit}.
+
+Create exactly ${count} questions with this distribution:
+- ${mcqCount} multiple choice questions (type: "mcq")
+- ${sourceCount} source analysis questions (type: "source") 
+- ${openCount} open response questions (type: "open")
+
+Requirements:
+1. All questions must be AP-level difficulty and curriculum-appropriate
+2. Multiple choice questions: Include exactly 4 answer choices (A, B, C, D format), mark the correct answer, and provide a clear explanation
+3. Source analysis questions: Include a primary/secondary source text, 4 analysis choices, correct answer, and explanation
+4. Open response questions: Include detailed scoring rubric with specific criteria
+
+Format each question as JSON with these exact fields:
+- type: "mcq", "source", or "open"
+- question: the question text
+- source: (only for source-analysis questions) the source text to analyze
+- choices: (for mcq/source only) array of exactly 4 answer choices
+- correct: (for mcq/source only) the letter of the correct choice (A, B, C, or D)
+- explanation: (for mcq/source only) why the answer is correct
+- rubric: (for open only) detailed scoring criteria
+
+Return only valid JSON in this format:
+{
+  "questions": [array of question objects]
+}`;
+
+  const schema = {
+    type: "object",
+    properties: {
+      questions: {
+        type: "array",
+        minItems: count,
+        maxItems: count,
+        items: {
+          type: "object",
+          properties: {
+            type: { 
+              type: "string", 
+              enum: ["mcq", "source", "open"] 
+            },
+            question: { 
+              type: "string",
+              minLength: 10
+            },
+            source: { 
+              type: "string" 
+            },
+            choices: { 
+              type: "array",
+              items: { type: "string" },
+              minItems: 4,
+              maxItems: 4
+            },
+            correct: { 
+              type: "string",
+              enum: ["A", "B", "C", "D"]
+            },
+            explanation: { 
+              type: "string",
+              minLength: 10
+            },
+            rubric: { 
+              type: "string",
+              minLength: 20
             }
-          }
+          },
+          required: ["type", "question"]
         }
-      };
+      }
+    },
+    required: ["questions"]
+  };
+
+  try {
+    const maxAttempts = 3;
+    let lastError;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        for (let attempt = 1; attempt <= 2; attempt++) {
-          const { questions } = await geminiJSON(prompt, schema);
-          console.log(`Raw Gemini response (attempt ${attempt}):`, questions);
-          if (!questions || !Array.isArray(questions)) {
-            console.error("Invalid questions format received from Gemini API");
-            if (attempt === 2) {
-              throw new Error("Invalid questions format received from Gemini API after retry");
-            }
-            continue;
+        console.log(`Generating quiz for ${course} - ${unit} (attempt ${attempt})`);
+        const response = await geminiJSON(prompt, schema);
+        
+        if (!response || !response.questions || !Array.isArray(response.questions)) {
+          throw new Error("Invalid response structure - missing questions array");
+        }
+
+        const questions = response.questions;
+        console.log(`Received ${questions.length} questions from Gemini`);
+
+        // Validate and filter questions
+        const validQuestions = questions.filter(q => {
+          if (!q || typeof q !== 'object') {
+            console.warn("Invalid question object:", q);
+            return false;
           }
-          const validQuestions = questions.filter(q => {
-            if (!q || !q.question || !q.type) {
-              console.warn("Invalid question (missing question or type):", q);
+
+          if (!q.question || typeof q.question !== 'string' || q.question.trim().length === 0) {
+            console.warn("Invalid or missing question text:", q);
+            return false;
+          }
+
+          if (!q.type || !['mcq', 'source', 'open'].includes(q.type)) {
+            console.warn("Invalid or missing question type:", q);
+            return false;
+          }
+
+          // Validate MCQ and source questions
+          if (q.type === 'mcq' || q.type === 'source') {
+            if (!Array.isArray(q.choices) || q.choices.length !== 4) {
+              console.warn("Invalid choices array:", q);
               return false;
             }
-            if (q.type === 'mcq' || q.type === 'source') {
-              const isValid = Array.isArray(q.choices) && q.choices.length === 4 && q.correct && q.explanation && q.choices.every(c => typeof c === 'string' && c.trim() !== '');
-              if (!isValid) console.warn("Invalid MCQ/source question:", q);
-              return isValid;
-            } else if (q.type === 'open') {
-              const isValid = q.rubric && typeof q.rubric === 'string' && q.rubric.trim() !== '';
-              if (!isValid) console.warn("Invalid open-response question:", q);
-              return isValid;
+            
+            if (!q.choices.every(c => typeof c === 'string' && c.trim().length > 0)) {
+              console.warn("Invalid choice content:", q);
+              return false;
             }
-            console.warn("Unknown question type:", q);
-            return false;
-          });
-          if (validQuestions.length === 0) {
-            console.error(`No valid questions generated on attempt ${attempt}`);
-            if (attempt === 2) {
-              throw new Error("No valid questions generated by Gemini API after retry");
+
+            if (!q.correct || !['A', 'B', 'C', 'D'].includes(q.correct)) {
+              console.warn("Invalid correct answer:", q);
+              return false;
             }
-            continue;
+
+            if (!q.explanation || typeof q.explanation !== 'string' || q.explanation.trim().length === 0) {
+              console.warn("Invalid explanation:", q);
+              return false;
+            }
+
+            // Additional validation for source questions
+            if (q.type === 'source' && (!q.source || typeof q.source !== 'string' || q.source.trim().length === 0)) {
+              console.warn("Invalid source text:", q);
+              return false;
+            }
           }
-          if (validQuestions.length < count) {
-            console.warn(`Generated ${validQuestions.length} valid questions, expected ${count}`);
+
+          // Validate open response questions
+          if (q.type === 'open') {
+            if (!q.rubric || typeof q.rubric !== 'string' || q.rubric.trim().length === 0) {
+              console.warn("Invalid rubric:", q);
+              return false;
+            }
           }
-          return validQuestions;
+
+          return true;
+        });
+
+        console.log(`Validated ${validQuestions.length} questions out of ${questions.length}`);
+
+        if (validQuestions.length === 0) {
+          throw new Error("No valid questions generated");
         }
+
+        // Check if we have minimum acceptable number of questions
+        const minAcceptable = Math.ceil(count * 0.8); // Accept 80% of requested questions
+        if (validQuestions.length < minAcceptable) {
+          throw new Error(`Generated only ${validQuestions.length} valid questions, need at least ${minAcceptable}`);
+        }
+
+        // Ensure we have the right distribution (for final exams)
+        if (isFinal) {
+          const typeCounts = validQuestions.reduce((acc, q) => {
+            acc[q.type] = (acc[q.type] || 0) + 1;
+            return acc;
+          }, {});
+
+          if (typeCounts.open < 2) {
+            console.warn(`Final exam should have at least 2 open response questions, got ${typeCounts.open}`);
+          }
+        }
+
+        return validQuestions.slice(0, count); // Return exactly the requested number
+
       } catch (error) {
-        console.error("Quiz generation error:", error);
-        throw new Error(`Failed to generate quiz: ${error.message}`);
+        console.error(`Quiz generation attempt ${attempt} failed:`, error.message);
+        lastError = error;
+        
+        if (attempt < maxAttempts) {
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
       }
     }
 
-    async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
-      const schema = {
-        type: "object",
-        properties: {
-          pass: { type: "boolean" },
-          feedback: { type: "string" }
-        }
-      };
-      const prompt = `
+    throw new Error(`Failed to generate quiz after ${maxAttempts} attempts. Last error: ${lastError.message}`);
+
+  } catch (error) {
+    console.error("Quiz generation error:", error);
+    throw new Error(`Failed to generate quiz for ${course} - ${unit}: ${error.message}`);
+  }
+}
+
+async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
+  if (!userAnswer || userAnswer.trim().length === 0) {
+    return {
+      pass: false,
+      feedback: "No answer provided. Please write a response to receive credit."
+    };
+  }
+
+  const prompt = `You are grading an AP-level open response question.
+
 Course: ${course}
 Unit: ${unit}
 Question: ${question}
-Rubric: ${rubric}
+Scoring Rubric: ${rubric}
 
-Student answer:
-${userAnswer}
+Student Answer:
+"${userAnswer.trim()}"
 
-Decide pass/fail and give short feedback.
-Output JSON.
-`;
+Grade this response and provide constructive feedback. Be fair but maintain AP standards.
+
+Determine:
+1. Whether the response passes (meets minimum requirements for credit)
+2. Specific, actionable feedback for improvement
+
+Return JSON with:
+- pass: boolean (true if response demonstrates adequate understanding)
+- feedback: string (2-3 sentences of constructive feedback)`;
+
+  const schema = {
+    type: "object",
+    properties: {
+      pass: { type: "boolean" },
+      feedback: { 
+        type: "string",
+        minLength: 20,
+        maxLength: 500
+      }
+    },
+    required: ["pass", "feedback"]
+  };
+
+  try {
+    const response = await geminiJSON(prompt, schema);
+    
+    if (!response || typeof response.pass !== 'boolean' || !response.feedback) {
+      throw new Error("Invalid grading response structure");
+    }
+
+    return {
+      pass: response.pass,
+      feedback: response.feedback.trim()
+    };
+    
+  } catch (error) {
+    console.error("Open response grading error:", error);
+    
+    // Fallback grading logic
+    const wordCount = userAnswer.trim().split(/\s+/).length;
+    const hasSubstance = wordCount >= 25; // Minimum word count for substance
+    
+    return {
+      pass: hasSubstance,
+      feedback: hasSubstance 
+        ? "Your response has been recorded. Due to a technical issue, detailed feedback is not available, but your effort has been noted."
+        : "Please provide a more substantial response (at least 25 words) that addresses the question thoroughly."
+    };
+  }
+}
+
+// Helper function to create DOM elements
+function createEl(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text) el.textContent = text;
+  return el;
+}
+
+// Helper function to extract name from email
+function nameFromEmail(email) {
+  return (email || "Student").split("@")[0];
+}
+
+// Render AP courses for user (unchanged)
+function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
+  courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
+  unitsList.innerHTML = '';
+
+  xpDisplay.textContent = `${xp}`;
+
+  if (!selected || selected.length === 0) {
+    unitsList.textContent = "No courses selected. Open settings to select courses.";
+    unitsList.className = "text-white";
+    return;
+  }
+
+  selected.forEach(courseName => {
+    const option = createEl('option', '', courseName);
+    option.value = courseName;
+    courseSelect.appendChild(option);
+  });
+
+  if (selected.length > 0) {
+    courseSelect.value = selected[0];
+    renderUnits(selected[0], progressDoc);
+  }
+
+  courseSelect.addEventListener('change', () => {
+    const selectedCourse = courseSelect.value;
+    renderUnits(selectedCourse, progressDoc);
+  });
+}
+
+// Render units (unchanged)
+function renderUnits(courseName, progressDoc = {}) {
+  unitsList.innerHTML = '';
+  const units = apCourses[courseName];
+  if (!units) {
+    unitsList.textContent = 'No units available for this course.';
+    unitsList.className = "text-white";
+    return;
+  }
+
+  units.forEach(unit => {
+    const unitBtn = createEl('button', '', unit);
+    const check = createEl('span', 'ml-2 text-green-400');
+    if (progressDoc?.[courseName]?.[unit]?.passed) check.textContent = '✅';
+    unitBtn.appendChild(check);
+    unitBtn.addEventListener('click', () => openUnitQuiz(courseName, unit, check));
+    unitsList.appendChild(unitBtn);
+  });
+
+  const finalBtn = createEl('button', 'text-white', 'Final Exam');
+  const finalCheck = createEl('span', 'ml-2 text-green-400');
+  if (progressDoc?.finalExams?.[courseName]?.passed) finalCheck.textContent = '✅';
+  finalBtn.appendChild(finalCheck);
+  finalBtn.addEventListener('click', () => openFinalExam(courseName, finalCheck));
+  unitsList.appendChild(finalBtn);
+}
+
+async function openUnitQuiz(course, unit, checkSpan) {
+  const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
+  modal.id = 'quizModal';
+  modal.classList.add('show');
+  modal.innerHTML = `
+    <div class="bg-gray-800 p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+      <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
+      <div id="quizContent">
+        <div class="text-center">
+          <button id="startQuiz" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition-colors">
+            Start Quiz
+          </button>
+          <p class="text-gray-300 mt-2">5 questions • Pass with 4/5 correct</p>
+        </div>
+      </div>
+      <button id="closeQuiz" class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors">Close</button>
+    </div>`;
+  
+  document.body.appendChild(modal);
+  const quizContent = modal.querySelector('#quizContent');
+  modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+
+  modal.querySelector('#startQuiz').onclick = async () => {
+    quizContent.innerHTML = '<div class="text-center text-white"><p>Generating quiz...</p><div class="spinner"></div></div>';
+    
+    try {
+      const questions = await generateQuiz(course, unit, false);
+      showQuizModal(course, unit, questions, 5, 4, checkSpan, false, modal, quizContent);
+    } catch (error) {
+      console.error('Failed to load quiz:', error);
+      quizContent.innerHTML = `
+        <div class="text-center text-white">
+          <p class="text-red-400 mb-4">❌ Error loading quiz</p>
+          <p class="text-sm text-gray-300 mb-4">${error.message}</p>
+          <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                  class="bg-gray-600 px-4 py-2 rounded hover:bg-gray-500">
+            Try Again Later
+          </button>
+        </div>`;
+    }
+  };
+}
+
+async function openFinalExam(course, checkSpan) {
+  const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
+  modal.id = 'quizModal';
+  modal.classList.add('show');
+  modal.innerHTML = `
+    <div class="bg-gray-800 p-6 rounded-2xl max-w-2xl w-full shadow-xl">
+      <h2 class="font-bold text-xl text-white mb-4">${course} — Final Exam</h2>
+      <div id="quizContent">
+        <div class="text-center">
+          <button id="startQuiz" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition-colors">
+            Start Final Exam
+          </button>
+          <p class="text-gray-300 mt-2">20 questions • Pass with 16/20 correct</p>
+          <p class="text-yellow-300 text-sm mt-1">⚠️ This may take longer to generate</p>
+        </div>
+      </div>
+      <button id="closeQuiz" class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-500 transition-colors">Close</button>
+    </div>`;
+  
+  document.body.appendChild(modal);
+  const quizContent = modal.querySelector('#quizContent');
+  modal.querySelector('#closeQuiz').onclick = () => modal.remove();
+
+  modal.querySelector('#startQuiz').onclick = async () => {
+    quizContent.innerHTML = '<div class="text-center text-white"><p>Generating final exam...</p><p class="text-sm text-gray-400">This may take up to 30 seconds</p><div class="spinner"></div></div>';
+    
+    try {
+      const questions = await generateQuiz(course, 'Final Exam', true);
+      showQuizModal(course, 'Final Exam', questions, 20, 16, checkSpan, true, modal, quizContent);
+    } catch (error) {
+      console.error('Failed to load final exam:', error);
+      quizContent.innerHTML = `
+        <div class="text-center text-white">
+          <p class="text-red-400 mb-4">❌ Error loading final exam</p>
+          <p class="text-sm text-gray-300 mb-4">${error.message}</p>
+          <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                  class="bg-gray-600 px-4 py-2 rounded hover:bg-gray-500">
+            Try Again Later
+          </button>
+        </div>`;
+    }
+  };
+}
+
+async function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal, modal, quizContent) {
+  let currentIndex = 0;
+  let score = 0;
+  let earnedXP = 0;
+
+  async function renderCurrentQuestion() {
+    if (currentIndex >= questions.length) {
+      // Quiz completed - show results
+      const passed = score >= passThreshold;
+      const percentage = Math.round((score / totalCount) * 100);
+      
+      quizContent.innerHTML = `
+        <div class="text-center">
+          <div class="mb-6">
+            <h3 class="text-2xl font-bold ${passed ? 'text-green-400' : 'text-red-400'} mb-2">
+              ${passed ? '✅ Passed!' : '❌ Not Passed'}
+            </h3>
+            <p class="text-white text-lg">Score: ${score}/${totalCount} (${percentage}%)</p>
+            <p class="text-purple-300">Earned XP: +${earnedXP}</p>
+          </div>
+          
+          ${!passed ? `
+            <p class="text-gray-300 mb-4">
+              You need ${passThreshold}/${totalCount} to pass. Try again to improve your score!
+            </p>
+          ` : ''}
+          
+          <button onclick="this.closest('.fixed').remove()" 
+                  class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500">
+            Continue
+          </button>
+        </div>`;
+
+      // Save progress to Firebase
       try {
-        return await geminiJSON(prompt, schema);
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, 'users', user.uid);
+          
+          if (passed) {
+            const progressUpdate = isFinal 
+              ? { finalExams: { [course]: { passed: true, score } } }
+              : { progress: { [course]: { [unit]: { passed: true, score } } } };
+            
+            await setDoc(userRef, progressUpdate, { merge: true });
+            checkSpan.textContent = '✅';
+          }
+          
+          // Update XP
+          const userSnap = await getDoc(userRef);
+          const currentXP = userSnap.data()?.xp || 0;
+          await updateDoc(userRef, { xp: currentXP + earnedXP });
+          xpDisplay.textContent = `${currentXP + earnedXP}`;
+        }
       } catch (error) {
-        throw new Error(`Failed to grade open response: ${error.message}`);
+        console.error('Failed to save progress:', error);
       }
+      
+      return;
     }
 
-    function createEl(tag, className, text) {
-      const el = document.createElement(tag);
-      if (className) el.className = className;
-      if (text) el.textContent = text;
-      return el;
-    }
+    const question = questions[currentIndex];
+    const questionNumber = currentIndex + 1;
 
-    function nameFromEmail(email) {
-      return (email || "Student").split("@")[0];
-    }
+    quizContent.innerHTML = `
+      <div class="mb-4">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-purple-300 font-semibold">Question ${questionNumber} of ${questions.length}</span>
+          <span class="text-gray-400">Score: ${score}/${currentIndex}</span>
+        </div>
+        
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <h3 class="font-semibold text-white mb-3">${question.question}</h3>
+          
+          ${question.source ? `
+            <div class="bg-gray-600 p-3 rounded mb-4">
+              <p class="text-sm text-gray-300 italic">${question.source}</p>
+            </div>
+          ` : ''}
+          
+          <div id="questionContent"></div>
+        </div>
+      </div>`;
 
-    function renderAPCoursesForUser(selected, progressDoc = {}, xp = 0) {
-      courseSelect.innerHTML = '<option value="" disabled>Select a Course</option>';
-      unitsList.innerHTML = '';
+    const questionContent = quizContent.querySelector('#questionContent');
 
-      xpDisplay.textContent = `${xp}`;
-
-      if (!selected || selected.length === 0) {
-        unitsList.textContent = "No courses selected. Open settings to select courses.";
-        unitsList.className = "text-white";
-        return;
-      }
-
-      selected.forEach(courseName => {
-        const option = createEl('option', '', courseName);
-        option.value = courseName;
-        courseSelect.appendChild(option);
+    if (question.type === 'mcq' || question.type === 'source') {
+      // Multiple choice question
+      const choices = ['A', 'B', 'C', 'D'];
+      question.choices.forEach((choice, index) => {
+        const button = createEl('button', 
+          'w-full text-left p-3 mb-2 bg-gray-600 hover:bg-gray-500 rounded transition-colors text-white',
+          `${choices[index]}. ${choice}`
+        );
+        
+        button.onclick = () => {
+          const isCorrect = choices[index] === question.correct;
+          if (isCorrect) {
+            score++;
+            earnedXP += 15;
+            button.className = 'w-full text-left p-3 mb-2 bg-green-600 rounded text-white';
+          } else {
+            button.className = 'w-full text-left p-3 mb-2 bg-red-600 rounded text-white';
+          }
+          
+          // Disable all buttons and show explanation
+          questionContent.querySelectorAll('button').forEach(btn => btn.disabled = true);
+          
+          setTimeout(() => {
+            currentIndex++;
+            renderCurrentQuestion();
+          }, 2000);
+        };
+        
+        questionContent.appendChild(button);
       });
-
-      if (selected.length > 0) {
-        courseSelect.value = selected[0];
-        renderUnits(selected[0], progressDoc);
-      }
-
-      courseSelect.addEventListener('change', () => {
-        const selectedCourse = courseSelect.value;
-        renderUnits(selectedCourse, progressDoc);
-      });
-    }
-
-    function renderUnits(courseName, progressDoc = {}) {
-      unitsList.innerHTML = '';
-      const units = apCourses[courseName];
-      if (!units) {
-        unitsList.textContent = 'No units available for this course.';
-        unitsList.className = "text-white";
-        return;
-      }
-
-      units.forEach(unit => {
-        const unitBtn = createEl('button', '', unit);
-        const check = createEl('span', 'ml-2 text-green-400');
-        if (progressDoc?.[courseName]?.[unit]?.passed) check.textContent = '✅';
-        unitBtn.appendChild(check);
-        unitBtn.addEventListener('click', () => openUnitQuiz(courseName, unit, check));
-        unitsList.appendChild(unitBtn);
-      });
-
-      const finalBtn = createEl('button', 'text-white', 'Final Exam');
-      const finalCheck = createEl('span', 'ml-2 text-green-400');
-      if (progressDoc?.finalExams?.[courseName]?.passed) finalCheck.textContent = '✅';
-      finalBtn.appendChild(finalCheck);
-      finalBtn.addEventListener('click', () => openFinalExam(courseName, finalCheck));
-      unitsList.appendChild(finalBtn);
-    }
-
-    async function openUnitQuiz(course, unit, checkSpan) {
-      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
-      modal.id = 'quizModal';
-      modal.classList.add('show');
-      modal.innerHTML = `
-        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
-          <h2 class="font-bold text-xl text-white mb-4">${course} — ${unit}</h2>
-          <div id="quizContent">
-            <button id="startQuiz" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-500">Start</button>
-          </div>
-          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
-        </div>`;
-      document.body.appendChild(modal);
-      const quizContent = modal.querySelector('#quizContent');
-      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
-
-      modal.querySelector('#startQuiz').onclick = async () => {
+      
+    } else if (question.type === 'open') {
+      // Open response question
+      const textarea = document.createElement('textarea');
+      textarea.className = 'w-full h-32 p-3 bg-gray-600 text-white rounded border border-gray-500 resize-none';
+      textarea.placeholder = 'Type your answer here...';
+      
+      const submitButton = createEl('button', 
+        'mt-3 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed',
+        'Submit Answer'
+      );
+      submitButton.disabled = true;
+      
+      textarea.oninput = () => {
+        submitButton.disabled = textarea.value.trim().length < 10;
+      };
+      
+      submitButton.onclick = async () => {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Grading...';
+        
         try {
-          const qs = await generateQuiz(course, unit, false);
-          showQuizModal(course, unit, qs, 5, 5, checkSpan, false, modal, quizContent);
+          const result = await gradeOpenResponse(course, unit, question.question, question.rubric, textarea.value);
+          
+          if (result.pass) {
+            score++;
+            earnedXP += 50;
+          }
+          
+          // Show feedback
+          const feedbackDiv = createEl('div', 
+            `mt-4 p-3 rounded ${result.pass ? 'bg-green-800 border border-green-600' : 'bg-red-800 border border-red-600'}`,
+            result.feedback
+          );
+          feedbackDiv.style.color = 'white';
+          questionContent.appendChild(feedbackDiv);
+          
+          setTimeout(() => {
+            currentIndex++;
+            renderCurrentQuestion();
+          }, 3000);
+          
         } catch (error) {
-          console.error('Failed to load quiz:', error);
-          quizContent.innerHTML = `<p class="text-white">Error loading quiz: ${error.message}. Please try again later.</p>`;
+          console.error('Failed to grade open response:', error);
+          submitButton.textContent = 'Grading Failed';
+          setTimeout(() => {
+            currentIndex++;
+            renderCurrentQuestion();
+          }, 2000);
         }
       };
+      
+      questionContent.appendChild(textarea);
+      questionContent.appendChild(submitButton);
     }
+  }
 
-    async function openFinalExam(course, checkSpan) {
-      const modal = createEl('div', 'fixed inset-0 bg-black/50 flex items-center justify-center z-50');
-      modal.id = 'quizModal';
-      modal.classList.add('show');
-      modal.innerHTML = `
-        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full shadow-xl">
-          <h2 class="font-bold text-xl text-white mb-4">${course} — Final Exam</h2>
-          <div id="quizContent">
-            <button id="startQuiz" class="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-500">Start</button>
-          </div>
-          <button id="closeQuiz" class="mt-4 bg-gray-200 text-purple-300 px-3 py-1 rounded hover:bg-gray-300">Close</button>
-        </div>`;
-      document.body.appendChild(modal);
-      const quizContent = modal.querySelector('#quizContent');
-      modal.querySelector('#closeQuiz').onclick = () => modal.remove();
-
-      modal.querySelector('#startQuiz').onclick = async () => {
-        try {
-          const qs = await generateQuiz(course, 'Final Exam', true);
-          showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true, modal, quizContent);
-        } catch (error) {
-          console.error('Failed to load final exam:', error);
-          quizContent.innerHTML = `<p class="text-white">Error loading final exam: ${error.message}. Please try again later.</p>`;
-        }
-      };
-    }
-
-    async function showQuizModal(course, unit, questions, totalCount, passThreshold, checkSpan, isFinal, modal, quizContent) {
-      let index = 0, score = 0, earnedXP = 0;
-
-      async function renderNext() {
-        quizContent.innerHTML = '';
-        if (index >= questions.length) {
-          const passed = score >= passThreshold;
-          quizContent.innerHTML = `<p class="text-white">${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p class="text-white">Earned XP: ${earnedXP}</p>`;
-          const user = auth.currentUser;
-          if (user) {
-            const ref = doc(db, 'users', user.uid);
-            if (passed) {
-              if (isFinal) {
-                await setDoc(ref, { finalExams: { [course]: { passed, score } } }, { merge: true });
-              } else {
-                await setDoc(ref, { progress: { [course]: { [unit]: { passed, score } } } }, { merge: true });
-              }
-              checkSpan.textContent = '✅';
-            }
-            const snap = await getDoc(ref);
-            const currentXP = snap.data().xp || 0;
-            await updateDoc(ref, { xp: currentXP + earnedXP });
-            xpDisplay.textContent = `${currentXP + earnedXP}`;
-          }
-          return;
-        }
-        const q = questions[index];
-        if (!q || !q.question) {
-          quizContent.innerHTML = `<p class="text-white">Error: Invalid question data for question ${index + 1}.</p>`;
-          index++;
-          renderNext();
-          return;
-        }
-        const card = createEl('div', 'border p-3 rounded mb-3');
-        card.appendChild(createEl('p', 'font-semibold text-white', q.question));
-
-        if (q.source) {
-          card.appendChild(createEl('p', 'italic mb-2 text-white', q.source));
-        }
-
-        if (q.type === 'mcq' || q.type === 'source') {
-          if (!q.choices || !Array.isArray(q.choices) || q.choices.length < 4) {
-            quizContent.innerHTML = `<p class="text-white">Error: Invalid choices for question ${index + 1}.</p>`;
-            index++;
-            renderNext();
-            return;
-          }
-          q.choices.forEach(choice => {
-            const btn = createEl('button', 'block border rounded p-2 w-full mb-1 text-white', choice);
-            btn.onclick = () => {
-              if (choice === q.correct) {
-                score++;
-                earnedXP += 15;
-              }
-              index++;
-              renderNext();
-            };
-            card.appendChild(btn);
-          });
-        } else if (q.type === 'open') {
-          const ta = document.createElement('textarea');
-          ta.className = 'w-full border p-2 mb-2';
-          const submit = createEl('button', 'bg-purple-600 text-white px-3 py-1 rounded', 'Submit');
-          submit.disabled = true;
-          ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
-          submit.onclick = async () => {
-            try {
-              const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
-              if (res.pass) {
-                score++;
-                earnedXP += 50;
-              }
-              index++;
-              renderNext();
-            } catch (error) {
-              console.error('Failed to grade open response:', error);
-              quizContent.innerHTML = `<p class="text-white">Error grading response for question ${index + 1}. Please try again.</p>`;
-              index++;
-              renderNext();
-            }
-          };
-          card.appendChild(ta);
-          card.appendChild(submit);
-        }
-        quizContent.appendChild(card);
-      }
-      renderNext();
-    }
-
+  // Start the quiz
+  renderCurrentQuestion();
+}
     function openSettings() {
       settingsModal.classList.remove('hidden');
       settingsModal.classList.add('show');
