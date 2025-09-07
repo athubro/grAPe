@@ -695,7 +695,7 @@
       ]
     };
 
-    const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
+const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
 const GEMINI_MODEL = "gemini-1.5-flash";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
@@ -1246,7 +1246,7 @@ async function openFinalExam(course, checkSpan) {
     
     try {
       const questions = await generateQuiz(course, 'Final Exam', true);
-      showQuizModal(course, 'Final Exam', questions, 10, 8, checkSpan, true, modal, quizContent);
+      showQuizModal(course, 'Final Exam', questions, 20, 16, checkSpan, true, modal, quizContent);
     } catch (error) {
       console.error('Failed to load final exam:', error);
       quizContent.innerHTML = `
