@@ -1246,7 +1246,7 @@ async function openFinalExam(course, checkSpan) {
     
     try {
       const questions = await generateQuiz(course, 'Final Exam', true);
-      showQuizModal(course, 'Final Exam', questions, 20, 16, checkSpan, true, modal, quizContent);
+      showQuizModal(course, 'Final Exam', questions, 10, 8, checkSpan, true, modal, quizContent);
     } catch (error) {
       console.error('Failed to load final exam:', error);
       quizContent.innerHTML = `
