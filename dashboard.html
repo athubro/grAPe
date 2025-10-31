@@ -696,7 +696,7 @@
     };
 
 const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
-const GEMINI_MODEL = "gemini-2.5-lite";
+const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
 async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
