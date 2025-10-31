@@ -1,91 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | Grape Classroom</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" type="image/png" href="grape.png" />
+  <link rel="icon" type="image/png" href="grape.png"/>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #5b21b6; font-family: 'Inter', sans-serif; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; }
-    nav { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; padding: 0.75rem 1rem; background: #5b21b6; border-bottom: 1px solid #c4b5fd; }
-    #courses { font-size: 1.25rem; font-weight: 700; color: #c4b5fd; transition: color 0.3s ease, transform 0.3s ease; }
-    #courses:hover { color: #a78bfa; transform: scale(1.05); }
-    #xp-display { display: flex; align-items: center; gap: 0.5rem; font-size: 1rem; font-weight: 600; color: #8b5cf6; }
-    #xp-display::before { content: 'Trophy'; font-size: 1.25rem; color: #c4b5fd; transition: transform 0.3s ease; }
-    #xp-display:hover::before { transform: rotate(15deg); }
-    #settingsBtn { width: 1.5rem; height: 1.5rem; filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); transition: transform 0.3s ease, filter 0.3s ease; cursor: pointer; }
-    #settingsBtn:hover { filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); transform: rotate(90deg); }
-    #course-select { width: 100%; background: #5b21b6; border: 1px solid #a78bfa; border-radius: 0.75rem; padding: 0.75rem; font-size: 1rem; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg fill='%23a78bfa' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.5rem; }
-    #course-select:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3); border-color: #8b5cf6; }
-    #course-select:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px #c4b5fd; }
-    #units-list button { display: block; width: 100%; background: #5b21b6; border: 1px solid #a78bfa; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.5rem; text-align: left; color: #ffffff; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; }
-    #units-list button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(139, 92, 246, 0.3); background: #6d28d9; }
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; z-index: 50; }
-    .modal.show { display: flex !important; }
-    .modal .card { background: linear-gradient(135deg, #6d28d9, #5b21b6); border: 1px solid #a78bfa; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15); border-radius: 1rem; padding: 1.5rem; width: 100%; max-width: 500px; color: #ffffff; position: relative; overflow: hidden; }
-    .modal .card::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.05); backdrop-filter: blur(8px); pointer-events: none; }
-    .modal .card > * { position: relative; z-index: 1; }
-    .trophy { font-size: 1.5rem; }
-    .loading { height: 0.5rem; background: #4c1d95; border-radius: 9999px; overflow: hidden; margin-top: 0.75rem; }
-    .loading span { display: block; height: 100%; background: linear-gradient(90deg, #c4b5fd, #8b5cf6); width: 0%; transition: width 0.3s ease; }
-    .review-item { border: 1px solid #a78bfa; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.5rem; }
-    .review-item.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
-    .review-item.wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-    @media (max-width: 640px) {
-      nav { padding: 0.5rem; }
-      #courses { font-size: 1rem; }
-      .modal .card { width: 90%; }
-      #course-select, #units-list button { font-size: 0.9rem; padding: 0.5rem; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:#5b21b6; color:#fff; font-family:'Inter',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:1.5rem; }
+    nav { max-width:1200px; width:100%; display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; background:#5b21b6; border-bottom:1px solid #c4b5fd; }
+    #courses { font-size:1.25rem; font-weight:700; color:#c4b5fd; transition:all .3s; }
+    #courses:hover { color:#a78bfa; transform:scale(1.05); }
+    #xp-display { display:flex; align-items:center; gap:.5rem; font-weight:600; color:#8b5cf6; }
+    #xp-display::before { content:'Trophy'; font-size:1.25rem; }
+    #settingsBtn { width:1.5rem; height:1.5rem; filter:invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%); transition:all .3s; cursor:pointer; }
+    #settingsBtn:hover { filter:invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%); transform:rotate(90deg); }
+
+    #course-select { @apply w-full bg-violet-900 border border-violet-500 rounded-xl p-3 text-white shadow-lg; }
+    #course-select:hover { @apply border-violet-400 shadow-xl translate-y-[-2px]; }
+
+    #units-list button { @apply w-full text-left p-3 mb-2 rounded-lg border border-violet-500 bg-violet-900 text-white transition-all flex justify-between items-center; }
+    #units-list button:hover { @apply bg-violet-800 translate-y-[-2px] shadow-lg; }
+
+    .modal { @apply fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden backdrop-blur-sm; }
+    .modal.show { @apply flex; }
+    .modal .card { @apply bg-gradient-to-br from-violet-900 to-purple-800 rounded-2xl p-6 w-full max-w-lg shadow-2xl text-white border border-violet-500; }
+    .modal .card h2 { @apply text-2xl font-bold mb-4 text-violet-200; }
+    .modal .card .loading-bar { @apply w-full h-2 bg-violet-800 rounded-full overflow-hidden mt-3; }
+    .modal .card .loading-bar > div { @apply h-full bg-gradient-to-r from-violet-400 to-purple-400 transition-all duration-300; }
+
+    .trophy { @apply text-2xl; }
+    .bronze { color:#cd7f32; }
+    .silver { color:#c0c0c0; }
+    .gold { color:#ffd700; }
+
+    @media (max-width:640px) {
+      nav { padding:.5rem; }
+      #courses { font-size:1rem; }
+      .modal .card { @apply w-11/12; }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-6">
-  <div class="w-full flex items-center justify-center">
-    <nav class="flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <img src="grape.png" alt="Grape Logo" class="w-8 h-8 rounded-full">
-        <h1 id="courses" class="font-bold">Courses</h1>
-        <span id="xp-display">0</span>
-      </div>
-      <div>
-        <img id="settingsBtn" src="https://img.icons8.com/ios/512/7950F2/settings.png" alt="Settings" class="cursor-pointer">
-      </div>
-    </nav>
-  </div>
+<body class="flex flex-col items-center">
 
-  <div id="course-select-container" class="w-full max-w-5xl mt-4">
-    <select id="course-select" name="course" class="w-full">
+  <!-- NAVBAR -->
+  <nav class="flex items-center justify-between w-full max-w-5xl">
+    <div class="flex items-center gap-3">
+      <img src="grape.png" alt="Logo" class="w-8 h-8 rounded-full">
+      <h1 id="courses" class="font-bold">Courses</h1>
+      <span id="xp-display">0</span>
+      <div id="trophies" class="flex gap-1 ml-2"></div>
+    </div>
+    <img id="settingsBtn" src="https://img.icons8.com/ios/512/7950F2/settings.png" alt="Settings">
+  </nav>
+
+  <!-- COURSE SELECT -->
+  <div class="w-full max-w-5xl mt-4">
+    <select id="course-select" class="w-full">
       <option value="" disabled selected>Select a Course</option>
     </select>
   </div>
 
+  <!-- UNITS LIST -->
   <div id="units-list" class="w-full max-w-5xl mt-2"></div>
 
   <!-- SETTINGS MODAL -->
   <div id="settingsModal" class="modal">
     <div class="card">
-      <h2 class="text-xl font-bold mb-4">Settings</h2>
-      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-3">Reselect AP Courses</button>
-      <button id="logoutBtn" class="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">Log Out</button>
-      <button id="closeSettings" class="mt-3 text-purple-300 underline">Cancel</button>
+      <h2>Settings</h2>
+      <button id="reselectBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-2">Reselect AP Courses</button>
+      <button id="logoutBtn" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-500 mb-2">Log Out</button>
+      <button id="closeSettings" class="w-full text-purple-300 underline">Cancel</button>
     </div>
   </div>
 
   <!-- RESELECT MODAL -->
   <div id="reselectModal" class="modal">
     <div class="card max-w-2xl">
-      <h2 class="text-xl font-bold mb-4">Reselect AP Courses</h2>
-      <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto mb-4"></form>
+      <h2>Reselect AP Courses</h2>
+      <form id="reselectForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto mb-4"></form>
       <button id="saveReselect" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-2">Save</button>
       <button id="closeReselect" class="w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600">Cancel</button>
     </div>
   </div>
 
-  <!-- QUIZ MODAL (injected) -->
-  <div id="quizModal" class="modal"></div>
+  <!-- QUIZ MODAL -->
+  <div id="quizModal" class="modal">
+    <div class="card max-w-2xl">
+      <h2 id="quizTitle" class="text-2xl font-bold mb-4 text-violet-200">Loading Quiz...</h2>
+      <div class="loading-bar"><div style="width:0%"></div></div>
+      <div id="quizContent" class="mt-4"></div>
+      <button id="closeQuiz" class="mt-4 w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600 hidden">Close</button>
+    </div>
+  </div>
 
+  <!-- RESULT MODAL -->
+  <div id="resultModal" class="modal">
+    <div class="card max-w-2xl">
+      <h2 id="resultTitle" class="text-2xl font-bold mb-2 text-violet-200">Quiz Complete</h2>
+      <p id="resultScore" class="text-xl mb-2"></p>
+      <p id="resultTrophy" class="text-lg mb-4"></p>
+      <div id="review" class="mt-4 max-h-96 overflow-y-auto space-y-4"></div>
+      <button id="closeResult" class="mt-4 w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600">Close</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
   <script type="module">
     import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -100,25 +121,22 @@
       appId: "1:909399056268:web:3ac13a43d1e1846649c0a9",
       measurementId: "G-X2DELV9RFD"
     };
-
     const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    await setPersistence(auth, browserLocalPersistence);
+    const auth = getAuth(app); const db = getFirestore(app); await setPersistence(auth, browserLocalPersistence);
 
     const els = {
-      xp: document.getElementById("xp-display"),
-      courseSel: document.getElementById("course-select"),
-      units: document.getElementById("units-list"),
-      settingsBtn: document.getElementById("settingsBtn"),
-      settingsModal: document.getElementById("settingsModal"),
-      reselectModal: document.getElementById("reselectModal"),
-      reselectForm: document.getElementById("reselectForm"),
-      saveReselect: document.getElementById("saveReselect"),
-      closeReselect: document.getElementById("closeReselect"),
-      closeSettings: document.getElementById("closeSettings"),
-      logoutBtn: document.getElementById("logoutBtn"),
-      reselectBtn: document.getElementById("reselectBtn")
+      xp: document.getElementById('xp-display'), trophies: document.getElementById('trophies'),
+      courseSel: document.getElementById('course-select'), unitsList: document.getElementById('units-list'),
+      settingsBtn: document.getElementById('settingsBtn'), settingsModal: document.getElementById('settingsModal'),
+      reselectModal: document.getElementById('reselectModal'), reselectForm: document.getElementById('reselectForm'),
+      saveReselect: document.getElementById('saveReselect'), closeReselect: document.getElementById('closeReselect'),
+      closeSettings: document.getElementById('closeSettings'), logoutBtn: document.getElementById('logoutBtn'),
+      reselectBtn: document.getElementById('reselectBtn'), quizModal: document.getElementById('quizModal'),
+      resultModal: document.getElementById('resultModal'), quizTitle: document.getElementById('quizTitle'),
+      quizContent: document.getElementById('quizContent'), closeQuiz: document.getElementById('closeQuiz'),
+      resultTitle: document.getElementById('resultTitle'), resultScore: document.getElementById('resultScore'),
+      resultTrophy: document.getElementById('resultTrophy'), review: document.getElementById('review'),
+      closeResult: document.getElementById('closeResult')
     };
 
     const apCourses = {
@@ -460,236 +478,166 @@
       ]
     };
 
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU`;
+    const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
+    const GEMINI_MODEL = "gemini-1.5-flash";
+    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-    const geminiJSON = async (prompt, schema) => {
-      const res = await fetch(GEMINI_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: { response_mime_type: "application/json", response_schema: schema }
-        })
-      });
-      if (!res.ok) throw new Error("Gemini error");
-      const data = await res.json();
-      return JSON.parse(data.candidates[0].content.parts[0].text);
-    };
+    async function geminiJSON(prompt, schema) {
+      const res = await fetch(GEMINI_URL, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}], generationConfig:{response_mime_type:"application/json", response_schema:schema}}) });
+      if (!res.ok) throw new Error(`Gemini ${res.status}`);
+      const data = await res.json(); return JSON.parse(data.candidates[0].content.parts[0].text);
+    }
 
-    const $ = (tag, cls, txt) => {
-      const el = document.createElement(tag);
-      if (cls) el.className = cls;
-      if (txt) el.textContent = txt;
-      return el;
-    };
-
-    const openModal = (id, html) => {
-      const m = document.getElementById(id);
-      m.innerHTML = html;
-      m.classList.add('show');
-    };
-
-    const closeModal = (id) => {
-      document.getElementById(id).classList.remove('show');
-    };
-
-    const loadingBar = () => {
-      const bar = $('div', 'loading');
-      const inner = $('span');
-      bar.appendChild(inner);
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress = (progress + 10) % 100;
-        inner.style.width = progress + '%';
-      }, 150);
-      return { bar, stop: () => clearInterval(interval), set: (p) => inner.style.width = p + '%' };
-    };
-
-    let userData = null;
-
-    const renderCourses = (selected = [], progress = {}, xp = 0, trophies = { b: 0, s: 0, g: 0 }) => {
-      els.xp.innerHTML = `${xp} <span class="trophy">${'Bronze '.repeat(trophies.b)}${'Silver '.repeat(trophies.s)}${'Gold '.repeat(trophies.g)}</span>`;
-      els.courseSel.innerHTML = '<option value="" disabled selected>Select a Course</option>';
-      els.units.innerHTML = '';
-      if (!selected.length) { els.units.textContent = "No courses selected. Open settings."; return; }
-      selected.forEach(c => { const opt = $('option', '', c); opt.value = c; els.courseSel.appendChild(opt); });
-      els.courseSel.value = selected[0];
-      renderUnits(selected[0], progress);
-    };
-
-    const renderUnits = (course, progress = {}) => {
-      els.units.innerHTML = '';
-      const units = apCourses[course] || [];
-      units.forEach(unit => {
-        const btn = $('button', '', unit);
-        const chk = $('span', 'ml-2 text-green-400');
-        if (progress[course]?.[unit]?.passed) chk.textContent = 'Checkmark';
-        btn.appendChild(chk);
-        btn.onclick = () => startQuiz(course, unit, chk, false);
-        els.units.appendChild(btn);
-      });
-      const finalBtn = $('button', 'text-white', 'Final Exam');
-      const fchk = $('span', 'ml-2 text-green-400');
-      if (progress.finalExams?.[course]?.passed) fchk.textContent = 'Checkmark';
-      finalBtn.appendChild(fchk);
-      finalBtn.onclick = () => startQuiz(course, 'Final Exam', fchk, true);
-      els.units.appendChild(finalBtn);
-    };
-
-    const startQuiz = async (course, unit, checkSpan, isFinal) => {
-      openModal('quizModal', `<div class="card"><h2 class="text-xl font-bold mb-4">${course} — ${unit}</h2><div id="quizContent">Generating questions...<div class="loading mt-3"><span></span></div></div><button id="closeQuiz" class="mt-4 w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600">Close</button></div>`);
-      document.getElementById('closeQuiz').onclick = () => closeModal('quizModal');
-      const lb = loadingBar();
-      document.querySelector('#quizContent .loading').appendChild(lb.bar);
-      const questions = await generateQuiz(course, unit, isFinal, lb);
-      lb.stop(); lb.set(100); setTimeout(() => document.querySelector('#quizContent .loading').remove(), 300);
-      runQuiz(course, unit, questions, isFinal ? 20 : 5, isFinal ? 18 : 5, checkSpan, isFinal);
-    };
-
-    const generateQuiz = async (course, unit, isFinal, lb) => {
+    async function generateQuiz(course, unit, isFinal = false) {
       const count = isFinal ? 20 : 5;
-      const prompt = `Generate ${count} AP-style questions for ${course}, topic: ${unit}.\n${isFinal ? "16 MCQ, 2 source-analysis, 4 open-response." : "3 MCQ, 1 source-analysis, 1 open-response."}\nFor open-response: include rubric. Output JSON only.`;
-      const schema = { type: "object", properties: { questions: { type: "array", items: { type: "object", properties: { type: { type: "string" }, question: { type: "string" }, source: { type: "string" }, choices: { type: "array", items: { type: "string" } }, correct: { type: "string" }, explanation: { type: "string" }, rubric: { type: "string" } } } } } };
+      const prompt = `Generate ${count} AP-style questions for ${course}, ${unit}. ${isFinal?'16 MCQ, 2 source, 4 open':'3 MCQ, 1 source, 1 open'}. MCQ/source: 4 choices, correct, explanation. Open: rubric (1-4 scale). Types: 'mcq','source','open'. JSON only.`;
+      const schema = {type:"object",properties:{questions:{type:"array",items:{type:"object",properties:{type:{type:"string"},question:{type:"string"},source:{type:"string"},choices:{type:"array",items:{type:"string"}},correct:{type:"string"},explanation:{type:"string"},rubric:{type:"string"}}}}}};
       return (await geminiJSON(prompt, schema)).questions;
-    };
+    }
 
-    const runQuiz = (course, unit, questions, total, passThreshold, checkSpan, isFinal) => {
-      let idx = 0, score = 0, xpEarned = 0, answers = [];
-      const content = document.getElementById('quizContent');
-      content.innerHTML = '';
+    const $ = (tag, cls, txt) => { const e = document.createElement(tag); if(cls) e.className=cls; if(txt) e.textContent=txt; return e; };
+    const closeModal = m => { m.classList.remove('show'); m.classList.add('hidden'); };
+    const openModal = m => { m.classList.remove('hidden'); m.classList.add('show'); };
 
-      const nextQuestion = async () => {
+    function renderCourses(selected = [], progress = {}, xp = 0, trophies = {}) {
+      els.xp.textContent = xp; els.trophies.innerHTML = '';
+      ['bronze','silver','gold'].forEach(t => { const c = trophies[t]||0; if(c>0) for(let i=0;i<c;i++) els.trophies.appendChild($('span',`trophy ${t}`, 'Trophy')); });
+      els.courseSel.innerHTML = '<option value="" disabled selected>Select a Course</option>';
+      els.unitsList.innerHTML = '';
+      if (!selected.length) { els.unitsList.textContent = "No courses selected – open Settings."; return; }
+      selected.forEach(c => els.courseSel.appendChild($('option','',c)).value = c);
+      els.courseSel.value = selected[0]; renderUnits(selected[0], progress);
+    }
+
+    function renderUnits(course, progress = {}) {
+      els.unitsList.innerHTML = '';
+      const units = apCourses[course] || [];
+      units.forEach(u => {
+        const btn = $('button','',u); const chk = $('span','ml-2 text-green-400');
+        if (progress[course]?.[u]?.passed) chk.textContent='Checkmark';
+        btn.appendChild(chk); btn.onclick = () => startUnitQuiz(course, u, chk);
+        els.unitsList.appendChild(btn);
+      });
+      const finalBtn = $('button','text-white','Final Exam'); const fchk = $('span','ml-2 text-green-400');
+      if (progress.finalExams?.[course]?.passed) fchk.textContent='Checkmark';
+      finalBtn.appendChild(fchk); finalBtn.onclick = () => startFinalExam(course, fchk);
+      els.unitsList.appendChild(finalBtn);
+    }
+
+    async function startUnitQuiz(course, unit, chk) {
+      els.quizTitle.textContent = `Loading ${unit}...`; els.quizContent.innerHTML = ''; els.closeQuiz.classList.add('hidden');
+      openModal(els.quizModal);
+      const bar = els.quizModal.querySelector('.loading-bar > div'); let p=0; const i=setInterval(()=>{p=Math.min(p+10,90);bar.style.width=p+'%';},300);
+      const qs = await generateQuiz(course, unit, false); clearInterval(i); bar.style.width='100%';
+      setTimeout(() => openQuizModal(course, unit, qs, 5, 3, chk, false), 300);
+    }
+
+    async function startFinalExam(course, chk) {
+      els.quizTitle.textContent = `Loading Final Exam...`; els.quizContent.innerHTML = ''; els.closeQuiz.classList.add('hidden');
+      openModal(els.quizModal);
+      const bar = els.quizModal.querySelector('.loading-bar > div'); let p=0; const i=setInterval(()=>{p=Math.min(p+5,90);bar.style.width=p+'%';},400);
+      const qs = await generateQuiz(course, 'Final Exam', true); clearInterval(i); bar.style.width='100%';
+      setTimeout(() => openQuizModal(course, 'Final Exam', qs, 20, 16, chk, true), 300);
+    }
+
+    function openQuizModal(course, unit, questions, total, passMCQ, chk, isFinal) {
+      els.quizTitle.textContent = `${course} — ${unit}`;
+      els.quizContent.innerHTML = ''; els.closeQuiz.classList.remove('hidden');
+      let idx=0, score=0, xpEarned=0, answers=[];
+      const next = async () => {
         if (idx >= questions.length) {
-          const passed = score >= passThreshold;
-          const ref = doc(db, 'users', auth.currentUser.uid);
-          let trophies = userData.trophies || { b: 0, s: 0, g: 0 };
-
-          if (passed) {
-            if (isFinal) {
-              await setDoc(ref, { finalExams: { [course]: { passed: true, score } } }, { merge: true });
-              const allUnitsPassed = Object.values(userData.progress?.[course] || {}).every(v => v.passed);
-              if (allUnitsPassed && score === total) { trophies.g += 1; await setDoc(ref, { trophies }, { merge: true }); }
-            } else {
-              await setDoc(ref, { progress: { [course]: { [unit]: { passed: true, score } } } }, { merge: true });
-              if (score === total) { trophies.b += 1; await setDoc(ref, { trophies }, { merge: true }); }
-            }
-            checkSpan.textContent = 'Checkmark';
-          }
-
-          const snap = await getDoc(ref);
-          const curXP = snap.data()?.xp || 0;
-          await updateDoc(ref, { xp: curXP + xpEarned });
-          showGradingThenResult(course, unit, score, total, xpEarned, passed, answers, questions, isFinal);
+          const openGrades = await gradeAllOpen(answers.filter(a=>a.type==='open'));
+          openGrades.forEach(g => { const a = answers.find(x=>x.idx===g.idx); if(a){ a.pass=g.pass; a.feedback=g.feedback; if(g.pass) { score+=4; xpEarned+=50; } } });
+          const passed = score >= (isFinal?18:4); const ref = doc(db,'users',auth.currentUser.uid);
+          if (passed) { const path = isFinal ? {finalExams:{[course]:{passed,score}}} : {progress:{[course]:{[unit]:{passed,score}}}}; await setDoc(ref, path, {merge:true}); chk.textContent='Checkmark'; }
+          const snap = await getDoc(ref); const curXP = snap.data()?.xp||0; await updateDoc(ref, {xp: curXP + xpEarned});
+          const trophyUpdate = await updateTrophies(course, unit, passed, isFinal, ref);
+          showResultModal(course, unit, score, total, passed, xpEarned, questions, answers, trophyUpdate);
           return;
         }
-
-        const q = questions[idx];
-        const card = $('div', 'border p-3 rounded mb-3');
-        card.appendChild($('p', 'font-semibold text-white', q.question));
-        if (q.source) card.appendChild($('p', 'italic mb-2 text-white', q.source));
-
-        if (q.type === 'mcq' || q.type === 'source') {
+        const q = questions[idx]; const card = $('div','border p-3 rounded mb-3 bg-violet-800/50');
+        card.appendChild($('p','font-semibold text-white',q.question)); if (q.source) card.appendChild($('p','italic mb-2 text-white',q.source));
+        if (q.type==='mcq' || q.type==='source') {
           q.choices.forEach(ch => {
-            const btn = $('button', 'block border rounded p-2 w-full mb-1 text-white', ch);
-            btn.onclick = () => {
-              answers.push({ q: q.question, a: ch, correct: ch === q.correct });
-              if (ch === q.correct) { score++; xpEarned += 15; }
-              idx++; nextQuestion();
-            };
+            const btn = $('button','block border rounded p-2 w-full mb-1 text-white hover:bg-violet-700',ch);
+            btn.onclick = () => { answers.push({idx, type:q.type, correct:ch===q.correct}); if(ch===q.correct){score++; xpEarned+=15;} idx++; next(); };
             card.appendChild(btn);
           });
-        } else if (q.type === 'open') {
-          const ta = document.createElement('textarea');
-          ta.className = 'w-full border p-2 mb-2 text-white bg-violet-900';
-          const submit = $('button', 'bg-purple-600 text-white px-3 py-1 rounded', 'Submit');
-          submit.disabled = true;
-          ta.oninput = () => submit.disabled = !ta.value.trim();
-          submit.onclick = async () => {
-            submit.disabled = true; submit.textContent = 'Grading...';
-            const lb = loadingBar(); card.appendChild(lb.bar);
-            const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
-            lb.stop(); lb.set(100); setTimeout(() => lb.bar.remove(), 300);
-            const pts = Math.min(4, Math.max(1, Math.round(res.score)));
-            answers.push({ q: q.question, a: ta.value, pts, feedback: res.feedback });
-            if (pts >= 3) { score++; xpEarned += 50; }
-            idx++; nextQuestion();
-          };
-          card.appendChild(ta); card.appendChild(submit);
+        } else if (q.type==='open') {
+          const ta = document.createElement('textarea'); ta.className='w-full border p-2 mb-2 bg-violet-900 text-white rounded';
+          const sub = $('button','bg-purple-600 text-white px-3 py-1 rounded mt-2','Submit'); sub.disabled=true;
+          ta.oninput = ()=>{ sub.disabled=!ta.value.trim(); }; sub.onclick = () => { answers.push({idx, type:'open', answer:ta.value}); idx++; next(); };
+          card.appendChild(ta); card.appendChild(sub);
         }
-        content.appendChild(card);
-      };
-      nextQuestion();
-    };
+        els.quizContent.appendChild(card);
+      }; next();
+    }
 
-    const gradeOpenResponse = async (course, unit, question, rubric, answer) => {
-      const prompt = `Course: ${course}\nUnit: ${unit}\nQuestion: ${question}\nRubric: ${rubric}\nStudent answer:\n${answer}\nScore 1–4. Return JSON {score:number, feedback:string}.`;
-      const schema = { type: "object", properties: { score: { type: "number" }, feedback: { type: "string" } } };
-      return await geminiJSON(prompt, schema);
-    };
+    async function gradeAllOpen(openAnswers) {
+      if (!openAnswers.length) return [];
+      els.quizTitle.textContent = 'Grading Open Responses...'; els.quizContent.innerHTML = '';
+      const bar = els.quizModal.querySelector('.loading-bar > div'); bar.style.width='0%';
+      let p=0; const i=setInterval(()=>{p=Math.min(p+100/openAnswers.length,100);bar.style.width=p+'%';},500);
+      const results = await Promise.all(openAnswers.map(async (a) => {
+        const q = questions[a.idx];
+        const prompt = `Question: ${q.question}\nRubric (1-4 scale): ${q.rubric}\nAnswer: ${a.answer}\nReturn JSON {pass:boolean (3+), feedback:string}.`;
+        const schema = {type:"object",properties:{pass:{type:"boolean"},feedback:{type:"string"}}};
+        const res = await geminiJSON(prompt, schema); res.idx = a.idx; return res;
+      }));
+      clearInterval(i); bar.style.width='100%'; await new Promise(r=>setTimeout(r,300)); return results;
+    }
 
-    const showGradingThenResult = async (course, unit, score, total, xp, passed, answers, questions, isFinal) => {
-      openModal('quizModal', `<div class="card"><h2 class="text-xl font-bold mb-4">Grading your answers...</h2><div class="loading mt-3"><span></span></div></div>`);
-      const lb = loadingBar();
-      document.querySelector('.loading').appendChild(lb.bar);
-      await new Promise(r => setTimeout(r, 1800));
-      lb.stop(); lb.set(100);
-      setTimeout(() => {
-        openModal('quizModal', `<div class="card"><h2 class="text-xl font-bold mb-2">${passed ? 'Passed' : 'Failed'} – ${score}/${total}</h2><p class="mb-4">XP Earned: +${xp}</p><button id="reviewBtn" class="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-500 mb-2">Review Answers</button><button id="closeResult" class="w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600">Close</button></div>`);
-        document.getElementById('closeResult').onclick = () => closeModal('quizModal');
-        document.getElementById('reviewBtn').onclick = () => showReviewModal(answers, questions);
-      }, 400);
-    };
+    async function updateTrophies(course, unit, passed, isFinal, ref) {
+      const snap = await getDoc(ref); const prog = snap.data().progress||{}; const final = snap.data().finalExams||{};
+      const units = apCourses[course].length; let unitPass=0, finalPass=0;
+      apCourses[course].forEach(u=>{if(prog[course]?.[u]?.passed) unitPass++;}); if(final[course]?.passed) finalPass=1;
+      const newT = {bronze:0,silver:0,gold:0};
+      if (passed && !isFinal && (unitPass===7 || unitPass===8)) newT.bronze = 1;
+      if (passed && unitPass+finalPass===units+(isFinal?1:0)) { if(unitPass===units) newT.gold=1; else newT.silver=1; }
+      if (newT.bronze||newT.silver||newT.gold) await updateDoc(ref, {trophies: {bronze:(snap.data().trophies?.bronze||0)+newT.bronze, silver:(snap.data().trophies?.silver||0)+newT.silver, gold:(snap.data().trophies?.gold||0)+newT.gold}});
+      return newT;
+    }
 
-    const showReviewModal = (answers, questions) => {
-      let html = `<div class="card max-w-3xl"><h2 class="text-xl font-bold mb-4">Answer Review</h2><div class="max-h-96 overflow-y-auto space-y-3">`;
-      answers.forEach((a, i) => {
-        const q = questions[i];
-        const cls = a.correct === true ? 'correct' : a.correct === false ? 'wrong' : '';
-        html += `<div class="review-item ${cls}"><p class="font-semibold">${q.question}</p>`;
-        if (q.source) html += `<p class="italic text-sm">${q.source}</p>`;
-        if (a.correct !== undefined) {
-          html += `<p class="${a.correct ? 'text-green-400' : 'text-red-400'}">${a.correct ? 'Correct' : 'Wrong'} – You chose: ${a.a}</p>`;
-        } else {
-          html += `<p class="text-yellow-300">Score: ${a.pts}/4</p><p class="text-sm">${a.feedback}</p>`;
-        }
-        html += `</div>`;
+    function showResultModal(course, unit, score, total, passed, xp, qs, ans, trophy) {
+      closeModal(els.quizModal);
+      els.resultTitle.textContent = passed ? 'Passed!' : 'Failed';
+      els.resultScore.textContent = `${score}/${total} • +${xp} XP`;
+      els.resultTrophy.innerHTML = (trophy.bronze?'<span class="bronze">Bronze Trophy Earned!</span>':'') + (trophy.silver?'<span class="silver">Silver Trophy Earned!</span>':'') + (trophy.gold?'<span class="gold">Gold Trophy Earned!</span>':'');
+      els.review.innerHTML = '';
+      qs.forEach((q,i) => {
+        const a = ans.find(x=>x.idx===i); const card = $('div','p-3 rounded mb-3 bg-violet-800/50');
+        card.innerHTML = `<p class="font-semibold">${q.question}</p>`;
+        if (q.source) card.innerHTML += `<p class="italic text-sm">${q.source}</p>`;
+        if (q.type!=='open') { const correct = a&&a.correct; card.innerHTML += `<p class="${correct?'text-green-400':'text-red-400'}">${correct?'Correct':'Incorrect'}</p>`; }
+        else { const fb = a?.feedback||'Not graded'; card.innerHTML += `<p class="${a?.pass?'text-green-400':'text-red-400'}">Score: ${a?.pass?'3-4':'1-2'}</p><p class="text-sm">${fb}</p>`; }
+        els.review.appendChild(card);
       });
-      html += `</div><button id="closeReview" class="mt-4 w-full bg-gray-700 text-purple-300 py-2 rounded hover:bg-gray-600">Close</button></div>`;
-      openModal('quizModal', html);
-      document.getElementById('closeReview').onclick = () => closeModal('quizModal');
-    };
+      openModal(els.resultModal);
+    }
 
-    // Settings & Auth
-    els.settingsBtn.onclick = () => openModal('settingsModal', document.querySelector('#settingsModal > div').outerHTML);
-    els.closeSettings.onclick = () => closeModal('settingsModal');
-    els.reselectBtn.onclick = () => { populateReselect(userData?.apCourses || []); openModal('reselectModal', document.querySelector('#reselectModal > div').outerHTML); };
-    els.closeReselect.onclick = () => closeModal('reselectModal');
-    els.saveReselect.onclick = async () => {
-      const selected = Array.from(els.reselectForm.querySelectorAll('input:checked')).map(i => i.value);
-      await setDoc(doc(db, 'users', auth.currentUser.uid), { apCourses: selected }, { merge: true });
-      renderCourses(selected, userData?.progress || {}, userData?.xp || 0, userData?.trophies || { b: 0, s: 0, g: 0 });
-      closeModal('reselectModal');
-    };
-    els.logoutBtn.onclick = async () => { await signOut(auth); location.href = 'index.html'; };
+    els.settingsBtn.onclick = () => openModal(els.settingsModal);
+    els.closeSettings.onclick = () => closeModal(els.settingsModal);
+    els.reselectBtn.onclick = () => { populateReselectForm(userData?.apCourses||[]); openModal(els.reselectModal); };
+    els.closeReselect.onclick = () => closeModal(els.reselectModal);
+    els.saveReselect.onclick = async () => { const s=[...els.reselectForm.querySelectorAll('input:checked')].map(i=>i.value); await setDoc(doc(db,'users',auth.currentUser.uid), {apCourses:s}, {merge:true}); renderCourses(s, userData?.progress||{}, userData?.xp||0, userData?.trophies||{}); closeModal(els.reselectModal); };
+    els.logoutBtn.onclick = async () => { await signOut(auth); location.href='index.html'; };
+    els.closeQuiz.onclick = () => closeModal(els.quizModal);
+    els.closeResult.onclick = () => closeModal(els.resultModal);
 
-    const populateReselect = (selected = []) => {
-      els.reselectForm.innerHTML = '';
-      Object.keys(apCourses).forEach(c => {
-        const label = $('label', 'flex items-center gap-2 p-2 rounded hover:bg-violet-800 cursor-pointer text-white');
-        const cb = document.createElement('input');
-        cb.type = 'checkbox'; cb.value = c; if (selected.includes(c)) cb.checked = true;
-        label.appendChild(cb); label.appendChild(document.createTextNode(c));
-        els.reselectForm.appendChild(label);
+    function populateReselectForm(selected=[]) {
+      els.reselectForm.innerHTML=''; Object.keys(apCourses).forEach(c=>{
+        const lbl = $('label','flex items-center gap-2 p-2 rounded hover:bg-violet-800 cursor-pointer');
+        const cb = document.createElement('input'); cb.type='checkbox'; cb.value=c; if(selected.includes(c)) cb.checked=true;
+        lbl.appendChild(cb); lbl.appendChild(document.createTextNode(c)); els.reselectForm.appendChild(lbl);
       });
-    };
+    }
 
+    let userData = null;
     onAuthStateChanged(auth, async user => {
-      if (!user) { setTimeout(() => location.href = 'index.html', 3000); return; }
-      const ref = doc(db, 'users', user.uid);
-      let snap = await getDoc(ref);
-      if (!snap.exists()) await setDoc(ref, { apCourses: [], progress: {}, finalExams: {}, xp: 0, trophies: { b: 0, s: 0, g: 0 } });
-      snap = await getDoc(ref);
-      userData = snap.data();
+      if (!user) { setTimeout(() => location.href='index.html', 3000); return; }
+      const ref = doc(db,'users',user.uid); let snap = await getDoc(ref);
+      if (!snap.exists()) await setDoc(ref, {apCourses:[],progress:{},finalExams:{},xp:0,trophies:{bronze:0,silver:0,gold:0}});
+      snap = await getDoc(ref); userData = snap.data();
       renderCourses(userData.apCourses, userData.progress, userData.xp, userData.trophies);
     });
   </script>
