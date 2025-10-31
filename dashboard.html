@@ -695,58 +695,58 @@
       ]
     };
 
-    const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
-    const GEMINI_MODEL = "gemini-1.5-flash";
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
+const GEMINI_MODEL = "gemini-2.5-lite";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
-    async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          return await fn();
-        } catch (error) {
-          if (error.message.includes('429') && attempt < maxRetries) {
-            const delay = baseDelay * Math.pow(2, attempt - 1);
-            console.log(`429 error, retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-            continue;
-          }
-          throw error;
-        }
+async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error.message.includes('429') && attempt < maxRetries) {
+        const delay = baseDelay * Math.pow(2, attempt - 1);
+        console.log(`429 error, retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
       }
+      throw error;
     }
+  }
+}
 
-    async function geminiJSON(prompt, schema) {
-      const body = {
-        contents: [{ role: "user", parts: [{ text: prompt }]}],
-        generationConfig: {
-          response_mime_type: "application/json",
-          response_schema: schema
-        }
-      };
-      return await withRetry(async () => {
-        const res = await fetch(GEMINI_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error(`Gemini API error: ${res.status} ${errorText}`);
-          throw new Error(`Gemini error: ${res.status} ${errorText}`);
-        }
-        const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) {
-          throw new Error("No response text received from Gemini API");
-        }
-        try {
-          return JSON.parse(text);
-        } catch (parseError) {
-          console.error("JSON parse error:", parseError, "Response text:", text);
-          throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
-        }
-      });
+async function geminiJSON(prompt, schema) {
+  const body = {
+    contents: [{ role: "user", parts: [{ text: prompt }]}],
+    generationConfig: {
+      response_mime_type: "application/json",
+      response_schema: schema
     }
+  };
+  return await withRetry(async () => {
+    const res = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`Gemini API error: ${res.status} ${errorText}`);
+      throw new Error(`Gemini error: ${res.status} ${errorText}`);
+    }
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) {
+      throw new Error("No response text received from Gemini API");
+    }
+    try {
+      return JSON.parse(text);
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError, "Response text:", text);
+      throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
+    }
+  });
+}
 
     async function generateQuiz(course, unit, isFinal = false) {
       const count = isFinal ? 20 : 5;
