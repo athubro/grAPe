@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="image/png" href="grape.png" />
 </head>
-<body class="bg-gradient-to-b from-purple-900 to-purple-700 min-h-screen flex flex-col items-center justify-center text-white font-sans">
+<body class="bg-gradient-to-b from-[#8a3dd1] via-[#4a0fa0] to-[#2b0057] min-h-screen flex flex-col items-center justify-center text-white font-sans">
 
   <!-- Logo -->
   <div class="flex flex-col items-center mb-6">
@@ -16,36 +16,36 @@
   </div>
 
   <!-- Login Card -->
-  <div class="bg-purple-800 shadow-xl rounded-2xl p-8 w-96">
+  <div class="bg-white/10 backdrop-blur-xl shadow-xl rounded-2xl p-8 w-96 border border-white/15">
     <h2 class="text-xl font-semibold mb-4 text-center">Sign In</h2>
 
     <!-- Email/Password Form -->
     <form id="loginForm" class="flex flex-col gap-3">
       <input type="email" id="email" placeholder="Email" required
-        class="p-3 rounded-xl border-2 border-purple-500 bg-purple-900 text-white focus:outline-none focus:ring-2 focus:ring-purple-300" />
+        class="p-3 rounded-xl border border-white/20 bg-white/5 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-[#e0aaff]" />
       <input type="password" id="password" placeholder="Password" required
-        class="p-3 rounded-xl border-2 border-purple-500 bg-purple-900 text-white focus:outline-none focus:ring-2 focus:ring-purple-300" />
+        class="p-3 rounded-xl border border-white/20 bg-white/5 text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-[#e0aaff]" />
       <button type="submit"
-        class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-xl transition">
+        class="bg-gradient-to-r from-[#e0aaff] to-[#c77dff] text-[#3c096c] font-bold py-2 px-4 rounded-xl transition hover:opacity-90">
         Login
       </button>
     </form>
 
-    <p class="mt-3 text-center text-sm">
-      Don't have an account? 
-      <a href="#" id="signupLink" class="text-purple-300 underline">Sign Up</a>
+    <p class="mt-3 text-center text-sm text-purple-200">
+      Don't have an account?
+      <a href="#" id="signupLink" class="text-[#e0aaff] underline">Sign Up</a>
     </p>
 
     <!-- Divider -->
     <div class="my-4 flex items-center">
-      <div class="flex-grow h-px bg-purple-500"></div>
+      <div class="flex-grow h-px bg-white/20"></div>
       <span class="mx-2 text-sm text-purple-200">or</span>
-      <div class="flex-grow h-px bg-purple-500"></div>
+      <div class="flex-grow h-px bg-white/20"></div>
     </div>
 
     <!-- Google Sign-In -->
     <button id="googleLogin"
-      class="flex items-center justify-center gap-2 bg-white text-purple-800 font-bold py-2 px-4 rounded-xl w-full shadow hover:bg-gray-100">
+      class="flex items-center justify-center gap-2 bg-white text-[#3c096c] font-bold py-2 px-4 rounded-xl w-full shadow hover:bg-gray-100 transition">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" />
       Continue with Google
     </button>
