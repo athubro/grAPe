@@ -5,11 +5,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 :root {
-  --cosmic-purple: #5B21B6;
-  --vibrant-purple: #8B5CF6;
-  --light-lavender: #C4B5FD;
-  --neon-magenta: #F0ABFC;
-  --page-bg: #4C1D95;
+  /* Grape palette (aligned with homepage + login) */
+  --cosmic-purple: #2b0057;
+  --vibrant-purple: #4a0fa0;
+  --light-lavender: #e0aaff;
+  --neon-magenta: #c77dff;
+  --page-bg: #8a3dd1;
 }
 
 body {
@@ -40,7 +41,7 @@ body {
 }
 
 .course-card {
-  @apply bg-vibrant-purple/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(240,171,252,0.5)] animate-fade-in w-full max-w-md;
+  @apply bg-vibrant-purple/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(199,125,255,0.5)] animate-fade-in w-full max-w-md;
 }
 
 .course-card button {
@@ -71,7 +72,7 @@ body {
 }
 
 #settingsModal button, #reselectModal button {
-  @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(240,171,252,0.5)] transform hover:scale-105;
+  @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(199,125,255,0.5)] transform hover:scale-105;
 }
 
 #settingsModal button:active, #reselectModal button:active {
@@ -92,7 +93,7 @@ body {
 }
 
 .quiz-modal button {
-  @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(240,171,252,0.5)] transform hover:scale-105;
+  @apply px-4 py-2 rounded-lg bg-neon-magenta text-white font-semibold transition-all duration-200 hover:bg-light-lavender hover:shadow-[0_0_10px_rgba(199,125,255,0.5)] transform hover:scale-105;
 }
 
 .quiz-modal button:active {
@@ -152,3 +153,4 @@ body {
 .course-card {
   animation-delay: calc(var(--index) * 100ms);
 }
+
