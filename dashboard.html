@@ -7,283 +7,333 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="image/png" href="grape.png" />
   <style>
-    :root {
-  --cosmic-purple: #5B21B6;    /* main background */
-  --vibrant-purple: #8B5CF6;   /* buttons, highlights */
-  --light-lavender: #C4B5FD;   /* borders, accents */
-  --hover-purple: #A78BFA;     /* hover accent */
-  --deep-purple: #6D28D9;      /* darker hover for buttons */
-  --red-primary: #EF4444;
-  --red-hover: #DC2626;
-}
+   @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Modern purple palette */
+  --cosmic-purple: #1a0033;
+  --vibrant-purple: #2d1b69;
+  --deep-purple: #3d2481;
+  --light-lavender: #e0aaff;
+  --neon-magenta: #c77dff;
+  --accent-pink: #ff006e;
+  --page-bg: #0f0620;
 }
 
 body {
-  background: var(--cosmic-purple);
-  font-family: 'Inter', sans-serif;
-  color: #ffffff;
-  transition: background-color 0.3s ease;
+  @apply font-poppins bg-page-bg min-h-screen text-white overflow-x-hidden flex;
+  background: linear-gradient(135deg, #0f0620 0%, #1a0033 50%, #2d1b69 100%);
+  position: relative;
 }
 
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Animated background elements */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  right: -50%;
   width: 100%;
-  max-width: 1200px;
-  padding: 0.75rem 1rem;
-  background: var(--cosmic-purple);
+  height: 100%;
+  background: radial-gradient(circle, rgba(199, 125, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  animation: float 6s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 30px); }
+}
+
+/* Sidebar */
+.sidebar {
+  @apply fixed top-0 left-0 h-full w-64 shadow-2xl z-50 flex flex-col items-center gap-8 pt-10;
+  background: linear-gradient(180deg, #2d1b69 0%, #1a0033 100%);
+  border-right: 1px solid rgba(199, 125, 255, 0.2);
+  backdrop-filter: blur(20px);
+}
+
+.sidebar button {
+  @apply w-4/5 text-center px-4 py-3 text-white font-500 flex items-center justify-center gap-3 rounded-xl transition-all duration-300;
+  background: rgba(199, 125, 255, 0.1);
+  border: 1px solid rgba(199, 125, 255, 0.2);
+}
+
+.sidebar button:hover {
+  @apply transform -translate-y-1;
+  background: linear-gradient(135deg, rgba(199, 125, 255, 0.3), rgba(255, 0, 110, 0.1));
+  border-color: rgba(199, 125, 255, 0.5);
+  box-shadow: 0 8px 24px rgba(199, 125, 255, 0.2);
+}
+
+.sidebar button:active {
+  @apply transform scale-95;
+}
+
+.sidebar svg {
+  @apply w-5 h-5;
+}
+
+/* Main Content */
+.content {
+  @apply flex-1 ml-64 p-8 transition-all duration-300 relative z-10;
+}
+
+/* Course Cards */
+#ap-list {
+  @apply max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center;
+}
+
+.course-card {
+  @apply w-full max-w-sm rounded-2xl shadow-lg transform transition-all duration-300 p-6 flex flex-col gap-4 animate-fade-in overflow-hidden;
+  background: linear-gradient(135deg, rgba(61, 36, 129, 0.6) 0%, rgba(45, 27, 105, 0.6) 100%);
+  border: 1px solid rgba(199, 125, 255, 0.25);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--light-lavender);
-  transition: transform 0.3s ease;
+  position: relative;
 }
 
-nav:hover {
-  transform: translateY(-1px);
+.course-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(199, 125, 255, 0.1), transparent);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-#courses {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--light-lavender);
-  transition: color 0.3s ease, transform 0.3s ease;
+.course-card:hover {
+  @apply scale-105;
+  background: linear-gradient(135deg, rgba(61, 36, 129, 0.8) 0%, rgba(45, 27, 105, 0.8) 100%);
+  border-color: rgba(199, 125, 255, 0.5);
+  box-shadow: 0 20px 40px rgba(199, 125, 255, 0.2);
 }
 
-#courses:hover {
-  color: var(--hover-purple);
-  transform: scale(1.05);
+.course-card button {
+  @apply w-full text-center text-white font-600 px-4 py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2;
+  background: linear-gradient(135deg, #c77dff 0%, #ff006e 100%);
+  border: none;
 }
 
-#xp-display {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--vibrant-purple);
-  background: none;
-  padding: 0.25rem 0.5rem;
-  transition: transform 0.3s ease, color 0.3s ease;
+.course-card button:hover {
+  @apply transform -translate-y-0.5;
+  box-shadow: 0 12px 24px rgba(199, 125, 255, 0.4);
 }
 
-#xp-display::before {
-  content: '🎖️';
-  font-size: 1.25rem;
-  color: var(--light-lavender);
-  transition: transform 0.3s ease, color 0.3s ease;
+.course-card button:active {
+  @apply transform scale-95;
 }
 
-#xp-display:hover {
-  color: var(--hover-purple);
-  transform: scale(1.05);
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
 }
 
-#xp-display:hover::before {
-  color: var(--hover-purple);
-  transform: rotate(15deg);
+/* Modals */
+#settingsModal, #reselectModal {
+  @apply fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300;
+  background: rgba(15, 6, 32, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-#settingsBtn {
-  width: 1.5rem;
-  height: 1.5rem;
-  opacity: 0.7;
-  filter: invert(29%) sepia(69%) saturate(1485%) hue-rotate(235deg) brightness(90%) contrast(89%);
-  transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+#settingsModal .modal-content, #reselectModal .modal-content {
+  @apply p-8 rounded-3xl max-w-lg w-full mx-4 transform transition-all duration-300 animate-modal-in flex flex-col items-center gap-6;
+  background: linear-gradient(135deg, rgba(61, 36, 129, 0.85) 0%, rgba(45, 27, 105, 0.85) 100%);
+  border: 1px solid rgba(199, 125, 255, 0.3);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(199, 125, 255, 0.15);
 }
 
-#settingsBtn:hover {
-  filter: invert(62%) sepia(67%) saturate(1350%) hue-rotate(231deg) brightness(99%) contrast(94%);
-  transform: rotate(90deg);
-  opacity: 1;
+@keyframes modal-in {
+  from { 
+    transform: scale(0.95) translateY(-20px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1) translateY(0); 
+    opacity: 1; 
+  }
 }
 
-#course-select-container {
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 1rem;
+#settingsModal button, #reselectModal button {
+  @apply px-6 py-2.5 rounded-xl font-600 transition-all duration-200 flex items-center justify-center gap-2;
+  background: linear-gradient(135deg, #c77dff 0%, #ff006e 100%);
+  border: none;
+  color: white;
 }
 
-#course-select {
-  width: 100%;
-  background: var(--cosmic-purple);
-  border: 1px solid var(--hover-purple);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-  font-size: 1rem;
-  color: #ffffff;
-  box-shadow: 0 4px 6px -1 rgba(139, 92, 246, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23A78BFA' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1.5rem;
+#settingsModal button:hover, #reselectModal button:hover {
+  @apply transform -translate-y-0.5;
+  box-shadow: 0 12px 24px rgba(199, 125, 255, 0.4);
 }
 
-#course-select:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px -2 rgba(139, 92, 246, 0.3);
-  border-color: var(--vibrant-purple);
+#settingsModal button:active, #reselectModal button:active {
+  @apply transform scale-95;
 }
 
-#course-select:focus {
-  outline: none;
-  border-color: var(--vibrant-purple);
-  box-shadow: 0 0 0 3px var(--light-lavender);
+#settingsModal #closeSettings, #reselectModal #closeReselect {
+  @apply bg-white/10 text-light-lavender;
+  border: 1px solid rgba(224, 170, 255, 0.3);
 }
 
-#course-select option {
-  padding: 0.5rem;
-  color: #ffffff;
-  background: var(--cosmic-purple);
+#settingsModal #closeSettings:hover, #reselectModal #closeReselect:hover {
+  background: rgba(224, 170, 255, 0.2);
+  border-color: rgba(224, 170, 255, 0.5);
 }
 
-#units-list {
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 0.5rem;
+/* Quiz Modal */
+.quiz-modal {
+  @apply fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-300;
+  background: rgba(15, 6, 32, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-#units-list button {
-  display: block;
-  width: 100%;
-  background: var(--cosmic-purple);
-  border: 1px solid var(--hover-purple);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  color: #ffffff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+.quiz-modal .modal-content {
+  @apply p-8 rounded-3xl max-w-2xl w-full mx-4 transform transition-all duration-300 animate-modal-in flex flex-col items-center gap-6;
+  background: linear-gradient(135deg, rgba(61, 36, 129, 0.85) 0%, rgba(45, 27, 105, 0.85) 100%);
+  border: 1px solid rgba(199, 125, 255, 0.3);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(199, 125, 255, 0.15);
 }
 
-#units-list button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px -2 rgba(139, 92, 246, 0.3);
-  background: var(--deep-purple);
+.quiz-modal button {
+  @apply px-6 py-2.5 rounded-xl font-600 transition-all duration-200 flex items-center justify-center gap-2;
+  background: linear-gradient(135deg, #c77dff 0%, #ff006e 100%);
+  border: none;
+  color: white;
 }
 
-#settingsModal, #reselectModal, #quizModal {
-  animation: none;
+.quiz-modal button:hover {
+  @apply transform -translate-y-0.5;
+  box-shadow: 0 12px 24px rgba(199, 125, 255, 0.4);
 }
 
-#settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-  background: var(--cosmic-purple);
-  border: 1px solid var(--hover-purple);
-  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15);
-  border-radius: 1rem;
-  color: #ffffff;
-  transition: transform 0.3s ease;
+.quiz-modal button:active {
+  @apply transform scale-95;
 }
 
-#settingsModal.show, #reselectModal.show, #quizModal.show {
-  display: flex !important;
+.quiz-modal textarea {
+  @apply w-full p-4 rounded-xl text-white placeholder-gray-400 focus:outline-none transition-all duration-200;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(199, 125, 255, 0.2);
+  resize: vertical;
+  min-height: 120px;
 }
 
-button {
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+.quiz-modal textarea:focus {
+  @apply ring-2;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(199, 125, 255, 0.5);
+  box-shadow: 0 0 20px rgba(199, 125, 255, 0.2);
 }
 
-#reselectBtn, #saveReselect, #startQuiz {
-  background: var(--vibrant-purple);
-  color: #ffffff;
+/* Welcome Message */
+#welcome {
+  @apply text-4xl font-700 tracking-wide text-center mb-12;
+  background: linear-gradient(135deg, #c77dff 0%, #ff006e 50%, #c77dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-#reselectBtn:hover, #saveReselect:hover, #startQuiz:hover {
-  background: var(--hover-purple);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
-}
-
-#logoutBtn {
-  background: var(--red-primary);
-  color: #ffffff;
-}
-
-#logoutBtn:hover {
-  background: var(--red-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-}
-
-#closeSettings, #closeReselect, #closeQuiz {
-  color: var(--light-lavender);
-  transition: color 0.3s ease;
-}
-
-#closeSettings:hover, #closeReselect:hover, #closeQuiz:hover {
-  color: var(--hover-purple);
-  text-decoration: none;
+/* Reselect Form */
+#reselectForm {
+  @apply w-full flex flex-col gap-4;
 }
 
 #reselectForm label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  color: #ffffff;
-  transition: background-color 0.3s ease;
-}
-
-#reselectForm label:hover {
-  background: var(--deep-purple);
+  @apply flex items-center justify-start text-light-lavender font-500 cursor-pointer transition-all duration-200 hover:text-neon-magenta;
 }
 
 #reselectForm input[type="checkbox"] {
-  accent-color: var(--vibrant-purple);
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform 0.2s ease;
+  @apply h-5 w-5 rounded transition-all duration-200 mr-3 cursor-pointer;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(199, 125, 255, 0.3);
 }
 
-#reselectForm input[type="checkbox"]:hover {
-  transform: scale(1.1);
+#reselectForm input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #c77dff 0%, #ff006e 100%);
+  border-color: rgba(199, 125, 255, 0.8);
+  box-shadow: 0 0 12px rgba(199, 125, 255, 0.4);
 }
 
-#quizModal textarea {
-  background: var(--cosmic-purple);
-  border: 1px solid var(--hover-purple);
-  color: #ffffff;
+#reselectForm input[type="checkbox"]:focus {
+  outline: none;
+  border-color: rgba(199, 125, 255, 0.6);
+  box-shadow: 0 0 8px rgba(199, 125, 255, 0.3);
 }
 
-#quizModal .border {
-  border-color: var(--hover-purple);
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    @apply w-full h-auto fixed top-0 left-0 pt-4 pb-4 flex-row justify-between px-4 rounded-b-2xl;
+    gap: 2rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(199, 125, 255, 0.2);
+  }
+
+  .sidebar button {
+    @apply w-auto px-4 py-2 text-sm;
+  }
+
+  .content {
+    @apply ml-0 mt-24 p-4;
+  }
+
+  #ap-list {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .course-card {
+    @apply max-w-full;
+  }
+
+  .quiz-modal .modal-content {
+    @apply max-w-full mx-2;
+  }
+
+  #settingsModal .modal-content, #reselectModal .modal-content {
+    @apply max-w-full mx-2;
+  }
+
+  #welcome {
+    @apply text-2xl;
+  }
 }
 
-@media (max-width: 640px) {
-  nav {
-    padding: 0.5rem;
-  }
-
-  #courses {
-    font-size: 1rem;
-  }
-
-  #xp-display {
-    font-size: 0.85rem;
-  }
-
-  #settingsBtn {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  #settingsModal .bg-white, #reselectModal .bg-white, #quizModal .bg-white {
-    width: 90%;
-  }
-
-  #course-select, #units-list button {
-    font-size: 0.9rem;
-    padding: 0.5rem;
-  }
+/* Staggered Animation for Cards */
+.course-card {
+  animation-delay: calc(var(--index) * 100ms);
 }
 
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(199, 125, 255, 0.3);
+  color: #e0aaff;
+}
+
+/* Focus visible for accessibility */
+button:focus-visible, input:focus-visible {
+  outline: 2px solid #c77dff;
+  outline-offset: 2px;
+}
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-6">
