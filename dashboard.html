@@ -642,21 +642,58 @@ html {
     // ============================================
     // OLLAMA CONFIGURATION
     // ============================================
-    const OLLAMA_URL = "http://localhost:11434";
+    // CHANGE THIS to your ngrok URL (without the trailing slash)
+    const OLLAMA_URL = "https://tamara-postmyxedemic-manuela.ngrok-free.dev";
     const OLLAMA_MODEL = "llama3.2";
 
     // Test Ollama connection on page load
     async function testOllamaConnection() {
       try {
-        const response = await fetch(`${OLLAMA_URL}/api/tags`);
+        const response = await fetch(`${OLLAMA_URL}/api/tags`, {
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Ollama connected. Available models:', data.models.map(m => m.name));
           return true;
+        } else {
+          console.error('❌ Ollama responded with error:', response.status);
+          return false;
         }
       } catch (error) {
         console.error('❌ Ollama connection failed:', error);
-        console.log('Make sure Ollama is running: ollama serve');
+        
+        // Check if it's a CORS error
+        if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+          console.error('🚨 CORS ERROR DETECTED!');
+          console.log('');
+          console.log('═══════════════════════════════════════════════');
+          console.log('HOW TO FIX:');
+          console.log('═══════════════════════════════════════════════');
+          console.log('');
+          console.log('Option 1: Set OLLAMA_ORIGINS environment variable');
+          console.log('  Windows PowerShell:');
+          console.log('    $env:OLLAMA_ORIGINS="*"');
+          console.log('    ollama serve');
+          console.log('');
+          console.log('  Mac/Linux:');
+          console.log('    export OLLAMA_ORIGINS="*"');
+          console.log('    ollama serve');
+          console.log('');
+          console.log('Option 2: Use a local web server (RECOMMENDED)');
+          console.log('  python -m http.server 8000');
+          console.log('  Then open: http://localhost:8000/dashboard-ollama-final.html');
+          console.log('');
+          console.log('═══════════════════════════════════════════════');
+          
+          // Show alert to user
+          alert('⚠️ CORS Error Detected!\n\nOllama is running, but your browser is blocking the connection.\n\nSolution: Serve this HTML file using a local web server.\n\nRun this command in your terminal:\n\npython -m http.server 8000\n\nThen open:\nhttp://localhost:8000/dashboard-ollama-final.html\n\nSee console (F12) for more details.');
+        }
+        
         return false;
       }
     }
@@ -666,7 +703,10 @@ html {
       try {
         const response = await fetch(`${OLLAMA_URL}/api/generate`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          mode: 'cors',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
             model: OLLAMA_MODEL,
             prompt: prompt,
@@ -685,6 +725,9 @@ html {
         const data = await response.json();
         return data.response;
       } catch (error) {
+        if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+          throw new Error('CORS error - Please serve this file using a local web server (see console for instructions)');
+        }
         console.error('Ollama API call failed:', error);
         throw error;
       }
