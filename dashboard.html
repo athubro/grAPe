@@ -652,7 +652,8 @@ html {
         const response = await fetch(`${OLLAMA_URL}/api/tags`, {
           mode: 'cors',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'  // Skip ngrok browser warning
           }
         });
         
@@ -705,7 +706,8 @@ html {
           method: 'POST',
           mode: 'cors',
           headers: { 
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'  // Skip ngrok browser warning
           },
           body: JSON.stringify({
             model: OLLAMA_MODEL,
