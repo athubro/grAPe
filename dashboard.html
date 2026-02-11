@@ -452,6 +452,27 @@ nav img.logo {
   margin-bottom: 0.5rem;
 }
 
+.loading-spinner {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid var(--purple-200);
+  border-top: 3px solid var(--purple-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container {
+  text-align: center;
+  padding: 2rem;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -618,6 +639,189 @@ html {
 
     await setPersistence(auth, browserLocalPersistence);
 
+    // ============================================
+    // OLLAMA CONFIGURATION
+    // ============================================
+    const OLLAMA_URL = "http://localhost:11434";
+    const OLLAMA_MODEL = "llama3.2";
+
+    // Test Ollama connection on page load
+    async function testOllamaConnection() {
+      try {
+        const response = await fetch(`${OLLAMA_URL}/api/tags`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Ollama connected. Available models:', data.models.map(m => m.name));
+          return true;
+        }
+      } catch (error) {
+        console.error('❌ Ollama connection failed:', error);
+        console.log('Make sure Ollama is running: ollama serve');
+        return false;
+      }
+    }
+
+    // Call Ollama API
+    async function callOllama(prompt) {
+      try {
+        const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: OLLAMA_MODEL,
+            prompt: prompt,
+            stream: false,
+            options: {
+              temperature: 0.7,
+              num_predict: 2000
+            }
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ollama API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.response;
+      } catch (error) {
+        console.error('Ollama API call failed:', error);
+        throw error;
+      }
+    }
+
+    // Parse JSON from Ollama response
+    function parseJSON(text) {
+      // Try to find JSON in the response
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          return JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          console.error('JSON parse error:', e);
+        }
+      }
+      
+      // Try the full text
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        console.error('Failed to parse JSON from response:', text);
+        throw new Error('Could not parse JSON from model response');
+      }
+    }
+
+    // ============================================
+    // QUIZ GENERATION WITH OLLAMA
+    // ============================================
+    async function generateQuiz(course, unit, isFinal = false) {
+      const count = isFinal ? 20 : 5;
+      const mcqCount = isFinal ? 16 : 3;
+      const sourceCount = isFinal ? 2 : 1;
+      const openCount = isFinal ? 4 : 1;
+
+      const prompt = `You are an expert AP teacher creating quiz questions for ${course}, ${unit}.
+
+Generate EXACTLY ${count} questions in valid JSON format with this structure:
+{
+  "questions": [
+    {
+      "type": "mcq",
+      "question": "Question text here?",
+      "choices": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
+      "correct": "A) Option 1",
+      "explanation": "Why this is correct"
+    }
+  ]
+}
+
+Requirements:
+- ${mcqCount} multiple choice questions (type: "mcq")
+- ${sourceCount} source-analysis questions (type: "source", includes "source" field with text to analyze)
+- ${openCount} open-response questions (type: "open", includes "rubric" field instead of choices/correct/explanation)
+
+For MCQ and source questions: Include exactly 4 choices, the correct answer, and an explanation.
+For open-response: Include a detailed rubric for grading.
+
+Return ONLY valid JSON, no other text.`;
+
+      try {
+        const response = await callOllama(prompt);
+        const data = parseJSON(response);
+        
+        if (!data.questions || !Array.isArray(data.questions)) {
+          throw new Error('Invalid response format');
+        }
+
+        // Validate questions
+        const validQuestions = data.questions.filter(q => {
+          if (!q || !q.question || !q.type) return false;
+          
+          if (q.type === 'mcq' || q.type === 'source') {
+            return Array.isArray(q.choices) && 
+                   q.choices.length === 4 && 
+                   q.correct && 
+                   q.explanation;
+          } else if (q.type === 'open') {
+            return q.rubric && q.rubric.trim() !== '';
+          }
+          return false;
+        });
+
+        if (validQuestions.length === 0) {
+          throw new Error('No valid questions generated');
+        }
+
+        console.log(`✅ Generated ${validQuestions.length} valid questions`);
+        return validQuestions;
+
+      } catch (error) {
+        console.error('Quiz generation error:', error);
+        throw new Error(`Failed to generate quiz: ${error.message}`);
+      }
+    }
+
+    // ============================================
+    // GRADING OPEN RESPONSE WITH OLLAMA
+    // ============================================
+    async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
+      const prompt = `You are grading an AP ${course} student response for ${unit}.
+
+Question: ${question}
+
+Rubric: ${rubric}
+
+Student Answer: ${userAnswer}
+
+Evaluate if the student's answer meets the rubric criteria. Return ONLY valid JSON:
+{
+  "pass": true or false,
+  "feedback": "Brief feedback explaining the grade"
+}
+
+Return ONLY the JSON, no other text.`;
+
+      try {
+        const response = await callOllama(prompt);
+        const data = parseJSON(response);
+        
+        if (typeof data.pass !== 'boolean' || !data.feedback) {
+          throw new Error('Invalid grading response format');
+        }
+        
+        return data;
+      } catch (error) {
+        console.error('Grading error:', error);
+        throw new Error(`Failed to grade response: ${error.message}`);
+      }
+    }
+
+    // Test connection when page loads
+    testOllamaConnection();
+
+    // ============================================
+    // UI AND FIREBASE CODE
+    // ============================================
     const courses = document.getElementById("courses");
     const xpDisplay = document.getElementById("xp-display");
     const courseSelect = document.getElementById("course-select");
@@ -971,164 +1175,6 @@ html {
       ]
     };
 
-const GEMINI_API_KEY = "AIzaSyDNAAETxjKgPNYtH4kMu5rz0gvXad7UVwU";
-const GEMINI_MODEL = "gemini-2.5-flash";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-
-async function withRetry(fn, maxRetries = 3, baseDelay = 5000) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (error.message.includes('429') && attempt < maxRetries) {
-        const delay = baseDelay * Math.pow(2, attempt - 1);
-        console.log(`429 error, retrying after ${delay}ms (attempt ${attempt}/${maxRetries})`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-      throw error;
-    }
-  }
-}
-
-async function geminiJSON(prompt, schema) {
-  const body = {
-    contents: [{ role: "user", parts: [{ text: prompt }]}],
-    generationConfig: {
-      response_mime_type: "application/json",
-      response_schema: schema
-    }
-  };
-  return await withRetry(async () => {
-    const res = await fetch(GEMINI_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error(`Gemini API error: ${res.status} ${errorText}`);
-      throw new Error(`Gemini error: ${res.status} ${errorText}`);
-    }
-    const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) {
-      throw new Error("No response text received from Gemini API");
-    }
-    try {
-      return JSON.parse(text);
-    } catch (parseError) {
-      console.error("JSON parse error:", parseError, "Response text:", text);
-      throw new Error(`Failed to parse Gemini response: ${parseError.message}`);
-    }
-  });
-}
-
-    async function generateQuiz(course, unit, isFinal = false) {
-      const count = isFinal ? 20 : 5;
-      const prompt = `
-You are generating AP-style questions for ${course}, topic: ${unit}.
-${isFinal ? "Make 20 questions (16 MCQ, at least 2 source-analysis, 4 open-response)." 
-           : "Make 5 questions (3 MCQ, 1 source-analysis, 1 open-response)."}
-For MCQs: include 4 choices, 'correct', and 'explanation'.
-For source-analysis: include 'source' text, 4 choices, 'correct', 'explanation'.
-For open-response: include 'rubric'.
-Type is 'mcq' for standard MCQ, 'source' for source-analysis, 'open' for open-response.
-Output JSON only.
-`;
-      const schema = {
-        type: "object",
-        properties: {
-          questions: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                type: { type: "string" },
-                question: { type: "string" },
-                source: { type: "string" },
-                choices: { type: "array", items: { type: "string" } },
-                correct: { type: "string" },
-                explanation: { type: "string" },
-                rubric: { type: "string" }
-              }
-            }
-          }
-        }
-      };
-      try {
-        for (let attempt = 1; attempt <= 2; attempt++) {
-          const { questions } = await geminiJSON(prompt, schema);
-          console.log(`Raw Gemini response (attempt ${attempt}):`, questions);
-          if (!questions || !Array.isArray(questions)) {
-            console.error("Invalid questions format received from Gemini API");
-            if (attempt === 2) {
-              throw new Error("Invalid questions format received from Gemini API after retry");
-            }
-            continue;
-          }
-          const validQuestions = questions.filter(q => {
-            if (!q || !q.question || !q.type) {
-              console.warn("Invalid question (missing question or type):", q);
-              return false;
-            }
-            if (q.type === 'mcq' || q.type === 'source') {
-              const isValid = Array.isArray(q.choices) && q.choices.length === 4 && q.correct && q.explanation && q.choices.every(c => typeof c === 'string' && c.trim() !== '');
-              if (!isValid) console.warn("Invalid MCQ/source question:", q);
-              return isValid;
-            } else if (q.type === 'open') {
-              const isValid = q.rubric && typeof q.rubric === 'string' && q.rubric.trim() !== '';
-              if (!isValid) console.warn("Invalid open-response question:", q);
-              return isValid;
-            }
-            console.warn("Unknown question type:", q);
-            return false;
-          });
-          if (validQuestions.length === 0) {
-            console.error(`No valid questions generated on attempt ${attempt}`);
-            if (attempt === 2) {
-              throw new Error("No valid questions generated by Gemini API after retry");
-            }
-            continue;
-          }
-          if (validQuestions.length < count) {
-            console.warn(`Generated ${validQuestions.length} valid questions, expected ${count}`);
-          }
-          return validQuestions;
-        }
-      } catch (error) {
-        console.error("Quiz generation error:", error);
-        throw new Error(`Failed to generate quiz: ${error.message}`);
-      }
-    }
-
-    async function gradeOpenResponse(course, unit, question, rubric, userAnswer) {
-      const schema = {
-        type: "object",
-        properties: {
-          pass: { type: "boolean" },
-          feedback: { type: "string" }
-        }
-      };
-      const prompt = `
-Course: ${course}
-Unit: ${unit}
-Question: ${question}
-Rubric: ${rubric}
-
-Student answer:
-${userAnswer}
-
-Decide pass/fail and give short feedback.
-Output JSON.
-`;
-      try {
-        return await geminiJSON(prompt, schema);
-      } catch (error) {
-        throw new Error(`Failed to grade open response: ${error.message}`);
-      }
-    }
-
     function createEl(tag, className, text) {
       const el = document.createElement(tag);
       if (className) el.className = className;
@@ -1216,12 +1262,13 @@ Output JSON.
       closeBtn.onclick = () => modal.remove();
 
       startBtn.onclick = async () => {
+        quizContent.innerHTML = '<div class="loading-container"><p style="color: var(--purple-800); font-weight: 600;">Generating quiz with Ollama...</p><div class="loading-spinner"></div><p style="color: var(--purple-600); font-size: 0.875rem; margin-top: 1rem;">This may take 10-30 seconds</p></div>';
         try {
           const qs = await generateQuiz(course, unit, false);
           showQuizModal(course, unit, qs, 5, 5, checkSpan, false, modal, quizContent);
         } catch (error) {
           console.error('Failed to load quiz:', error);
-          quizContent.innerHTML = `<p style="color: #4b5563;">Error loading quiz: ${error.message}. Please try again later.</p>`;
+          quizContent.innerHTML = `<p style="color: #ef4444; font-weight: 600;">Error loading quiz: ${error.message}</p><p style="color: #4b5563; margin-top: 1rem;">Make sure Ollama is running (ollama serve) and llama3.2 is installed.</p>`;
         }
       };
     }
@@ -1251,12 +1298,13 @@ Output JSON.
       closeBtn.onclick = () => modal.remove();
 
       startBtn.onclick = async () => {
+        quizContent.innerHTML = '<div class="loading-container"><p style="color: var(--purple-800); font-weight: 600;">Generating final exam with Ollama...</p><div class="loading-spinner"></div><p style="color: var(--purple-600); font-size: 0.875rem; margin-top: 1rem;">This may take 30-60 seconds</p></div>';
         try {
           const qs = await generateQuiz(course, 'Final Exam', true);
           showQuizModal(course, 'Final Exam', qs, 20, 18, checkSpan, true, modal, quizContent);
         } catch (error) {
           console.error('Failed to load final exam:', error);
-          quizContent.innerHTML = `<p style="color: #4b5563;">Error loading final exam: ${error.message}. Please try again later.</p>`;
+          quizContent.innerHTML = `<p style="color: #ef4444; font-weight: 600;">Error loading final exam: ${error.message}</p><p style="color: #4b5563; margin-top: 1rem;">Make sure Ollama is running (ollama serve) and llama3.2 is installed.</p>`;
         }
       };
     }
@@ -1269,7 +1317,7 @@ Output JSON.
         if (index >= questions.length) {
           const passed = score >= passThreshold;
           const resultDiv = createEl('div');
-          resultDiv.innerHTML = `<p class="result-text">${passed ? 'Passed' : 'Try again'} — Score: ${score}/${totalCount}</p><p class="result-text">Earned XP: ${earnedXP}</p>`;
+          resultDiv.innerHTML = `<p class="result-text">${passed ? '✅ Passed' : '❌ Try again'} — Score: ${score}/${totalCount}</p><p class="result-text">Earned XP: ${earnedXP}</p>`;
           quizContent.appendChild(resultDiv);
           
           const user = auth.currentUser;
@@ -1300,7 +1348,7 @@ Output JSON.
         }
         
         const card = createEl('div', 'question-card');
-        const questionText = createEl('p', 'question-text', q.question);
+        const questionText = createEl('p', 'question-text', `Question ${index + 1}: ${q.question}`);
         card.appendChild(questionText);
 
         if (q.source) {
@@ -1334,19 +1382,22 @@ Output JSON.
           submit.disabled = true;
           ta.oninput = () => { submit.disabled = ta.value.trim() === ''; };
           submit.onclick = async () => {
+            submit.disabled = true;
+            submit.textContent = 'Grading...';
             try {
               const res = await gradeOpenResponse(course, unit, q.question, q.rubric, ta.value);
               if (res.pass) {
                 score++;
                 earnedXP += 50;
               }
+              alert(`${res.pass ? '✅ Correct' : '❌ Incorrect'}\n\n${res.feedback}`);
               index++;
               renderNext();
             } catch (error) {
               console.error('Failed to grade open response:', error);
-              quizContent.innerHTML = `<p style="color: #4b5563;">Error grading response for question ${index + 1}. Please try again.</p>`;
-              index++;
-              renderNext();
+              alert('Error grading response. Please try again.');
+              submit.disabled = false;
+              submit.textContent = 'Submit';
             }
           };
           card.appendChild(ta);
